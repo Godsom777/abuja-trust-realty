@@ -1,0 +1,25 @@
+{
+  "name": "Abuja Trust Realty",
+  "short_name": "Trust Realty",
+  "description": "A curated, trust-first property marketplace for verified real estate in Abuja, Nigeria.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAFAF7",
+  "theme_color": "#1B7A4E",
+  "orientation": "portrait-primary",
+  "categories": ["real-estate", "business"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

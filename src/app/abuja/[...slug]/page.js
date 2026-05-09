@@ -1,0 +1,207 @@
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import { ALL_LISTINGS } from "@/data/listings";
+import styles from "./page.module.css";
+
+export async function generateMetadata({ params }) {
+  const resolvedParams = await params;
+  const fullSlug = "/abuja/" + resolvedParams.slug.join("/");
+  const listing = ALL_LISTINGS.find((l) => l.slug === fullSlug);
+
+  if (!listing) return { title: "Property Not Found" };
+
+  return {
+    title: `${listing.title} in ${listing.district} — Abuja Trust Realty`,
+    description: listing.description || `Verified ${listing.propertyType} for ${listing.transactionType} in ${listing.district}, Abuja.`,
+  };
+}
+
+const formatPrice = (price) => {
+  if (price >= 1_000_000_000) return `₦${(price / 1_000_000_000).toFixed(1)}B`;
+  if (price >= 1_000_000) return `₦${(price / 1_000_000).toFixed(0)}M`;
+  if (price >= 1_000) return `₦${(price / 1_000).toFixed(0)}K`;
+  return `₦${price.toLocaleString()}`;
+};
+
+const TRANSACTION_LABELS = {
+  sale: "For Sale",
+  rent: "For Rent",
+  "off-plan": "Off-Plan",
+};
+
+export default async function PropertyDetailPage({ params }) {
+  const resolvedParams = await params;
+  const fullSlug = "/abuja/" + resolvedParams.slug.join("/");
+  const listing = ALL_LISTINGS.find((l) => l.slug === fullSlug);
+
+  if (!listing) {
+    notFound();
+  }
+
+  const transLabel = TRANSACTION_LABELS[listing.transactionType] || listing.transactionType;
+
+  // Generate a mock deal reference based on ID
+  const dealRef = `ABJ-2026-${listing.id.toString().padStart(4, "0")}`;
+
+  // WhatsApp message template
+  const waMessage = encodeURIComponent(
+    `Hello Abuja Trust Realty,\n\I am interested in this property:\n*${listing.title}*\nRef: ${dealRef}\nLink: https://abujatrust.com${listing.slug}`
+  );
+  const waLink = `https://wa.me/2348000000000?text=${waMessage}`;
+
+  return (
+    <div className={styles.page}>
+      {/* ── Breadcrumbs ── */}
+      <div className={styles.breadcrumbsWrap}>
+        <div className={`container ${styles.breadcrumbs}`}>
+          <Link href="/abuja">Abuja</Link>
+          <i className="fa-solid fa-chevron-right"></i>
+          <span>{listing.district}</span>
+          <i className="fa-solid fa-chevron-right"></i>
+          <span className={styles.bcCurrent}>{listing.title}</span>
+        </div>
+      </div>
+
+      {/* ── Hero Image Gallery ── */}
+      <div className="container">
+        <div className={styles.gallery}>
+          <div
+            className={styles.mainImage}
+            style={{
+              backgroundImage: listing.photo
+                ? `url(${listing.photo})`
+                : `linear-gradient(135deg, var(--color-warm-sand), var(--color-warm-sand-dark))`,
+            }}
+          >
+            <div className={styles.badges}>
+              <span className={`badge ${listing.transactionType === "sale" ? "badge-sale" : "badge-rent"}`}>
+                {transLabel}
+              </span>
+              {listing.featured && (
+                <span className="badge badge-featured">
+                  <i className="fa-solid fa-star"></i> Featured
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Content Layout ── */}
+      <div className={`container ${styles.layout}`}>
+        {/* Main Column */}
+        <div className={styles.mainContent}>
+          <div className={styles.header}>
+            <div className={styles.location}>
+              <i className="fa-solid fa-location-dot"></i>
+              {listing.district}, Abuja
+            </div>
+            <h1 className={styles.title}>{listing.title}</h1>
+            
+            <div className={styles.metaRow}>
+              {listing.verified && (
+                <div className={styles.verifiedStamp}>
+                  <i className="fa-solid fa-circle-check"></i>
+                  Verified Owner
+                </div>
+              )}
+              <div className={styles.refStamp}>
+                <i className="fa-solid fa-hashtag"></i>
+                Ref: {dealRef}
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.specs}>
+            {listing.bedrooms != null && (
+              <div className={styles.specBox}>
+                <i className="fa-solid fa-bed"></i>
+                <span className={styles.specVal}>{listing.bedrooms}</span>
+                <span className={styles.specLabel}>Bedrooms</span>
+              </div>
+            )}
+            {listing.bathrooms != null && (
+              <div className={styles.specBox}>
+                <i className="fa-solid fa-bath"></i>
+                <span className={styles.specVal}>{listing.bathrooms}</span>
+                <span className={styles.specLabel}>Bathrooms</span>
+              </div>
+            )}
+            {listing.sizeSqm != null && (
+              <div className={styles.specBox}>
+                <i className="fa-solid fa-ruler-combined"></i>
+                <span className={styles.specVal}>{listing.sizeSqm.toLocaleString()}</span>
+                <span className={styles.specLabel}>Square Meters</span>
+              </div>
+            )}
+            <div className={styles.specBox}>
+              <i className="fa-solid fa-building"></i>
+              <span className={styles.specVal} style={{ textTransform: "capitalize" }}>
+                {listing.propertyType}
+              </span>
+              <span className={styles.specLabel}>Property Type</span>
+            </div>
+          </div>
+
+          <div className={styles.section}>
+            <h2>Property Description</h2>
+            <div className={styles.description}>
+              {listing.description ? (
+                <p>{listing.description}</p>
+              ) : (
+                <p>A highly sought-after {listing.propertyType} property located in the prestigious district of {listing.district}, Abuja. This property has been fully vetted by our administrative team.</p>
+              )}
+            </div>
+          </div>
+
+          <div className={styles.trustBox}>
+            <div className={styles.trustIcon}>
+              <i className="fa-solid fa-shield-halved"></i>
+            </div>
+            <div className={styles.trustContent}>
+              <h3>Trust-First Transaction</h3>
+              <p>
+                The owner's identity and title documents have been verified. 
+                When you express interest, we create a secure WhatsApp group with you, the owner, and our admin team to facilitate a safe transaction. <strong>We charge 0% to the buyer.</strong>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Sidebar */}
+        <div className={styles.sidebar}>
+          <div className={styles.pricingCard}>
+            <div className={styles.priceLabel}>Asking Price</div>
+            <div className={styles.priceNgn}>₦{listing.priceNgn.toLocaleString()}</div>
+            <div className={styles.priceAlt}>
+              Approx: ${(listing.priceNgn / 1400).toLocaleString(undefined, { maximumFractionDigits: 0 })} USD
+            </div>
+
+            <div className={styles.pricingActions}>
+              <a href={waLink} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp" style={{ width: "100%", padding: "var(--space-4)" }}>
+                <i className="fa-brands fa-whatsapp"></i>
+                Express Interest
+              </a>
+              <p className={styles.actionNote}>
+                <i className="fa-solid fa-lock"></i>
+                No upfront payments required.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* ── Mobile Sticky Bottom CTA ── */}
+      <div className={styles.mobileCta}>
+        <div className={styles.mobilePrice}>
+          <span className={styles.mobilePriceLabel}>Asking Price</span>
+          <span className={styles.mobilePriceNgn}>{formatPrice(listing.priceNgn)}</span>
+        </div>
+        <a href={waLink} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp">
+          <i className="fa-brands fa-whatsapp"></i>
+          Express Interest
+        </a>
+      </div>
+    </div>
+  );
+}
