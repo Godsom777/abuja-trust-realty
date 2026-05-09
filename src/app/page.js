@@ -100,63 +100,90 @@ const STATS = [
 export default function HomePage() {
   return (
     <>
-      {/* ═══════════ HERO ═══════════ */}
+      {/* ═══════════ MODERN EDITORIAL HERO ═══════════ */}
       <section className={styles.hero} id="hero-section">
-        <div className={styles.heroBg}>
-          <div
-            className={styles.heroImage}
-            style={{ backgroundImage: "url(/images/hero.png)" }}
-          />
-          <div className={styles.heroOverlay} />
-          <div className={styles.heroGrain} />
-        </div>
+        <div className={`container ${styles.heroContainer}`}>
+          
+          {/* Left: Typography & Action */}
+          <div className={styles.heroText}>
+            <div className={styles.heroBadge}>
+              <i className="fa-solid fa-shield-halved"></i>
+              <span>Curated for the Diaspora</span>
+            </div>
+            
+            <h1 className={styles.heroTitle}>
+              Invest in Abuja.<br />
+              <span className={styles.heroTitleAccent}>Without the Risk.</span>
+            </h1>
+            
+            <p className={styles.heroSub}>
+              We are a curated, admin-reviewed directory. Zero unverified agents, zero hidden fees. We vet the title documents so you don't have to.
+            </p>
 
-        <div className={`container ${styles.heroContent}`}>
-          <div className={styles.heroBadge}>
-            <span className={styles.heroBadgeDot} />
-            Trusted by Nigerians in the Diaspora
-          </div>
+            {/* Quick Search Pill */}
+            <div className={styles.searchPill}>
+              <div className={styles.searchPillInput}>
+                <i className="fa-solid fa-location-dot"></i>
+                <select defaultValue="">
+                  <option value="" disabled>Select a District</option>
+                  <option value="maitama">Maitama</option>
+                  <option value="asokoro">Asokoro</option>
+                  <option value="wuse-2">Wuse 2</option>
+                  <option value="gwarinpa">Gwarinpa</option>
+                </select>
+              </div>
+              <Link href="/abuja" className={`btn btn-primary ${styles.searchPillBtn}`}>
+                <i className="fa-solid fa-magnifying-glass"></i>
+                Search
+              </Link>
+            </div>
 
-          <h1 className={styles.heroTitle}>
-            Verified Property
-            <br />
-            in <em className={styles.heroAccent}>Abuja</em>
-          </h1>
-
-          <p className={styles.heroSubtitle}>
-            A curated marketplace where every owner is vetted and every listing
-            is admin-reviewed. Buy, rent, or invest with confidence — from
-            anywhere in the world.
-          </p>
-
-          <div className={styles.heroActions}>
-            <Link
-              href="/abuja"
-              className="btn btn-primary btn-lg"
-              id="hero-browse"
-            >
-              <i className="fa-solid fa-arrow-right"></i>
-              Browse Listings
-            </Link>
-            <Link
-              href="/how-it-works"
-              className={`btn btn-lg ${styles.heroSecondaryBtn}`}
-              id="hero-how"
-            >
-              <i className="fa-solid fa-circle-info"></i>
-              How It Works
-            </Link>
-          </div>
-
-          {/* Currency display */}
-          <div className={styles.currencyRow}>
-            <span><i className="fa-solid fa-coins"></i> Prices displayed in</span>
-            <div className={styles.currencies}>
-              <span className={styles.currencyTag}>🇳🇬 NGN</span>
-              <span className={styles.currencyTag}>🇺🇸 USD</span>
-              <span className={styles.currencyTag}>🇬🇧 GBP</span>
+            <div className={styles.heroTrustMeta}>
+              <div className={styles.metaAvatars}>
+                <div className={styles.avatar}></div>
+                <div className={styles.avatar}></div>
+                <div className={styles.avatar}></div>
+              </div>
+              <div className={styles.metaText}>
+                <strong>Join 500+ investors</strong>
+                <span>Buying safely from abroad</span>
+              </div>
             </div>
           </div>
+
+          {/* Right: Visual & Floating Elements */}
+          <div className={styles.heroVisual}>
+            <div className={styles.imageWrapper}>
+              <div
+                className={styles.heroImage}
+                style={{ backgroundImage: "url('/images/hero.png')" }}
+              />
+              <div className={styles.imagePattern}></div>
+            </div>
+
+            {/* Floating Glass Card 1 */}
+            <div className={`${styles.floatingCard} ${styles.floatTopRight}`}>
+              <div className={styles.floatIconWrap}>
+                <i className="fa-solid fa-file-shield"></i>
+              </div>
+              <div className={styles.floatText}>
+                <strong>Title Verified</strong>
+                <span>C of O confirmed</span>
+              </div>
+            </div>
+
+            {/* Floating Glass Card 2 */}
+            <div className={`${styles.floatingCard} ${styles.floatBottomLeft}`}>
+              <div className={styles.floatIconWrap} style={{ color: "var(--color-gold)" }}>
+                <i className="fa-solid fa-handshake-angle"></i>
+              </div>
+              <div className={styles.floatText}>
+                <strong>0% Buyer Fee</strong>
+                <span>We facilitate for free</span>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
 
