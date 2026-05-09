@@ -53,7 +53,7 @@ const STEPS = [
     icon: "fa-solid fa-trophy",
     title: "Deal Closes — Everyone Wins",
     description:
-      "We facilitate the negotiation through to close. The owner pays a 5% commission only on successful deal closure. No upfront fees for either party.",
+      "We facilitate the negotiation through to close. The buyer pays a 5% commission only on successful deal closure. No upfront fees for either party.",
     detail: "Commission only on success. No listing fees.",
   },
 ];

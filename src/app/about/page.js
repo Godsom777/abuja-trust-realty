@@ -90,7 +90,7 @@ export default function AboutPage() {
                 <i className={`fa-solid fa-percent ${styles.storyStatIcon}`}></i>
                 <span className={styles.storyStatValue}>5%</span>
                 <span className={styles.storyStatLabel}>Commission</span>
-                <span className={styles.storyStatNote}>Only on successful close</span>
+                <span className={styles.storyStatNote}>Paid by the buyer on success</span>
               </div>
             </div>
           </div>

@@ -178,8 +178,8 @@ export default function HomePage() {
                 <i className="fa-solid fa-handshake-angle"></i>
               </div>
               <div className={styles.floatText}>
-                <strong>0% Buyer Fee</strong>
-                <span>We facilitate for free</span>
+                <strong>0% Seller Fee</strong>
+                <span>Buyer pays 5% commission</span>
               </div>
             </div>
           </div>
@@ -381,7 +381,7 @@ export default function HomePage() {
             </Link>
             <span className={styles.ownerNote}>
               <i className="fa-solid fa-percent"></i>
-              5% commission only on successful deal close
+              Buyer pays a 5% commission only on successful deal close
             </span>
           </div>
         </div>
