@@ -8,7 +8,12 @@ export default function AdminDashboard() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [activeTab, setActiveTab] = useState('upload'); // upload, verify
+  const [activeTab, setActiveTab] = useState('upload'); // upload, verify, settings
+
+  // Settings State
+  const [commMode, setCommMode] = useState('whatsapp');
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [emailNotifications, setEmailNotifications] = useState(true);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -92,6 +97,13 @@ export default function AdminDashboard() {
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
             Verifications
           </button>
+          <button 
+            className={`${styles.navItem} ${activeTab === 'settings' ? styles.active : ''}`}
+            onClick={() => setActiveTab('settings')}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            Settings
+          </button>
         </nav>
         <div className={styles.sidebarFooter}>
           <button onClick={() => setIsAuthenticated(false)} className={styles.logoutBtn}>
@@ -104,7 +116,9 @@ export default function AdminDashboard() {
       <main className={styles.mainContent}>
         <header className={styles.header}>
           <h1 className={styles.pageTitle}>
-            {activeTab === 'upload' ? 'Upload Media' : 'Pending Verifications'}
+            {activeTab === 'upload' && 'Upload Media'}
+            {activeTab === 'verify' && 'Pending Verifications'}
+            {activeTab === 'settings' && 'Platform Settings'}
           </h1>
           <div className={styles.userProfile}>
             <div className={styles.avatar}>A</div>
@@ -144,7 +158,7 @@ export default function AdminDashboard() {
                 )}
               </div>
             </div>
-          ) : (
+          ) : activeTab === 'verify' ? (
             <div className={styles.verifySection}>
               <div className={styles.verifyGrid}>
                 {[1, 2, 3].map((item) => (
@@ -167,6 +181,107 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+          ) : (
+            <div className={styles.settingsSection}>
+              <div className={styles.settingsGrid}>
+                
+                {/* Communication Settings */}
+                <div className={styles.settingsCard}>
+                  <div className={styles.settingsHeader}>
+                    <div className={styles.settingsIconWrapper}>
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    </div>
+                    <div>
+                      <h3 className={styles.settingsTitle}>Lead Communication</h3>
+                      <p className={styles.settingsDesc}>How users contact agents for properties.</p>
+                    </div>
+                  </div>
+                  <div className={styles.settingsBody}>
+                    <div className={styles.radioGroup}>
+                      <label className={`${styles.radioLabel} ${commMode === 'whatsapp' ? styles.activeRadio : ''}`}>
+                        <input 
+                          type="radio" 
+                          name="commMode" 
+                          value="whatsapp" 
+                          checked={commMode === 'whatsapp'} 
+                          onChange={() => setCommMode('whatsapp')} 
+                          className={styles.hiddenRadio}
+                        />
+                        <span className={styles.radioCustom}></span>
+                        <div>
+                          <strong>WhatsApp Priority</strong>
+                          <p>Direct users to WhatsApp chats.</p>
+                        </div>
+                      </label>
+                      <label className={`${styles.radioLabel} ${commMode === 'email' ? styles.activeRadio : ''}`}>
+                        <input 
+                          type="radio" 
+                          name="commMode" 
+                          value="email" 
+                          checked={commMode === 'email'} 
+                          onChange={() => setCommMode('email')} 
+                          className={styles.hiddenRadio}
+                        />
+                        <span className={styles.radioCustom}></span>
+                        <div>
+                          <strong>Email Priority</strong>
+                          <p>Direct users to an email contact form.</p>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Platform Settings */}
+                <div className={styles.settingsCard}>
+                  <div className={styles.settingsHeader}>
+                    <div className={styles.settingsIconWrapper}>
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                    </div>
+                    <div>
+                      <h3 className={styles.settingsTitle}>Platform Controls</h3>
+                      <p className={styles.settingsDesc}>Manage site-wide behaviors.</p>
+                    </div>
+                  </div>
+                  <div className={styles.settingsBody}>
+                    <div className={styles.toggleRow}>
+                      <div>
+                        <strong>Maintenance Mode</strong>
+                        <p>Display a "coming soon" page to users.</p>
+                      </div>
+                      <label className={styles.switch}>
+                        <input 
+                          type="checkbox" 
+                          checked={maintenanceMode} 
+                          onChange={(e) => setMaintenanceMode(e.target.checked)} 
+                        />
+                        <span className={styles.slider}></span>
+                      </label>
+                    </div>
+                    <div className={styles.toggleRow}>
+                      <div>
+                        <strong>Email Notifications</strong>
+                        <p>Receive updates for new property uploads.</p>
+                      </div>
+                      <label className={styles.switch}>
+                        <input 
+                          type="checkbox" 
+                          checked={emailNotifications} 
+                          onChange={(e) => setEmailNotifications(e.target.checked)} 
+                        />
+                        <span className={styles.slider}></span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div className={styles.settingsActions}>
+                <button className={`btn btn-primary ${styles.saveSettingsBtn}`}>
+                  Save Changes
+                </button>
               </div>
             </div>
           )}

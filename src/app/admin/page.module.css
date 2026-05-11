@@ -421,3 +421,181 @@
   border-color: var(--color-danger);
   color: var(--color-danger);
 }
+
+/* Settings Section */
+.settingsSection {
+  animation: fadeInUp 0.4s var(--ease-out);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.settingsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  margin-bottom: var(--space-8);
+}
+
+.settingsCard {
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.settingsHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.settingsIconWrapper {
+  width: 48px;
+  height: 48px;
+  background: var(--accent-glow);
+  color: var(--color-emerald);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settingsTitle {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.settingsDesc {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.settingsBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.radioGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.radioLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--duration-fast);
+}
+
+.radioLabel:hover {
+  border-color: var(--border-strong);
+}
+
+.activeRadio {
+  border-color: var(--color-emerald);
+  background: var(--accent-glow);
+}
+
+.hiddenRadio {
+  position: absolute;
+  opacity: 0;
+}
+
+.radioCustom {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-full);
+  margin-top: 2px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.activeRadio .radioCustom {
+  border-color: var(--color-emerald);
+}
+
+.activeRadio .radioCustom::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  background: var(--color-emerald);
+  border-radius: var(--radius-full);
+}
+
+.toggleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) 0;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--border-strong);
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+input:checked + .slider {
+  background-color: var(--color-emerald);
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+.settingsActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.saveSettingsBtn {
+  min-width: 160px;
+}
