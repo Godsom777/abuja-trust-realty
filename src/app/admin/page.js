@@ -12,6 +12,8 @@ export default function AdminDashboard() {
 
   // Settings State
   const [commMode, setCommMode] = useState('whatsapp');
+  const [whatsappNumber, setWhatsappNumber] = useState('+234 800 000 0000');
+  const [contactEmail, setContactEmail] = useState('hello@abujatrust.com');
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [emailNotifications, setEmailNotifications] = useState(true);
 
@@ -231,6 +233,30 @@ export default function AdminDashboard() {
                         </div>
                       </label>
                     </div>
+
+                    <div className={styles.contactDetailsWrapper}>
+                      <div className={styles.inputField}>
+                        <label className={styles.inputLabel}>WhatsApp Number</label>
+                        <input 
+                          type="text" 
+                          className={styles.settingsInput} 
+                          value={whatsappNumber}
+                          onChange={(e) => setWhatsappNumber(e.target.value)}
+                          placeholder="+234 800 000 0000"
+                        />
+                      </div>
+                      <div className={styles.inputField}>
+                        <label className={styles.inputLabel}>Contact Email Address</label>
+                        <input 
+                          type="email" 
+                          className={styles.settingsInput} 
+                          value={contactEmail}
+                          onChange={(e) => setContactEmail(e.target.value)}
+                          placeholder="hello@abujatrust.com"
+                        />
+                      </div>
+                    </div>
+
                   </div>
                 </div>
 
