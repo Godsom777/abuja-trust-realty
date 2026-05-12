@@ -2,6 +2,7 @@ import "./globals.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
+import BottomNav from "@/components/BottomNav/BottomNav";
 
 export const metadata = {
   title: "Abuja Trust Realty — Verified Property Listings in Abuja, Nigeria",
@@ -40,6 +41,7 @@ export default function RootLayout({ children }) {
         <Navbar />
         <main>{children}</main>
         <Footer />
+        <BottomNav />
       </body>
     </html>
   );

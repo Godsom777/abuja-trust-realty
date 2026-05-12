@@ -1,22 +1,28 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ALL_LISTINGS } from "@/data/listings";
 import styles from "./page.module.css";
+import { supabase } from "@/lib/supabase";
 
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;
   const fullSlug = "/abuja/" + resolvedParams.slug.join("/");
-  const listing = ALL_LISTINGS.find((l) => l.slug === fullSlug);
+  
+  const { data: listing } = await supabase
+    .from('properties')
+    .select('*')
+    .eq('slug', fullSlug)
+    .single();
 
   if (!listing) return { title: "Property Not Found" };
 
   return {
     title: `${listing.title} in ${listing.district} — Abuja Trust Realty`,
-    description: listing.description || `Verified ${listing.propertyType} for ${listing.transactionType} in ${listing.district}, Abuja.`,
+    description: listing.description || `Verified ${listing.property_type || listing.propertyType} for ${listing.transaction_type || listing.transactionType} in ${listing.district}, Abuja.`,
   };
 }
 
 const formatPrice = (price) => {
+  if (!price) return "₦0";
   if (price >= 1_000_000_000) return `₦${(price / 1_000_000_000).toFixed(1)}B`;
   if (price >= 1_000_000) return `₦${(price / 1_000_000).toFixed(0)}M`;
   if (price >= 1_000) return `₦${(price / 1_000).toFixed(0)}K`;
@@ -32,18 +38,28 @@ const TRANSACTION_LABELS = {
 export default async function PropertyDetailPage({ params }) {
   const resolvedParams = await params;
   const fullSlug = "/abuja/" + resolvedParams.slug.join("/");
-  const listing = ALL_LISTINGS.find((l) => l.slug === fullSlug);
 
-  if (!listing) {
+  const { data: rawListing } = await supabase
+    .from('properties')
+    .select('*')
+    .eq('slug', fullSlug)
+    .single();
+
+  if (!rawListing) {
     notFound();
   }
 
+  // Normalize snake_case to camelCase just in case
+  const listing = {
+    ...rawListing,
+    priceNgn: rawListing.price_ngn || rawListing.priceNgn,
+    transactionType: rawListing.transaction_type || rawListing.transactionType || "sale",
+    propertyType: rawListing.property_type || rawListing.propertyType || "residential",
+    sizeSqm: rawListing.size_sqm || rawListing.sizeSqm,
+  };
+
   const transLabel = TRANSACTION_LABELS[listing.transactionType] || listing.transactionType;
-
-  // Generate a mock deal reference based on ID
   const dealRef = `ABJ-2026-${listing.id.toString().padStart(4, "0")}`;
-
-  // WhatsApp message template
   const waMessage = encodeURIComponent(
     `Hello Abuja Trust Realty,\n\I am interested in this property:\n*${listing.title}*\nRef: ${dealRef}\nLink: https://abujatrust.com${listing.slug}`
   );
@@ -63,27 +79,26 @@ export default async function PropertyDetailPage({ params }) {
       </div>
 
       {/* ── Hero Image Gallery ── */}
-      <div className="container">
-        <div className={styles.gallery}>
-          <div
-            className={styles.mainImage}
-            style={{
-              backgroundImage: listing.photo
-                ? `url(${listing.photo})`
-                : `linear-gradient(135deg, var(--color-warm-sand), var(--color-warm-sand-dark))`,
-            }}
-          >
-            <div className={styles.badges}>
-              <span className={`badge ${listing.transactionType === "sale" ? "badge-sale" : "badge-rent"}`}>
-                {transLabel}
+      <div className={styles.heroImageContainer}>
+        <div
+          className={styles.mainImage}
+          style={{
+            backgroundImage: listing.photo
+              ? `url(${listing.photo})`
+              : `url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=1200')`,
+          }}
+        >
+          <div className={styles.badges}>
+            <span className={`badge ${listing.transactionType === "sale" ? "badge-sale" : "badge-rent"}`}>
+              {transLabel}
+            </span>
+            {listing.featured && (
+              <span className="badge badge-featured">
+                <i className="fa-solid fa-star"></i> Featured
               </span>
-              {listing.featured && (
-                <span className="badge badge-featured">
-                  <i className="fa-solid fa-star"></i> Featured
-                </span>
-              )}
-            </div>
+            )}
           </div>
+          <button className={styles.topRightHeart}><i className="fa-regular fa-heart"></i></button>
         </div>
       </div>
 
@@ -99,7 +114,7 @@ export default async function PropertyDetailPage({ params }) {
             <h1 className={styles.title}>{listing.title}</h1>
             
             <div className={styles.metaRow}>
-              {listing.verified && (
+              {listing.verified !== false && (
                 <div className={styles.verifiedStamp}>
                   <i className="fa-solid fa-circle-check"></i>
                   Verified Owner
@@ -172,13 +187,13 @@ export default async function PropertyDetailPage({ params }) {
         <div className={styles.sidebar}>
           <div className={styles.pricingCard}>
             <div className={styles.priceLabel}>Asking Price</div>
-            <div className={styles.priceNgn}>₦{listing.priceNgn.toLocaleString()}</div>
+            <div className={styles.priceNgn}>₦{(listing.priceNgn || 0).toLocaleString()}</div>
             <div className={styles.priceAlt}>
-              Approx: ${(listing.priceNgn / 1400).toLocaleString(undefined, { maximumFractionDigits: 0 })} USD
+              Approx: ${((listing.priceNgn || 0) / 1400).toLocaleString(undefined, { maximumFractionDigits: 0 })} USD
             </div>
 
             <div className={styles.pricingActions}>
-              <a href={waLink} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp" style={{ width: "100%", padding: "var(--space-4)" }}>
+              <a href={waLink} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp" style={{ width: "100%", padding: "16px", borderRadius: "12px", justifyContent: "center" }}>
                 <i className="fa-brands fa-whatsapp"></i>
                 Express Interest
               </a>
@@ -197,11 +212,13 @@ export default async function PropertyDetailPage({ params }) {
           <span className={styles.mobilePriceLabel}>Asking Price</span>
           <span className={styles.mobilePriceNgn}>{formatPrice(listing.priceNgn)}</span>
         </div>
-        <a href={waLink} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp">
-          <i className="fa-brands fa-whatsapp"></i>
+        <a href={waLink} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp" style={{ borderRadius: "10px", padding: "12px 20px" }}>
           Express Interest
         </a>
       </div>
+      
+      {/* Spacer for bottom nav */}
+      <div style={{ height: '70px' }}></div>
     </div>
   );
 }
