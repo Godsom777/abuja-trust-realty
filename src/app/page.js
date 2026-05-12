@@ -5,24 +5,21 @@ import { supabase } from "@/lib/supabase";
 
 export const revalidate = 0; // Disable static caching so it always fetches from Supabase
 
-const DISTRICTS = [
-  { name: "All", slug: "all" },
-  { name: "Maitama", slug: "maitama" },
-  { name: "Asokoro", slug: "asokoro" },
-  { name: "Wuse 2", slug: "wuse-2" },
-  { name: "Gwarinpa", slug: "gwarinpa" },
-  { name: "Jabi", slug: "jabi" },
-  { name: "Life Camp", slug: "life-camp" },
-  { name: "Garki", slug: "garki" },
-  { name: "Katampe", slug: "katampe" },
-];
-
 export default async function HomePage() {
   const { data: listings, error } = await supabase
     .from('properties')
     .select('*')
     .order('created_at', { ascending: false })
     .limit(10);
+
+  const { data: districtsData } = await supabase
+    .from('districts')
+    .select('*')
+    .order('id', { ascending: true });
+
+  const DISTRICTS = districtsData || [
+    { name: "All", slug: "all" }
+  ];
 
   // Map snake_case from DB to camelCase for the component if needed
   const mappedListings = (listings || []).map(item => ({
@@ -62,7 +59,7 @@ export default async function HomePage() {
       <section className={styles.categoriesSection}>
         <div className={styles.categoriesScroll}>
           {DISTRICTS.map((d, index) => (
-            <button key={d.slug} className={`${styles.categoryPill} ${index === 0 ? styles.activePill : ''}`}>
+            <button key={d.slug || index} className={`${styles.categoryPill} ${index === 0 ? styles.activePill : ''}`}>
               {d.name}
             </button>
           ))}
@@ -73,7 +70,7 @@ export default async function HomePage() {
       <section className={styles.feedSection}>
         <div className={styles.feedHeader}>
           <h3>Featured for you</h3>
-          <Link href="/search" className={styles.viewAll}>See all</Link>
+          <Link href="/abuja" className={styles.viewAll}>See all</Link>
         </div>
         
         {error ? (
@@ -106,11 +103,11 @@ export default async function HomePage() {
         <div className={styles.collectionsScroll}>
           <div className={`${styles.collectionCard} ${styles.collectionLuxury}`}>
             <h4>Luxury Villas</h4>
-            <span>12 Properties</span>
+            <span>Exclusive Properties</span>
           </div>
           <div className={`${styles.collectionCard} ${styles.collectionOffPlan}`}>
             <h4>Off-Plan Deals</h4>
-            <span>5 Properties</span>
+            <span>Investment Opportunities</span>
           </div>
         </div>
       </section>

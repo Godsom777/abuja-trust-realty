@@ -1,5 +1,6 @@
 import Link from "next/link";
 import styles from "./page.module.css";
+import { supabase } from "@/lib/supabase";
 
 export const metadata = {
   title: "How It Works — Abuja Trust Realty",
@@ -7,91 +8,15 @@ export const metadata = {
     "Learn how Abuja Trust Realty verifies every property owner, reviews every listing, and facilitates every deal to keep you safe.",
 };
 
-const STEPS = [
-  {
-    number: "01",
-    icon: "fa-solid fa-file-signature",
-    title: "Owner Registers & Submits Verification",
-    description:
-      "Property owners create an account and submit government-issued ID plus title documents (C of O, Deed of Assignment, Survey Plan). No listing goes live until the owner is personally verified.",
-    detail: "We check every document manually — no automated approvals.",
-  },
-  {
-    number: "02",
-    icon: "fa-solid fa-magnifying-glass",
-    title: "Admin Reviews & Approves",
-    description:
-      "Our team reviews the owner's identity and property documentation. Owners are approved or rejected with clear reasons. Only approved owners can create listings.",
-    detail: "Average review time: 24–48 hours.",
-  },
-  {
-    number: "03",
-    icon: "fa-solid fa-house",
-    title: "Property Listing Goes Live",
-    description:
-      "The owner creates their listing with photos, pricing, and property details. Our admin team reviews the listing separately before publishing it to the marketplace.",
-    detail: "Double verification: owner AND listing are both reviewed.",
-  },
-  {
-    number: "04",
-    icon: "fa-solid fa-binoculars",
-    title: "Buyer Discovers & Expresses Interest",
-    description:
-      "Diaspora buyers browse verified listings, filter by district and property type, and express interest or make an offer — all without needing the owner's contact details.",
-    detail: "No upfront payments required to express interest.",
-  },
-  {
-    number: "05",
-    icon: "fa-brands fa-whatsapp",
-    title: "WhatsApp Introduction — Facilitated by Us",
-    description:
-      "We create a tracked deal thread with a unique reference number (e.g., ABJ-2024-0047) and personally introduce the buyer to the owner via WhatsApp — with our platform number on copy.",
-    detail: "We stay on every conversation. Your deal is tracked.",
-  },
-  {
-    number: "06",
-    icon: "fa-solid fa-trophy",
-    title: "Deal Closes — Everyone Wins",
-    description:
-      "We facilitate the negotiation through to close. The buyer pays a 5% commission only on successful deal closure. No upfront fees for either party.",
-    detail: "Commission only on success. No listing fees.",
-  },
-];
+export const revalidate = 0;
 
-const TRUST_POINTS = [
-  {
-    icon: "fa-solid fa-shield-halved",
-    title: "No Agent Listings",
-    description: "Only verified individual property owners can list. No middlemen, no agents.",
-  },
-  {
-    icon: "fa-solid fa-file-shield",
-    title: "Document Verification",
-    description: "Government ID + title documents reviewed for every owner before approval.",
-  },
-  {
-    icon: "fa-solid fa-eye",
-    title: "Double Review",
-    description: "Both the owner AND each listing are independently reviewed by our team.",
-  },
-  {
-    icon: "fa-brands fa-whatsapp",
-    title: "Platform on Copy",
-    description: "Our WhatsApp number is in every deal conversation. We see everything.",
-  },
-  {
-    icon: "fa-solid fa-hashtag",
-    title: "Deal Reference Tracking",
-    description: "Every transaction gets a unique reference number for audit and accountability.",
-  },
-  {
-    icon: "fa-solid fa-hand-holding-dollar",
-    title: "No Direct Transfers",
-    description: "We advise against direct owner payments. All steps coordinated through us.",
-  },
-];
+export default async function HowItWorksPage() {
+  const { data: stepsData } = await supabase.from('how_it_works_steps').select('*').order('number', { ascending: true });
+  const { data: trustPointsData } = await supabase.from('trust_points').select('*').order('id', { ascending: true });
 
-export default function HowItWorksPage() {
+  const STEPS = stepsData || [];
+  const TRUST_POINTS = trustPointsData || [];
+
   return (
     <>
       {/* Hero */}
@@ -114,7 +39,7 @@ export default function HowItWorksPage() {
               <div key={step.number} className={styles.timelineItem}>
                 <div className={styles.timelineLine}>
                   <div className={styles.timelineDot}>
-                    <i className={step.icon}></i>
+                    <i className={step.icon || "fa-solid fa-circle"}></i>
                   </div>
                 </div>
                 <div className={styles.timelineContent}>
@@ -141,9 +66,9 @@ export default function HowItWorksPage() {
           </div>
           <div className={styles.trustCards}>
             {TRUST_POINTS.map((point) => (
-              <div key={point.title} className={styles.trustCard}>
+              <div key={point.title || point.id} className={styles.trustCard}>
                 <div className={styles.trustIconWrap}>
-                  <i className={`${point.icon} ${styles.trustIcon}`}></i>
+                  <i className={`${point.icon || "fa-solid fa-check"} ${styles.trustIcon}`}></i>
                 </div>
                 <h4>{point.title}</h4>
                 <p>{point.description}</p>
@@ -172,6 +97,7 @@ export default function HowItWorksPage() {
           </div>
         </div>
       </section>
+      <div style={{ height: '70px' }}></div>
     </>
   );
 }

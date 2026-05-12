@@ -1,5 +1,6 @@
 import Link from "next/link";
 import styles from "./page.module.css";
+import { supabase } from "@/lib/supabase";
 
 export const metadata = {
   title: "About — Abuja Trust Realty",
@@ -7,30 +8,12 @@ export const metadata = {
     "Learn about Abuja Trust Realty — a curated, trust-first property marketplace connecting verified Abuja property owners with diaspora buyers.",
 };
 
-const VALUES = [
-  {
-    icon: "fa-solid fa-shield-halved",
-    title: "Trust First",
-    description: "Everything we build starts with one question: does this make the buyer feel safer?",
-  },
-  {
-    icon: "fa-solid fa-eye",
-    title: "Radical Transparency",
-    description: "Every owner is verified. Every listing is reviewed. Every deal is tracked with a reference number.",
-  },
-  {
-    icon: "fa-solid fa-handshake",
-    title: "Facilitated, Not Automated",
-    description: "Real people review documents, make introductions, and stay on every conversation thread.",
-  },
-  {
-    icon: "fa-solid fa-earth-africa",
-    title: "Diaspora-First Design",
-    description: "Built mobile-first for Nigerians abroad. Prices in NGN, USD, and GBP. WhatsApp-native communication.",
-  },
-];
+export const revalidate = 0;
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const { data: valuesData } = await supabase.from('about_values').select('*').order('id', { ascending: true });
+  const VALUES = valuesData || [];
+
   return (
     <>
       {/* Hero */}
@@ -106,9 +89,9 @@ export default function AboutPage() {
           </div>
           <div className={styles.valuesGrid}>
             {VALUES.map((v) => (
-              <div key={v.title} className={styles.valueCard}>
+              <div key={v.title || v.id} className={styles.valueCard}>
                 <div className={styles.valueIconWrap}>
-                  <i className={`${v.icon} ${styles.valueIcon}`}></i>
+                  <i className={`${v.icon || "fa-solid fa-check"} ${styles.valueIcon}`}></i>
                 </div>
                 <h3>{v.title}</h3>
                 <p>{v.description}</p>
@@ -137,6 +120,7 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+      <div style={{ height: '70px' }}></div>
     </>
   );
 }

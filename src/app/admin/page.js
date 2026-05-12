@@ -1,21 +1,44 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './page.module.css';
+import { supabase } from '@/lib/supabase';
 
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [activeTab, setActiveTab] = useState('upload'); // upload, verify, settings
+  const [activeTab, setActiveTab] = useState('verify'); // upload, verify, settings
+
+  // Verifications State
+  const [pendingVerifications, setPendingVerifications] = useState([]);
+  const [loadingVerifications, setLoadingVerifications] = useState(true);
 
   // Settings State
   const [commMode, setCommMode] = useState('whatsapp');
-  const [whatsappNumber, setWhatsappNumber] = useState('+234 800 000 0000');
-  const [contactEmail, setContactEmail] = useState('hello@abujatrust.com');
+  const [whatsappNumber, setWhatsappNumber] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [emailNotifications, setEmailNotifications] = useState(true);
+
+  const fetchVerifications = async () => {
+    setLoadingVerifications(true);
+    const { data } = await supabase
+      .from('properties')
+      .select('*')
+      .eq('verified', false)
+      .order('created_at', { ascending: false });
+    
+    if (data) setPendingVerifications(data);
+    setLoadingVerifications(false);
+  };
+
+  useEffect(() => {
+    if (isAuthenticated && activeTab === 'verify') {
+      fetchVerifications();
+    }
+  }, [isAuthenticated, activeTab]);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -42,6 +65,11 @@ export default function AdminDashboard() {
         });
       }, 300);
     }
+  };
+
+  const handleApprove = async (id) => {
+    await supabase.from('properties').update({ verified: true }).eq('id', id);
+    fetchVerifications();
   };
 
   if (!isAuthenticated) {
@@ -162,28 +190,38 @@ export default function AdminDashboard() {
             </div>
           ) : activeTab === 'verify' ? (
             <div className={styles.verifySection}>
-              <div className={styles.verifyGrid}>
-                {[1, 2, 3].map((item) => (
-                  <div key={item} className={styles.verifyCard}>
-                    <div className={styles.verifyCardHeader}>
-                      <span className={styles.statusBadge}>Pending Review</span>
-                      <span className={styles.timeAgo}>2 hours ago</span>
-                    </div>
-                    <h3 className={styles.propertyTitle}>4 Bedroom Duplex - Maitama</h3>
-                    <p className={styles.uploader}>Uploaded by: <strong>Agent JD</strong></p>
-                    <div className={styles.mediaPreview}>
-                      <div className={styles.previewPlaceholder}>
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
-                        <span>Video Tour (3:45)</span>
+              {loadingVerifications ? (
+                <div style={{ textAlign: 'center', padding: '40px' }}>Loading...</div>
+              ) : pendingVerifications.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>No pending verifications.</div>
+              ) : (
+                <div className={styles.verifyGrid}>
+                  {pendingVerifications.map((item) => (
+                    <div key={item.id} className={styles.verifyCard}>
+                      <div className={styles.verifyCardHeader}>
+                        <span className={styles.statusBadge}>Pending Review</span>
+                        <span className={styles.timeAgo}>Just now</span>
+                      </div>
+                      <h3 className={styles.propertyTitle}>{item.title}</h3>
+                      <p className={styles.uploader}>District: <strong>{item.district}</strong></p>
+                      <div className={styles.mediaPreview}>
+                        <div className={styles.previewPlaceholder} style={item.photo ? { backgroundImage: `url(${item.photo})`, backgroundSize: 'cover' } : {}}>
+                          {!item.photo && (
+                            <>
+                              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                              <span>No Media</span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                      <div className={styles.verifyActions}>
+                        <button className={`btn btn-secondary ${styles.rejectBtn}`}>Reject</button>
+                        <button className={`btn btn-primary ${styles.approveBtn}`} onClick={() => handleApprove(item.id)}>Approve</button>
                       </div>
                     </div>
-                    <div className={styles.verifyActions}>
-                      <button className={`btn btn-secondary ${styles.rejectBtn}`}>Reject</button>
-                      <button className={`btn btn-primary ${styles.approveBtn}`}>Approve</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           ) : (
             <div className={styles.settingsSection}>

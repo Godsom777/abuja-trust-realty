@@ -5,17 +5,6 @@ import PropertyCard from "@/components/PropertyCard/PropertyCard";
 import styles from "./page.module.css";
 import { supabase } from "@/lib/supabase";
 
-const DISTRICTS = [
-  "All Districts",
-  "Maitama",
-  "Asokoro",
-  "Wuse 2",
-  "Gwarinpa",
-  "Jabi",
-  "Life Camp",
-  "Central Business District",
-];
-
 const TRANSACTION_TYPES = [
   { value: "all", label: "All Types" },
   { value: "sale", label: "For Sale" },
@@ -32,6 +21,7 @@ const PROPERTY_TYPES = [
 
 export default function BrowseListingsPage() {
   const [allListings, setAllListings] = useState([]);
+  const [districts, setDistricts] = useState(["All Districts"]);
   const [loading, setLoading] = useState(true);
 
   const [district, setDistrict] = useState("All Districts");
@@ -41,16 +31,16 @@ export default function BrowseListingsPage() {
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   useEffect(() => {
-    async function fetchListings() {
+    async function fetchData() {
       setLoading(true);
-      const { data } = await supabase
+      const { data: properties } = await supabase
         .from('properties')
         .select('*')
         .order('created_at', { ascending: false });
         
-      if (data) {
+      if (properties) {
         // Map db snake_case to camelCase
-        const mapped = data.map(item => ({
+        const mapped = properties.map(item => ({
           ...item,
           priceNgn: item.price_ngn || item.priceNgn,
           transactionType: item.transaction_type || item.transactionType || "sale",
@@ -59,9 +49,19 @@ export default function BrowseListingsPage() {
         }));
         setAllListings(mapped);
       }
+
+      const { data: districtsData } = await supabase
+        .from('districts')
+        .select('*')
+        .order('id', { ascending: true });
+
+      if (districtsData && districtsData.length > 0) {
+        setDistricts(["All Districts", ...districtsData.map(d => d.name)]);
+      }
+
       setLoading(false);
     }
-    fetchListings();
+    fetchData();
   }, []);
 
   const activeFilterCount = [
@@ -92,7 +92,7 @@ export default function BrowseListingsPage() {
         <label className={styles.filterLabel}>District</label>
         <select value={district} onChange={(e) => setDistrict(e.target.value)}
           className={styles.filterSelect}>
-          {DISTRICTS.map((d) => <option key={d} value={d}>{d}</option>)}
+          {districts.map((d) => <option key={d} value={d}>{d}</option>)}
         </select>
       </div>
       <div className={styles.filterGroup}>
@@ -163,7 +163,7 @@ export default function BrowseListingsPage() {
               <div className={styles.filterGroup}>
                 <label className={styles.filterLabel}>District</label>
                 <select value={district} onChange={(e) => setDistrict(e.target.value)} className={styles.filterSelect}>
-                  {DISTRICTS.map((d) => <option key={d} value={d}>{d}</option>)}
+                  {districts.map((d) => <option key={d} value={d}>{d}</option>)}
                 </select>
               </div>
               <div className={styles.filterGroup}>
