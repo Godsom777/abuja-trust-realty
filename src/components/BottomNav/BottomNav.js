@@ -8,15 +8,15 @@ export default function BottomNav() {
         <i className="fa-solid fa-house"></i>
         <span>Home</span>
       </Link>
-      <Link href="/search" className={styles.navItem}>
+      <Link href="/abuja" className={styles.navItem}>
         <i className="fa-solid fa-magnifying-glass"></i>
         <span>Search</span>
       </Link>
-      <Link href="/favorites" className={styles.navItem}>
+      <Link href="/how-it-works" className={styles.navItem}>
         <i className="fa-regular fa-heart"></i>
         <span>Saved</span>
       </Link>
-      <Link href="/profile" className={styles.navItem}>
+      <Link href="/admin" className={styles.navItem}>
         <i className="fa-regular fa-user"></i>
         <span>Profile</span>
       </Link>

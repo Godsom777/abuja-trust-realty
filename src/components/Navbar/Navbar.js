@@ -60,7 +60,7 @@ export default function Navbar() {
               Sign In
             </Link>
             <Link
-              href="/owner/listings/new"
+              href="/contact"
               className={`btn btn-primary ${styles.listBtn}`}
               id="nav-list-property"
             >
@@ -130,7 +130,7 @@ export default function Navbar() {
                 Sign In
               </Link>
               <Link
-                href="/owner/listings/new"
+                href="/contact"
                 className="btn btn-primary btn-lg"
                 style={{ width: "100%", justifyContent: "center" }}
                 onClick={() => setMobileOpen(false)}
