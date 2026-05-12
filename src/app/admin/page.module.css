@@ -637,3 +637,96 @@ input:checked + .slider:before {
   border-color: var(--color-emerald);
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .dashboardContainer {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .sidebarHeader {
+    padding: var(--space-4);
+  }
+
+  .nav {
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 0 var(--space-4) var(--space-4) var(--space-4);
+    gap: var(--space-3);
+    /* Hide scrollbar for clean look */
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
+  }
+  .nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .navItem {
+    width: auto;
+    white-space: nowrap;
+    padding: var(--space-2) var(--space-4);
+    flex-shrink: 0;
+  }
+
+  .sidebarFooter {
+    padding: var(--space-3) var(--space-4);
+    border-top: none;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .logoutBtn {
+    width: auto;
+    padding: var(--space-2) var(--space-4);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-md);
+  }
+
+  .mainContent {
+    border-radius: 0;
+    margin: 0;
+  }
+
+  .header {
+    padding: var(--space-4);
+  }
+
+  .contentArea {
+    padding: var(--space-4);
+  }
+
+  .verifyGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .authCard {
+    padding: var(--space-6);
+  }
+
+  .dropzone {
+    padding: var(--space-8) var(--space-4);
+  }
+
+  .toggleRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  .settingsHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .radioLabel {
+    flex-direction: row;
+  }
+}
+

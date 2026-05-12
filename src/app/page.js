@@ -10,16 +10,7 @@ export default async function HomePage() {
     .from('properties')
     .select('*')
     .order('created_at', { ascending: false })
-    .limit(10);
-
-  const { data: districtsData } = await supabase
-    .from('districts')
-    .select('*')
-    .order('id', { ascending: true });
-
-  const DISTRICTS = districtsData || [
-    { name: "All", slug: "all" }
-  ];
+    .limit(4);
 
   // Map snake_case from DB to camelCase for the component if needed
   const mappedListings = (listings || []).map(item => ({
@@ -30,47 +21,69 @@ export default async function HomePage() {
     sizeSqm: item.size_sqm || item.sizeSqm,
   }));
 
+  const CATEGORIES = [
+    { name: "Houses", icon: "fa-house", slug: "residential", color: "#e8f5e9", iconColor: "#2e7d32" },
+    { name: "Apartments", icon: "fa-building", slug: "residential", color: "#e3f2fd", iconColor: "#1565c0" },
+    { name: "Land", icon: "fa-map", slug: "land", color: "#fff3e0", iconColor: "#ef6c00" },
+    { name: "Commercial", icon: "fa-shop", slug: "commercial", color: "#f3e5f5", iconColor: "#7b1fa2" },
+  ];
+
   return (
-    <div className={styles.ecommerceContainer}>
-      {/* App Header */}
-      <header className={styles.appHeader}>
-        <div className={styles.appHeaderTop}>
-          <div className={styles.greeting}>
-            <p className={styles.greetingLabel}>Current Location</p>
-            <h2 className={styles.greetingLocation}>
-              Abuja, NG <i className="fa-solid fa-chevron-down"></i>
-            </h2>
-          </div>
-          <div className={styles.profileAvatar}>
-            <i className="fa-regular fa-bell"></i>
+    <div className={styles.homeContainer}>
+      {/* Intro Hero Section - eBay Style */}
+      <section className={styles.heroSection}>
+        <div className={styles.heroContent}>
+          <h1 className={styles.heroTitle}>
+            Discover your perfect place in <span>Abuja</span>
+          </h1>
+          <p className={styles.heroSubtitle}>
+            The safest marketplace to buy, rent, or sell properties. Verified listings, zero stress.
+          </p>
+
+          <div className={styles.searchContainer}>
+            <div className={styles.searchInputWrapper}>
+              <i className="fa-solid fa-magnifying-glass"></i>
+              <input type="text" placeholder="Search for Maitama, Wuse, Asokoro..." />
+            </div>
+            <button className={styles.searchBtn}>Search</button>
           </div>
         </div>
+      </section>
 
-        <div className={styles.searchBar}>
-          <i className="fa-solid fa-magnifying-glass"></i>
-          <input type="text" placeholder="Search districts, areas..." />
-          <button className={styles.filterBtn}>
-            <i className="fa-solid fa-sliders"></i>
-          </button>
-        </div>
-      </header>
-
-      {/* Categories (Districts) */}
+      {/* Categories Section */}
       <section className={styles.categoriesSection}>
-        <div className={styles.categoriesScroll}>
-          {DISTRICTS.map((d, index) => (
-            <button key={d.slug || index} className={`${styles.categoryPill} ${index === 0 ? styles.activePill : ''}`}>
-              {d.name}
-            </button>
+        <h2 className={styles.sectionTitle}>Shop by Category</h2>
+        <div className={styles.categoryGrid}>
+          {CATEGORIES.map((cat, idx) => (
+            <Link href={`/abuja?type=${cat.slug}`} key={idx} className={styles.categoryCard}>
+              <div className={styles.categoryIconWrap} style={{ backgroundColor: cat.color }}>
+                <i className={`fa-solid ${cat.icon}`} style={{ color: cat.iconColor }}></i>
+              </div>
+              <span>{cat.name}</span>
+            </Link>
           ))}
         </div>
       </section>
 
-      {/* Main Feed */}
-      <section className={styles.feedSection}>
-        <div className={styles.feedHeader}>
-          <h3>Featured for you</h3>
-          <Link href="/abuja" className={styles.viewAll}>See all</Link>
+      {/* Trust Banner (Like eBay Guarantee) */}
+      <section className={styles.trustSection}>
+        <div className={styles.trustBanner}>
+          <div className={styles.trustIcon}>
+            <i className="fa-solid fa-shield-halved"></i>
+          </div>
+          <div className={styles.trustText}>
+            <h3>Abuja Trust Guarantee</h3>
+            <p>Every listing is verified by our agents before publishing. Buy and rent with 100% peace of mind.</p>
+          </div>
+          <Link href="/how-it-works" className={styles.trustLink}>Learn more</Link>
+        </div>
+      </section>
+
+      {/* Featured Items Feed */}
+      <section className={styles.featuredSection}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>Daily Featured Properties</h2>
+          <Link href="/abuja" className={styles.viewAll}>See all <i className="fa-solid fa-arrow-right"></i></Link>
         </div>
         
         {error ? (
@@ -89,27 +102,9 @@ export default async function HomePage() {
             <div className={styles.emptyIconWrap}>
               <i className="fa-solid fa-house-chimney-crack"></i>
             </div>
-            <h4>No properties found</h4>
-            <p>Check back later or adjust your search.</p>
+            <p>No properties found. Check back later.</p>
           </div>
         )}
-      </section>
-
-      {/* E-commerce Special Collections */}
-      <section className={styles.collectionsSection}>
-        <div className={styles.feedHeader}>
-          <h3>Explore Collections</h3>
-        </div>
-        <div className={styles.collectionsScroll}>
-          <div className={`${styles.collectionCard} ${styles.collectionLuxury}`}>
-            <h4>Luxury Villas</h4>
-            <span>Exclusive Properties</span>
-          </div>
-          <div className={`${styles.collectionCard} ${styles.collectionOffPlan}`}>
-            <h4>Off-Plan Deals</h4>
-            <span>Investment Opportunities</span>
-          </div>
-        </div>
       </section>
 
       {/* Add spacing at the bottom so the BottomNav doesn't cover content */}
