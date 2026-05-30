@@ -1,0 +1,38 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  background-color: rgba(245, 240, 232, 0.85); /* semi-transparent ivory */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.headerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  padding: 0 var(--page-horizontal);
+  max-width: 100%;
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--color-text);
+  transition: var(--transition-smooth);
+}
+
+.logo:hover {
+  color: var(--color-accent);
+  opacity: 0.9;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+}

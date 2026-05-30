@@ -1,0 +1,543 @@
+{
+  "project": {
+    "name": "Abode",
+    "tagline": "Find your home, from anywhere.",
+    "type": "PWA",
+    "version": "1.0.0-mvp",
+    "description": "A property showcase Progressive Web App targeting diaspora buyers. Admin-managed listings (single owner), WhatsApp as the primary conversion channel, with no buyer accounts required. Goal: trustworthy direct connection between buyers and landlords — no agent friction.",
+    "target_audience": ["West African diaspora in UK, US, EU", "Direct buyers and renters", "Property seekers from Nigeria and Ghana"],
+    "primary_markets": ["Lagos", "Accra", "Abuja", "Kumasi"]
+  },
+
+  "tech_stack": {
+    "frontend": {
+      "framework": "React 18 + Vite",
+      "pwa_plugin": "vite-plugin-pwa",
+      "routing": "React Router v6",
+      "state": "Zustand (lightweight global store)",
+      "styling": "CSS Modules or plain CSS with design tokens",
+      "icons": "Lucide React",
+      "media_display": "Yet-another-react-lightbox (photo gallery)",
+      "notes": "No UI component library — all components hand-built per the design system"
+    },
+    "backend": {
+      "platform": "Supabase",
+      "services_used": ["Supabase Auth (admin only)", "Supabase Postgres", "Supabase Storage (fallback)"],
+      "media_primary": "Cloudinary (image optimization, video thumbnail generation, responsive transforms)",
+      "notes": "Supabase handles all auth, database, and RLS. Cloudinary handles all media delivery."
+    },
+    "hosting": {
+      "platform": "Vercel",
+      "domain": "custom domain recommended",
+      "ssl": "auto via Vercel",
+      "edge_network": true
+    },
+    "whatsapp": {
+      "method": "wa.me deeplink",
+      "account_type": "WhatsApp Business number",
+      "notes": "No WhatsApp API required. Deeplinks carry pre-filled message context."
+    },
+    "maps": {
+      "provider": "Google Maps Embed API",
+      "usage": "Static embed per property detail page — no complex integration"
+    }
+  },
+
+  "environment_variables": {
+    "VITE_SUPABASE_URL": "your-project.supabase.co",
+    "VITE_SUPABASE_ANON_KEY": "public anon key from Supabase dashboard",
+    "VITE_CLOUDINARY_CLOUD_NAME": "your cloud name",
+    "VITE_CLOUDINARY_UPLOAD_PRESET": "unsigned upload preset for admin use",
+    "VITE_WHATSAPP_NUMBER": "international format e.g. 447900000000",
+    "VITE_GOOGLE_MAPS_KEY": "optional — for map embeds on detail page"
+  },
+
+  "folder_structure": {
+    "src": {
+      "assets": "Static images, SVGs, icons",
+      "components": {
+        "ui": "Badge, Button, Chip, StatusDot, Spinner — atomic reusable",
+        "layout": "BottomNav, Header, PhoneFrame (dev only)",
+        "property": "PropertyCard, PropertyGrid, PropertyDetail, PhotoGallery, FeatureTag",
+        "admin": "UploadForm, PropertyForm, MediaUploader, AdminPropertyList",
+        "whatsapp": "WhatsAppFAB, EnquireButton — handles deeplink generation"
+      },
+      "pages": {
+        "public": ["ListingPage", "PropertyDetailPage", "AboutPage"],
+        "admin": ["AdminLoginPage", "AdminDashboardPage", "AdminUploadPage", "AdminEditPage"]
+      },
+      "hooks": ["useProperties", "useProperty", "useAdmin", "useCurrency", "useSavedProperties"],
+      "lib": {
+        "supabase.js": "Supabase client init",
+        "cloudinary.js": "Upload helper and transform URL builder",
+        "whatsapp.js": "deeplink builder function",
+        "currency.js": "price formatting and conversion helpers"
+      },
+      "store": "Zustand store — currency preference, saved properties (localStorage)",
+      "styles": "tokens.css (design system variables), global.css, reset.css"
+    }
+  },
+
+  "design_system": {
+    "name": "Abode Design Language",
+    "aesthetic": "Editorial warmth — architectural photography meets West African material culture",
+    "anti_patterns": [
+      "No Inter, Roboto, or system-ui fonts",
+      "No purple gradients",
+      "No heavy card shadows (use borders instead)",
+      "No dark-mode SaaS aesthetic",
+      "No generic blue CTAs"
+    ],
+    "colors": {
+      "--color-bg":        "#F5F0E8",
+      "--color-card":      "#FFFFFF",
+      "--color-text":      "#1A1512",
+      "--color-text-body": "#5A4E47",
+      "--color-muted":     "#8B7D72",
+      "--color-accent":    "#C07D4A",
+      "--color-border":    "#E4DDD4",
+      "--color-available": "#2D7D52",
+      "--color-available-bg": "#E8F5EE",
+      "--color-reserved":  "#C07D4A",
+      "--color-reserved-bg": "#FEF3EC",
+      "--color-sold":      "#8B7D72",
+      "--color-sold-bg":   "#F0EDEB",
+      "--color-whatsapp":  "#25D366"
+    },
+    "typography": {
+      "display_font": "Cormorant Garamond",
+      "display_weights": ["400 (Regular)", "500 (Medium)", "600 (SemiBold)", "400 italic"],
+      "ui_font": "Instrument Sans",
+      "ui_weights": ["400", "500", "600"],
+      "google_fonts_import": "@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Instrument+Sans:wght@400;500;600&display=swap');",
+      "scale": {
+        "xs":   "10.5px / letter-spacing: 0.8px uppercase — location labels",
+        "sm":   "12.5px — body text, specs",
+        "base": "14px — description paragraphs",
+        "md":   "17px — card price",
+        "lg":   "20px — card title (Cormorant)",
+        "xl":   "26px — detail price",
+        "2xl":  "30px — detail title (Cormorant)",
+        "3xl":  "31px — listing page heading (Cormorant)"
+      }
+    },
+    "spacing": {
+      "page_horizontal": "20px",
+      "card_padding": "14px 16px",
+      "card_gap": "14px",
+      "section_gap": "18px"
+    },
+    "radius": {
+      "card": "16px",
+      "chip": "40px",
+      "button": "14px",
+      "badge": "20px",
+      "spec_chip": "12px"
+    },
+    "shadows": {
+      "card": "none — use border: 1px solid var(--color-border) instead",
+      "fab": "0 4px 18px rgba(37, 211, 102, 0.38)",
+      "detail_back_btn": "0 2px 8px rgba(0,0,0,0.15)"
+    }
+  },
+
+  "database": {
+    "platform": "Supabase (PostgreSQL)",
+    "rls_policy": "Public can SELECT (read). Only authenticated admin can INSERT, UPDATE, DELETE.",
+    "tables": {
+      "properties": {
+        "columns": {
+          "id":             "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+          "title":          "text NOT NULL",
+          "slug":           "text UNIQUE NOT NULL — generated from title + city",
+          "description":    "text",
+          "location_city":  "text NOT NULL",
+          "location_area":  "text NOT NULL",
+          "location_lat":   "numeric",
+          "location_lng":   "numeric",
+          "type":           "text CHECK (type IN ('sale','rent'))",
+          "status":         "text DEFAULT 'available' CHECK (status IN ('available','reserved','sold'))",
+          "bedrooms":       "integer",
+          "bathrooms":      "integer",
+          "size_sqm":       "numeric",
+          "price_ngn":      "bigint — store in Naira kobo or full Naira as agreed",
+          "price_gbp":      "numeric",
+          "price_usd":      "numeric",
+          "display_price_ngn": "text — e.g. ₦85,000,000 (formatted label)",
+          "display_price_gbp": "text — e.g. £42,500",
+          "display_price_usd": "text — e.g. $54,000",
+          "features":       "text[] — array of feature strings",
+          "cover_image_url":"text — Cloudinary URL of primary image",
+          "is_featured":    "boolean DEFAULT false",
+          "created_at":     "timestamptz DEFAULT now()",
+          "updated_at":     "timestamptz DEFAULT now()"
+        },
+        "indexes": ["slug", "status", "type", "location_city"],
+        "rls": "SELECT: public. INSERT/UPDATE/DELETE: authenticated admin only."
+      },
+      "property_media": {
+        "columns": {
+          "id":             "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+          "property_id":    "uuid REFERENCES properties(id) ON DELETE CASCADE",
+          "cloudinary_id":  "text NOT NULL — public_id from Cloudinary",
+          "url":            "text NOT NULL — full delivery URL",
+          "thumbnail_url":  "text — auto-generated thumbnail for videos",
+          "media_type":     "text CHECK (media_type IN ('image','video'))",
+          "display_order":  "integer DEFAULT 0",
+          "uploaded_at":    "timestamptz DEFAULT now()"
+        },
+        "indexes": ["property_id", "display_order"],
+        "rls": "SELECT: public. INSERT/UPDATE/DELETE: authenticated admin only."
+      },
+      "enquiry_log": {
+        "description": "Lightweight log — records every WhatsApp button click with property context. No PII collected from visitor.",
+        "columns": {
+          "id":               "uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+          "property_id":      "uuid REFERENCES properties(id) ON DELETE SET NULL",
+          "property_title":   "text — denormalised for easy reading",
+          "property_location":"text",
+          "enquiry_type":     "text CHECK (enquiry_type IN ('property','general'))",
+          "currency_shown":   "text — which currency the visitor was viewing",
+          "clicked_at":       "timestamptz DEFAULT now()"
+        },
+        "rls": "INSERT: public (anonymous). SELECT: admin only."
+      }
+    },
+    "sql_setup": [
+      "CREATE EXTENSION IF NOT EXISTS pgcrypto;",
+      "-- Enable RLS on all tables",
+      "ALTER TABLE properties ENABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE property_media ENABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE enquiry_log ENABLE ROW LEVEL SECURITY;",
+      "-- Public read on properties and media",
+      "CREATE POLICY 'public_read_properties' ON properties FOR SELECT USING (true);",
+      "CREATE POLICY 'public_read_media' ON property_media FOR SELECT USING (true);",
+      "-- Admin write (replace with your Supabase user UID)",
+      "CREATE POLICY 'admin_all_properties' ON properties USING (auth.role() = 'authenticated');",
+      "CREATE POLICY 'admin_all_media' ON property_media USING (auth.role() = 'authenticated');",
+      "-- Anyone can insert enquiry logs",
+      "CREATE POLICY 'public_insert_enquiry' ON enquiry_log FOR INSERT WITH CHECK (true);",
+      "CREATE POLICY 'admin_read_enquiry' ON enquiry_log FOR SELECT USING (auth.role() = 'authenticated');"
+    ]
+  },
+
+  "screens": {
+    "public": {
+      "ListingPage": {
+        "route": "/",
+        "description": "Main browse screen. Default view for all visitors.",
+        "components": ["Header (logo + currency toggle)", "Tagline block", "FilterChips (All / For Sale / For Rent)", "PropertyGrid", "WhatsAppFAB (general enquiry)", "BottomNav"],
+        "data": "Fetch all properties from Supabase ordered by created_at DESC. Filter client-side by type.",
+        "pwa_cache": "Cache property list for offline reading via service worker."
+      },
+      "PropertyDetailPage": {
+        "route": "/property/:slug",
+        "description": "Full property detail. Shareable URL. Pre-fills WhatsApp on CTA tap.",
+        "components": ["Back button", "PhotoGallery (images + video)", "StatusBadge", "PropertyTitle (Cormorant)", "LocationLine", "PriceDisplay (respects currency preference)", "SpecChips (beds / baths / size)", "DescriptionBlock", "FeatureTags", "MapEmbed", "EnquireButton (WhatsApp CTA)", "SaveButton"],
+        "data": "Fetch single property by slug. Fetch related property_media ordered by display_order.",
+        "whatsapp_message": "Hi, I'm interested in *{title} – {location}*\nPrice: {price}\nRef: #{id_short}\n\nCould we discuss further?",
+        "on_wa_click": "Log click to enquiry_log table before opening wa.me deeplink."
+      },
+      "AboutPage": {
+        "route": "/about",
+        "description": "Trust page. Who you are, your mission, direct contact.",
+        "components": ["Mission statement", "How it works (3 steps)", "WhatsApp contact button"],
+        "data": "Static content — no database fetch required."
+      }
+    },
+    "admin": {
+      "AdminLoginPage": {
+        "route": "/admin/login",
+        "description": "Simple email+password login. Single admin user only.",
+        "auth": "Supabase Auth signInWithPassword",
+        "redirect_on_success": "/admin/dashboard",
+        "notes": "Protect with Supabase session. No public signup — admin account created manually in Supabase dashboard."
+      },
+      "AdminDashboardPage": {
+        "route": "/admin/dashboard",
+        "description": "Overview: total listings, enquiry count by property, quick status changes.",
+        "components": ["StatsRow (total listings / enquiries this week)", "PropertyAdminList (table view)", "QuickStatusToggle per row", "Add New Property button"],
+        "data": "Fetch all properties. Fetch enquiry_log counts grouped by property_id."
+      },
+      "AdminUploadPage": {
+        "route": "/admin/upload",
+        "description": "Create a new property listing with media upload.",
+        "components": ["PropertyForm (all fields)", "MediaUploader (Cloudinary direct upload)", "VideoUploader", "FeatureTagInput (add/remove tags)", "StatusSelector", "Submit button"],
+        "cloudinary_upload": {
+          "method": "Unsigned upload via Cloudinary Upload Widget or fetch to /upload endpoint",
+          "upload_preset": "VITE_CLOUDINARY_UPLOAD_PRESET",
+          "transformations": {
+            "images": "c_fill,w_1200,h_800,q_auto,f_auto",
+            "thumbnails": "c_fill,w_400,h_300,q_auto,f_auto",
+            "video_thumbnail": "c_fill,w_800,h_450,q_auto,f_jpg — auto-generated from video"
+          }
+        }
+      },
+      "AdminEditPage": {
+        "route": "/admin/property/:id/edit",
+        "description": "Edit an existing listing. Reorder media, change status, update price.",
+        "components": ["Prefilled PropertyForm", "MediaManager (reorder, delete, add more)", "StatusSelector", "Delete Listing button (with confirmation)"]
+      }
+    }
+  },
+
+  "components_spec": {
+    "PropertyCard": {
+      "props": ["property: Property", "currency: 'ngn'|'gbp'|'usd'", "onSave: fn", "isSaved: boolean"],
+      "layout": "Full-width card. 16:9 image ratio. Status + type badges overlaid on image. Save heart button bottom-right of image. Location (small caps + pin icon) → Title (Cormorant) → Price + Specs row.",
+      "on_click": "Navigate to /property/:slug"
+    },
+    "EnquireButton": {
+      "props": ["property: Property", "currency: 'ngn'|'gbp'|'usd'"],
+      "behavior": "1. Log click to enquiry_log (fire and forget). 2. Open wa.me deeplink with pre-filled message.",
+      "message_template": "Hi, I'm interested in *{title} – {location}*\nPrice: {price}\nRef: #{id_short}\n\nCould we discuss further?"
+    },
+    "WhatsAppFAB": {
+      "position": "Fixed, bottom-right above BottomNav. z-index above cards.",
+      "style": "Pill shape (border-radius: 28px). WhatsApp green background. Icon + 'Enquire' label.",
+      "message": "General enquiry message — no property context."
+    },
+    "MediaUploader": {
+      "accepts": ["image/jpeg", "image/png", "image/webp", "video/mp4", "video/quicktime"],
+      "max_file_size": "50MB per file",
+      "max_files": "20 per property",
+      "preview": "Show thumbnail grid during upload. Progress indicator per file.",
+      "on_success": "Store cloudinary_id + url in property_media table via Supabase."
+    },
+    "CurrencyToggle": {
+      "options": [{"symbol":"₦","key":"ngn"},{"symbol":"£","key":"gbp"},{"symbol":"$","key":"usd"}],
+      "persistence": "localStorage via Zustand store",
+      "placement": "Top-right of Header on listing page"
+    },
+    "StatusBadge": {
+      "available": {"bg":"#E8F5EE","color":"#2D7D52","dot":"#2D7D52","label":"Available"},
+      "reserved":  {"bg":"#FEF3EC","color":"#C07D4A","dot":"#C07D4A","label":"Reserved"},
+      "sold":      {"bg":"#F0EDEB","color":"#8B7D72","dot":"#8B7D72","label":"Sold / Let"}
+    },
+    "BottomNav": {
+      "items": [
+        {"id":"browse","label":"Browse","icon":"Grid2x2"},
+        {"id":"search","label":"Search","icon":"Search"},
+        {"id":"saved", "label":"Saved", "icon":"Heart"},
+        {"id":"about", "label":"About", "icon":"User"}
+      ],
+      "active_color": "var(--color-accent)",
+      "inactive_color": "var(--color-muted)"
+    }
+  },
+
+  "whatsapp_integration": {
+    "method": "wa.me deeplinks — no API required",
+    "base_url": "https://wa.me/{WHATSAPP_NUMBER}?text={encoded_message}",
+    "property_enquiry_template": "Hi, I'm interested in *{property.title} – {property.location_area}, {property.location_city}*\nPrice: {formatted_price}\nRef: #PROP-{id_short}\n\nCould we discuss further?",
+    "general_enquiry_template": "Hi, I have an enquiry about your listed properties.",
+    "id_short": "First 6 characters of property UUID — human-readable reference",
+    "currency_in_message": "Use whichever currency the visitor currently has selected in the app",
+    "logging": "Before opening deeplink, POST to enquiry_log table: { property_id, property_title, property_location, enquiry_type, currency_shown }",
+    "whatsapp_business_setup": [
+      "Use WhatsApp Business account (not personal)",
+      "Set up Away Message for after-hours",
+      "Use Quick Replies for common questions",
+      "Label enquiries by property location for easy tracking"
+    ]
+  },
+
+  "pwa_config": {
+    "manifest": {
+      "name": "Abode",
+      "short_name": "Abode",
+      "description": "Find your home, from anywhere.",
+      "theme_color": "#F5F0E8",
+      "background_color": "#F5F0E8",
+      "display": "standalone",
+      "orientation": "portrait",
+      "start_url": "/",
+      "icons": [
+        {"src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
+        {"src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png"},
+        {"src": "/icons/icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+      ]
+    },
+    "service_worker": {
+      "strategy": "vite-plugin-pwa with Workbox",
+      "cache_strategy": {
+        "static_assets": "CacheFirst — fonts, CSS, JS bundles",
+        "api_calls_supabase": "NetworkFirst with 5s timeout, fallback to cache",
+        "images_cloudinary": "CacheFirst with 7 day expiry",
+        "pages": "NetworkFirst — always try fresh, show cached on failure"
+      },
+      "offline_behavior": "Show cached property listings with an 'offline mode' banner. Property detail pages previously visited are fully available offline."
+    }
+  },
+
+  "features": {
+    "mvp_v1": {
+      "public": [
+        "Browse all property listings (grid)",
+        "Filter by type (All / For Sale / For Rent)",
+        "Property detail page (photos, video, description, specs, features)",
+        "WhatsApp enquiry with pre-filled property context",
+        "General WhatsApp enquiry FAB",
+        "Currency toggle (₦ / £ / $)",
+        "Save properties to device (localStorage)",
+        "Shareable property URL per listing",
+        "PWA installable (add to home screen)",
+        "Offline browsing of cached listings",
+        "Property status display (Available / Reserved / Sold)"
+      ],
+      "admin": [
+        "Secure admin login (email + password)",
+        "Create new property listing",
+        "Upload photos and videos (Cloudinary)",
+        "Edit existing listings (price, description, status, media)",
+        "Delete listings",
+        "View enquiry log (which property, timestamp)",
+        "Set property status (Available / Reserved / Sold)"
+      ]
+    },
+    "v2_post_mvp": [
+      "Neighborhood info block (schools, hospitals, transport nearby)",
+      "Mortgage / affordability calculator (diaspora use case)",
+      "Email newsletter signup for new listings",
+      "Analytics dashboard (enquiry trends, most-viewed properties)",
+      "Property comparison view (side-by-side 2 properties)",
+      "360° virtual tour support (Matterport embed)",
+      "Push notifications for new listings (Web Push API)"
+    ],
+    "explicitly_excluded": [
+      "Buyer accounts / registration",
+      "In-app messaging (WhatsApp replaces this)",
+      "Payment processing",
+      "Multi-admin roles",
+      "Property search by keyword (filter chips are sufficient for MVP)"
+    ]
+  },
+
+  "development_phases": {
+    "phase_1": {
+      "name": "Foundation",
+      "duration": "3–4 days",
+      "tasks": [
+        "Initialise React + Vite project",
+        "Install and configure vite-plugin-pwa",
+        "Set up Supabase project — run SQL schema",
+        "Configure RLS policies",
+        "Set up Cloudinary account and upload preset",
+        "Create design tokens CSS file (tokens.css)",
+        "Import Google Fonts",
+        "Set up React Router routes",
+        "Create Supabase client lib (src/lib/supabase.js)"
+      ]
+    },
+    "phase_2": {
+      "name": "Public Listing UI",
+      "duration": "4–5 days",
+      "tasks": [
+        "Build PropertyCard component",
+        "Build PropertyGrid component",
+        "Build Header with logo and CurrencyToggle",
+        "Build FilterChips",
+        "Build BottomNav",
+        "Build WhatsAppFAB",
+        "Build ListingPage — wire to Supabase fetch",
+        "Build StatusBadge component",
+        "Implement localStorage currency preference via Zustand",
+        "Test on mobile viewport"
+      ]
+    },
+    "phase_3": {
+      "name": "Property Detail UI",
+      "duration": "3–4 days",
+      "tasks": [
+        "Build PhotoGallery component (lightbox for images)",
+        "Build VideoPlayer component",
+        "Build PropertyDetailPage layout",
+        "Build SpecChips, FeatureTags, DescriptionBlock",
+        "Implement whatsapp.js deeplink builder",
+        "Wire EnquireButton to deeplink + enquiry_log",
+        "Add MapEmbed component",
+        "Implement save-to-device (localStorage + Zustand)",
+        "Set up shareable slug-based URL"
+      ]
+    },
+    "phase_4": {
+      "name": "Admin Panel",
+      "duration": "5–6 days",
+      "tasks": [
+        "Build AdminLoginPage with Supabase Auth",
+        "Set up protected route wrapper (redirect if not authenticated)",
+        "Build PropertyForm component (all fields)",
+        "Integrate Cloudinary Upload Widget for images",
+        "Integrate Cloudinary Upload Widget for video",
+        "Build MediaManager (reorder, delete, preview)",
+        "Build AdminDashboardPage with listings table",
+        "Build QuickStatusToggle (Available / Reserved / Sold)",
+        "Build AdminEditPage (prefilled form)",
+        "Build enquiry log viewer"
+      ]
+    },
+    "phase_5": {
+      "name": "PWA & Polish",
+      "duration": "2–3 days",
+      "tasks": [
+        "Configure Workbox service worker caching strategies",
+        "Create PWA manifest with icons",
+        "Test offline browsing behaviour",
+        "Add 'install app' prompt component",
+        "Responsive audit — test on iPhone SE, iPhone 14, Android mid-range",
+        "Performance audit — images lazy loaded, fonts preloaded",
+        "Supabase query optimisation (indexes on status, type, slug)",
+        "Deploy to Vercel with environment variables",
+        "Connect custom domain"
+      ]
+    }
+  },
+
+  "slug_generation": {
+    "pattern": "{bedrooms}-bedroom-{type_label}-{area}-{city}",
+    "example": "3-bedroom-duplex-lekki-phase-1-lagos",
+    "library": "slugify npm package",
+    "uniqueness": "Append short UUID suffix if slug already exists: e.g. 3-bedroom-duplex-lekki-a1b2c3"
+  },
+
+  "cloudinary_transforms": {
+    "listing_card_thumbnail": "c_fill,w_800,h_450,q_auto,f_auto",
+    "detail_gallery_full":    "c_limit,w_1600,q_auto,f_auto",
+    "admin_preview_thumb":    "c_fill,w_200,h_150,q_auto,f_auto",
+    "video_poster":           "c_fill,w_800,h_450,q_auto,f_jpg,so_2 (frame at 2s)",
+    "usage_note": "Always use Cloudinary transformation URLs in src attributes — never store raw uploaded URLs directly."
+  },
+
+  "supabase_queries": {
+    "fetch_all_listings": "SELECT p.*, (SELECT array_agg(m.url ORDER BY m.display_order) FROM property_media m WHERE m.property_id = p.id AND m.media_type = 'image') AS image_urls FROM properties p WHERE p.status != 'sold' ORDER BY p.is_featured DESC, p.created_at DESC",
+    "fetch_by_slug": "SELECT p.* FROM properties p WHERE p.slug = $1 LIMIT 1",
+    "fetch_media_by_property": "SELECT * FROM property_media WHERE property_id = $1 ORDER BY display_order ASC",
+    "log_enquiry": "INSERT INTO enquiry_log (property_id, property_title, property_location, enquiry_type, currency_shown) VALUES ($1, $2, $3, $4, $5)",
+    "admin_enquiry_counts": "SELECT property_id, property_title, count(*) as total FROM enquiry_log GROUP BY property_id, property_title ORDER BY total DESC"
+  },
+
+  "security": {
+    "admin_auth": "Supabase email + password. Single pre-created account — no signup flow exposed.",
+    "rls": "All write operations protected by Supabase RLS. Anon key only allows SELECT on properties and property_media.",
+    "admin_route_guard": "React Router protected route checks Supabase session. Redirects to /admin/login if not authenticated.",
+    "cloudinary_upload": "Use unsigned upload preset scoped to a specific folder. Rotate if exposed.",
+    "no_buyer_data": "No personal data collected from visitors. enquiry_log stores only click events with no PII."
+  },
+
+  "performance_targets": {
+    "LCP": "< 2.5s on 4G mobile",
+    "FID": "< 100ms",
+    "CLS": "< 0.1",
+    "offline": "Listing page fully functional with cached data",
+    "image_strategy": "Cloudinary auto-format + quality. Lazy load below the fold. Eager load cover image.",
+    "font_strategy": "Preconnect to fonts.googleapis.com. display=swap on all fonts."
+  },
+
+  "open_questions": [
+    "App name confirmed as 'Abode'? Or rename before slug generation begins.",
+    "Will prices be stored as raw numbers or display strings? Recommend raw numbers for future filtering.",
+    "Single WhatsApp number or multiple (e.g. one for Lagos listings, one for Accra)?",
+    "Do you want a 'Share' button (navigator.share API) on property detail pages?",
+    "Map embed: show exact pin or area-level only for privacy/security?"
+  ]
+}

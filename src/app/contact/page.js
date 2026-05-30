@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import styles from "./page.module.css";
+import React, { useState } from 'react';
+import { getWhatsAppNumber } from '@/lib/whatsapp';
+import styles from './contact.module.css';
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
+  const waNumber = getWhatsAppNumber();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -12,141 +14,83 @@ export default function ContactPage() {
   };
 
   return (
-    <>
+    <div className={styles.container}>
+      {/* Editorial Header */}
       <section className={styles.hero}>
-        <div className="container">
-          <span className="text-label">Get In Touch</span>
-          <h1>Contact Us</h1>
-          <p className={styles.heroSub}>
-            Have questions about buying, selling, or investing in Abuja property?
-            We'd love to hear from you.
-          </p>
-        </div>
+        <span className={styles.kicker}>Get In Touch</span>
+        <h1 className={styles.title}>Speak with our coordination team.</h1>
+        <div className={styles.divider}></div>
       </section>
 
-      <section className={`section ${styles.contactSection}`}>
-        <div className="container">
-          <div className={styles.grid}>
-            {/* Contact Info */}
-            <div className={styles.info}>
-              <div className={styles.infoCard}>
-                <div className={styles.infoIconWrap}>
-                  <i className="fa-brands fa-whatsapp"></i>
-                </div>
-                <h3>WhatsApp</h3>
-                <p>Reach us directly on WhatsApp for quick inquiries</p>
-                <a
-                  href="https://wa.me/2348000000000"
-                  className="btn btn-whatsapp"
-                  id="contact-whatsapp"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <i className="fa-brands fa-whatsapp"></i>
-                  Chat on WhatsApp
-                </a>
-              </div>
-
-              <div className={styles.infoCard}>
-                <div className={styles.infoIconWrap}>
-                  <i className="fa-solid fa-envelope"></i>
-                </div>
-                <h3>Email</h3>
-                <p>For formal inquiries and documentation</p>
-                <a href="mailto:hello@abujatrust.com" className={styles.infoLink}>
-                  <i className="fa-solid fa-arrow-up-right-from-square"></i>
-                  hello@abujatrust.com
-                </a>
-              </div>
-
-              <div className={styles.infoCard}>
-                <div className={styles.infoIconWrap}>
-                  <i className="fa-solid fa-location-dot"></i>
-                </div>
-                <h3>Office</h3>
-                <p>Abuja, Federal Capital Territory, Nigeria</p>
-                <span className={styles.infoNote}>
-                  <i className="fa-regular fa-calendar"></i>
-                  By appointment only
-                </span>
-              </div>
-            </div>
-
-            {/* Contact Form */}
-            <div className={styles.formWrap}>
-              {submitted ? (
-                <div className={styles.success}>
-                  <div className={styles.successIconWrap}>
-                    <i className="fa-solid fa-circle-check"></i>
-                  </div>
-                  <h3>Message Sent!</h3>
-                  <p>We'll get back to you within 24 hours.</p>
-                </div>
-              ) : (
-                <form className={styles.form} onSubmit={handleSubmit}>
-                  <div className={styles.formRow}>
-                    <div className={styles.formGroup}>
-                      <label>
-                        <i className="fa-regular fa-user"></i>
-                        Full Name
-                      </label>
-                      <input type="text" required placeholder="Your name" id="contact-name" />
-                    </div>
-                    <div className={styles.formGroup}>
-                      <label>
-                        <i className="fa-regular fa-envelope"></i>
-                        Email
-                      </label>
-                      <input type="email" required placeholder="your@email.com" id="contact-email" />
-                    </div>
-                  </div>
-
-                  <div className={styles.formGroup}>
-                    <label>
-                      <i className="fa-solid fa-earth-africa"></i>
-                      Country
-                    </label>
-                    <input type="text" placeholder="Where are you based?" id="contact-country" />
-                  </div>
-
-                  <div className={styles.formGroup}>
-                    <label>
-                      <i className="fa-solid fa-tag"></i>
-                      Subject
-                    </label>
-                    <select id="contact-subject" defaultValue="">
-                      <option value="" disabled>Select a topic</option>
-                      <option value="buying">Buying Property</option>
-                      <option value="selling">Listing My Property</option>
-                      <option value="investing">Investment Inquiry</option>
-                      <option value="partnership">Partnership</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-
-                  <div className={styles.formGroup}>
-                    <label>
-                      <i className="fa-regular fa-message"></i>
-                      Message
-                    </label>
-                    <textarea
-                      required
-                      rows="5"
-                      placeholder="Tell us how we can help..."
-                      id="contact-message"
-                    />
-                  </div>
-
-                  <button type="submit" className="btn btn-primary btn-lg" style={{ width: "100%" }}>
-                    <i className="fa-solid fa-paper-plane"></i>
-                    Send Message
-                  </button>
-                </form>
-              )}
-            </div>
+      {/* Direct support options cards */}
+      <section className={styles.options}>
+        <div className={styles.optionCard}>
+          <div className={styles.icon}>
+            <i className="fa-brands fa-whatsapp"></i>
           </div>
+          <h3 className={styles.cardTitle}>Immediate WhatsApp Support</h3>
+          <p className={styles.cardDesc}>Speak directly with our team for quick property questions or to facilitate negotiations.</p>
+          <a
+            href={`https://wa.me/${waNumber}?text=Hi%2C%20I'd%20like%20to%20discuss%20listed%20properties%20with%20an%20agent.`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`${styles.waBtn} hover-lift`}
+          >
+            <i className="fa-brands fa-whatsapp"></i> Open Chat
+          </a>
+        </div>
+
+        <div className={styles.optionCard}>
+          <div className={styles.icon}>
+            <i className="fa-regular fa-envelope"></i>
+          </div>
+          <h3 className={styles.cardTitle}>Documentation & Support</h3>
+          <p className={styles.cardDesc}>For formal proposals, title verification documents, and administrative support.</p>
+          <a href="mailto:hello@abode.com" className={styles.emailLink}>
+            <i className="fa-solid fa-arrow-up-right-from-square"></i> hello@abode.com
+          </a>
         </div>
       </section>
-    </>
+
+      {/* Structured email-like contact form */}
+      <section className={styles.formSection}>
+        <h3 className={styles.sectionHeading}>Send an Enquiry</h3>
+        
+        {submitted ? (
+          <div className={styles.success}>
+            <i className="fa-solid fa-circle-check"></i>
+            <h4>Message Transmitted</h4>
+            <p>Your enquiry has been successfully logged. Our Abuja team will contact you back within 24 hours.</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className={styles.form}>
+            <div className={styles.formRow}>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Full Name</label>
+                <input type="text" required placeholder="e.g. Chinedu Okafor" className={styles.input} />
+              </div>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Email Address</label>
+                <input type="email" required placeholder="e.g. chinedu@email.com" className={styles.input} />
+              </div>
+            </div>
+
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Where are you based?</label>
+              <input type="text" placeholder="e.g. London, UK / New York, US" className={styles.input} />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label className={styles.label}>How can we assist you?</label>
+              <textarea required rows="4" placeholder="Detail your property preferences or listing details..." className={styles.textarea}></textarea>
+            </div>
+
+            <button type="submit" className={`${styles.submitBtn} hover-lift`}>
+              <i className="fa-solid fa-paper-plane"></i> Send Enquiry Message
+            </button>
+          </form>
+        )}
+      </section>
+    </div>
   );
 }

@@ -1,0 +1,59 @@
+.nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 600px; /* Aligns perfectly with our phone frame container */
+  z-index: 100;
+  background-color: rgba(255, 255, 255, 0.90);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-top: 1px solid var(--color-border);
+  padding-bottom: env(safe-area-inset-bottom, 8px); /* elegant iPhone notch safety */
+}
+
+.navInner {
+  display: flex;
+  height: 58px;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.navItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 100%;
+  color: var(--color-muted);
+  gap: 3px;
+  transition: var(--transition-smooth);
+}
+
+.icon {
+  font-size: 18px;
+  transition: var(--transition-bouncy);
+}
+
+.label {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.active {
+  color: var(--color-accent);
+}
+
+.active .icon {
+  transform: translateY(-2px) scale(1.1);
+}
+
+/* Hover micro-effects for desktop viewports */
+@media (hover: hover) {
+  .navItem:hover:not(.active) {
+    color: var(--color-text);
+  }
+}

@@ -1,0 +1,97 @@
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--card-gap);
+  width: 100%;
+}
+
+/* Skeleton loader design matching PropertyCard shape */
+.skeletonCard {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.skeletonImage {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.skeletonContent {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeletonLocation {
+  width: 40%;
+  height: 10px;
+  border-radius: 4px;
+}
+
+.skeletonTitle {
+  width: 80%;
+  height: 20px;
+  border-radius: 4px;
+}
+
+.skeletonFooter {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--color-border);
+  padding-top: 12px;
+  margin-top: 4px;
+}
+
+.skeletonPrice {
+  width: 30%;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.skeletonSpecs {
+  width: 40%;
+  height: 12px;
+  border-radius: 4px;
+}
+
+/* Empty State styling */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px var(--page-horizontal);
+  background-color: var(--color-card);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-card);
+  text-align: center;
+  gap: 16px;
+}
+
+.emptyIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-muted);
+  font-size: 24px;
+}
+
+.emptyText {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--color-text-body);
+  font-weight: 500;
+  max-width: 250px;
+  line-height: 1.4;
+}

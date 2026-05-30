@@ -1,0 +1,67 @@
+.container {
+  display: inline-flex;
+  background-color: rgba(26, 21, 18, 0.04);
+  border: 1px solid var(--color-border);
+  padding: 3px;
+  border-radius: 30px;
+  gap: 2px;
+  align-items: center;
+}
+
+.containerPlaceholder {
+  width: 140px;
+  height: 34px;
+  background-color: rgba(26, 21, 18, 0.04);
+  border: 1px solid var(--color-border);
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholderDot {
+  width: 12px;
+  height: 12px;
+  background-color: var(--color-border);
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+.toggleBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-body);
+  transition: var(--transition-smooth);
+}
+
+.symbol {
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+}
+
+.label {
+  font-family: var(--font-ui);
+  letter-spacing: 0.5px;
+}
+
+.active {
+  background-color: var(--color-card);
+  color: var(--color-text);
+  box-shadow: var(--shadow-btn);
+  border: 1px solid var(--color-border);
+}
+
+.toggleBtn:hover:not(.active) {
+  color: var(--color-text);
+  background-color: rgba(26, 21, 18, 0.02);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}

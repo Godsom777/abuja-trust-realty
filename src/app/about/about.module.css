@@ -1,0 +1,187 @@
+.container {
+  padding: 40px var(--page-horizontal);
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+  background-color: var(--color-bg);
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.kicker {
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--color-accent);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--color-text);
+}
+
+.divider {
+  width: 50px;
+  height: 2px;
+  background-color: var(--color-accent);
+  margin-top: 10px;
+}
+
+.narrative {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lead {
+  font-family: var(--font-ui);
+  font-size: 16px;
+  color: var(--color-text);
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.bodyText {
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  color: var(--color-text-body);
+  line-height: 1.6;
+}
+
+/* Steps workflow styling */
+.stepsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.sectionHeading {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.stepsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stepCard {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: var(--transition-smooth);
+}
+
+.stepCard:hover {
+  border-color: var(--color-accent);
+}
+
+.stepNum {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-accent);
+  line-height: 1;
+}
+
+.stepTitle {
+  font-family: var(--font-ui);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.stepDesc {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--color-text-body);
+  line-height: 1.5;
+}
+
+/* Call to action */
+.cta {
+  background-color: #FAF6F0; /* slight warm shade background */
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.ctaHeading {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.ctaText {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--color-text-body);
+  line-height: 1.5;
+  max-width: 320px;
+}
+
+.ctaBtn {
+  background-color: var(--color-whatsapp);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: var(--radius-button);
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  font-weight: 600;
+  margin-top: 4px;
+  box-shadow: var(--shadow-fab);
+}
+
+.ctaBtn:hover {
+  background-color: #20ba5a;
+  transform: translateY(-2px);
+}
+
+/* Footer info */
+.footer {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 24px;
+}
+
+.footer p {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: var(--color-muted);
+}
+
+.footerSubtitle {
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}

@@ -1,0 +1,240 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+  padding-top: var(--section-gap);
+  padding-bottom: 40px;
+  background-color: var(--color-bg);
+}
+
+.hero {
+  padding: 0 var(--page-horizontal);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tagLineBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.subtitle {
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--color-accent);
+}
+
+.headline {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--color-text);
+  letter-spacing: -0.5px;
+}
+
+.description {
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  color: var(--color-text-body);
+  line-height: 1.5;
+}
+
+/* Instantly responsive Search bar */
+.searchWrap {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button);
+  padding: 0 16px;
+  height: 48px;
+  transition: var(--transition-smooth);
+}
+
+.searchWrap:focus-within {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 1px var(--color-accent);
+}
+
+.searchWrap i {
+  color: var(--color-muted);
+  font-size: 15px;
+  margin-right: 12px;
+}
+
+.searchInput {
+  flex: 1;
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  color: var(--color-text);
+}
+
+.searchInput::placeholder {
+  color: var(--color-muted);
+}
+
+.clearBtn {
+  color: var(--color-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  transition: var(--transition-smooth);
+}
+
+.clearBtn:hover {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* Filter controls row */
+.filtersSection {
+  padding: 0 var(--page-horizontal);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chipsRow {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.chipsRow::-webkit-scrollbar {
+  display: none;
+}
+
+.chip {
+  flex: 0 0 auto;
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-body);
+  padding: 6px 16px;
+  border-radius: var(--radius-chip);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 500;
+  transition: var(--transition-smooth);
+}
+
+.chip:hover {
+  border-color: var(--color-accent);
+  color: var(--color-text);
+}
+
+.chipActive {
+  background-color: var(--color-text);
+  color: #FFFFFF !important;
+  border-color: var(--color-text) !important;
+}
+
+.selectWrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button);
+  padding: 0 16px;
+  height: 40px;
+}
+
+.selectLabel {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  letter-spacing: 0.5px;
+}
+
+.select {
+  flex: 1;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238B7D72' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0 center;
+  background-size: 14px;
+  padding-right: 20px;
+}
+
+/* Listings section */
+.gridSection {
+  padding: 0 var(--page-horizontal);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.gridHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gridTitle {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.count {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Trust banner styling */
+.trustBanner {
+  margin: 12px var(--page-horizontal) 0;
+  padding: 16px;
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.trustIcon {
+  font-size: 22px;
+  color: var(--color-accent);
+}
+
+.trustContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.trustTitle {
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.trustText {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--color-text-body);
+  line-height: 1.45;
+}
