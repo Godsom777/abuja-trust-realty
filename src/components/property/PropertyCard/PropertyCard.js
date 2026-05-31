@@ -35,10 +35,11 @@ export default function PropertyCard({ property }) {
 
   // Fallback image if cover_image_url is missing
   const imageUrl = cover_image_url || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=800';
+  const isVideo = imageUrl && (imageUrl.endsWith('.mp4') || imageUrl.endsWith('.webm') || imageUrl.endsWith('.mov') || imageUrl.includes('video'));
 
   const formattedPrice = price_ngn
     ? formatConvertedPrice(price_ngn, currency, true)
-    : 'Price on Inquiry';
+    : 'Price on Enquiry';
 
   const typeLabel = transaction_type === 'rent' ? 'For Rent' : transaction_type === 'off-plan' ? 'Off-Plan' : 'For Sale';
 
@@ -52,12 +53,23 @@ export default function PropertyCard({ property }) {
     <Link href={`/property/${slug}`} className={styles.card}>
       {/* 16:9 Aspect Ratio Media Wrapper */}
       <div className={styles.mediaContainer}>
-        <img
-          src={imageUrl}
-          alt={title}
-          className={styles.image}
-          loading="lazy"
-        />
+        {isVideo ? (
+          <video
+            src={imageUrl}
+            className={styles.image}
+            muted
+            loop
+            autoPlay
+            playsInline
+          />
+        ) : (
+          <img
+            src={imageUrl}
+            alt={title}
+            className={styles.image}
+            loading="lazy"
+          />
+        )}
         <div className={styles.imageOverlay} />
 
         {/* Status Badge Group */}

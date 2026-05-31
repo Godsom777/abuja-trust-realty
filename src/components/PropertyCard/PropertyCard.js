@@ -1,4 +1,5 @@
 import Link from "next/link";
+import slugify from "slugify";
 import styles from "./PropertyCard.module.css";
 
 const formatPrice = (price) => {
@@ -28,18 +29,34 @@ export default function PropertyCard({
 }) {
   const transLabel = TRANSACTION_LABELS[transactionType] || transactionType;
 
+  const districtSlug = district ? slugify(district.toLowerCase()) : 'unspecified';
+  const detailUrl = slug.startsWith('/') ? slug : `/abuja/${districtSlug}/${slug}`;
+  const isVideo = photo && (photo.endsWith('.mp4') || photo.endsWith('.webm') || photo.endsWith('.mov') || photo.includes('video'));
+
   return (
-    <Link href={slug} className={styles.card}>
+    <Link href={detailUrl} className={styles.card}>
       {/* Image */}
       <div className={styles.imageWrap}>
-        <div
-          className={styles.image}
-          style={{
-            backgroundImage: photo
-              ? `url(${photo})`
-              : `url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600')`,
-          }}
-        />
+        {isVideo ? (
+          <video
+            src={photo}
+            className={styles.image}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', top: 0, left: 0 }}
+            muted
+            loop
+            autoPlay
+            playsInline
+          />
+        ) : (
+          <div
+            className={styles.image}
+            style={{
+              backgroundImage: photo
+                ? `url(${photo})`
+                : `url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600')`,
+            }}
+          />
+        )}
         <div className={styles.overlay} />
 
         {/* Badges */}

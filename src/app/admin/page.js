@@ -194,7 +194,13 @@ export default function AdminPortal() {
         .order('created_at', { ascending: false });
 
       if (data && !error) {
-        setListings(data);
+        // Map database fields to ensure safe client rendering
+        const mapped = data.map(item => ({
+          ...item,
+          cover_image_url: item.photo || item.cover_image_url || null,
+          location_area: item.district || item.location_area || 'Abuja'
+        }));
+        setListings(mapped);
       }
     } catch (err) {
       console.error(err);
@@ -339,6 +345,12 @@ export default function AdminPortal() {
       ? formData.features.split(',').map(f => f.trim()).filter(Boolean)
       : [];
 
+    // Fallback cover photo to first gallery media if cover is still the default preset
+    let finalCoverUrl = formData.cover_image_url.trim();
+    if (finalCoverUrl === COVER_IMAGE_PRESETS[0].url && galleryUrls.length > 0) {
+      finalCoverUrl = galleryUrls[0];
+    }
+
     const dbPayload = {
       title: cleanTitle,
       description: formData.description.trim(),
@@ -350,7 +362,7 @@ export default function AdminPortal() {
       transaction_type: formData.transaction_type,
       property_type: formData.property_type,
       status: formData.status,
-      photo: formData.cover_image_url.trim(),
+      photo: finalCoverUrl,
       features: featuresArray,
       slug: finalSlug,
       created_at: new Date().toISOString()
@@ -597,13 +609,24 @@ export default function AdminPortal() {
                 </div>
               ) : (
                 <div className={styles.list}>
-                  {listings.map((item) => (
-                    <div key={item.id} className={styles.listingRow}>
-                      <img
-                        src={item.cover_image_url || COVER_IMAGE_PRESETS[0].url}
-                        alt={item.title}
-                        className={item.cover_image_url ? styles.rowThumb : `${styles.rowThumb} ${styles.thumbFallback}`}
-                      />
+                  {listings.map((item) => {
+                    const thumbUrl = item.cover_image_url || COVER_IMAGE_PRESETS[0].url;
+                    const isVideo = thumbUrl.endsWith('.mp4') || thumbUrl.endsWith('.webm') || thumbUrl.endsWith('.mov') || thumbUrl.includes('video');
+                    return (
+                      <div key={item.id} className={styles.listingRow}>
+                        {isVideo ? (
+                          <video
+                            src={thumbUrl}
+                            className={styles.rowThumb}
+                            muted
+                          />
+                        ) : (
+                          <img
+                            src={thumbUrl}
+                            alt={item.title}
+                            className={item.cover_image_url ? styles.rowThumb : `${styles.rowThumb} ${styles.thumbFallback}`}
+                          />
+                        )}
                       
                       <div className={styles.rowInfo}>
                         <h4 className={styles.rowTitle}>{item.title}</h4>
@@ -639,7 +662,7 @@ export default function AdminPortal() {
                         )}
                       </div>
                     </div>
-                  ))}
+                  )})}
                 </div>
               )}
             </div>

@@ -6,7 +6,8 @@ export const revalidate = 0; // Disable static caching so it always fetches fres
 
 // Dynamic SEO Metadata Generation
 export async function generateMetadata({ params }) {
-  const { slug } = params;
+  const resolvedParams = await params;
+  const { slug } = resolvedParams;
 
   try {
     const { data: property } = await supabase
@@ -45,7 +46,8 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function PropertyDetailPage({ params }) {
-  const { slug } = params;
+  const resolvedParams = await params;
+  const { slug } = resolvedParams;
 
   // 1. Fetch single property by slug
   let property = null;
@@ -63,7 +65,9 @@ export default async function PropertyDetailPage({ params }) {
         transaction_type: data.transaction_type || data.transactionType || 'sale',
         property_type: data.property_type || data.propertyType || 'residential',
         size_sqm: data.size_sqm || data.sizeSqm || 0,
-        cover_image_url: data.cover_image_url || data.photo || null
+        cover_image_url: data.cover_image_url || data.photo || null,
+        location_area: data.district || data.location_area || 'Abuja',
+        location_city: data.location_city || 'Abuja'
       };
     }
   } catch (err) {

@@ -7,11 +7,12 @@ import PhotoGallery from "@/components/property/PhotoGallery/PhotoGallery";
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;
   const fullSlug = "/abuja/" + resolvedParams.slug.join("/");
+  const cleanSlug = resolvedParams.slug[resolvedParams.slug.length - 1];
   
   const { data: listing } = await supabase
     .from('properties')
     .select('*')
-    .eq('slug', fullSlug)
+    .or(`slug.eq.${cleanSlug},slug.eq.${fullSlug}`)
     .single();
 
   if (!listing) return { title: "Property Not Found" };
@@ -39,11 +40,12 @@ const TRANSACTION_LABELS = {
 export default async function PropertyDetailPage({ params }) {
   const resolvedParams = await params;
   const fullSlug = "/abuja/" + resolvedParams.slug.join("/");
+  const cleanSlug = resolvedParams.slug[resolvedParams.slug.length - 1];
 
   const { data: rawListing } = await supabase
     .from('properties')
     .select('*')
-    .eq('slug', fullSlug)
+    .or(`slug.eq.${cleanSlug},slug.eq.${fullSlug}`)
     .single();
 
   if (!rawListing) {
