@@ -56,7 +56,9 @@ export default function AdminPortal() {
     property_type: 'residential',
     status: 'available',
     cover_image_url: COVER_IMAGE_PRESETS[0].url,
-    features: ''
+    features: '',
+    structure_type: '',
+    custom_structure_type: ''
   });
   const [formSubmitLoading, setFormSubmitLoading] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -319,6 +321,16 @@ export default function AdminPortal() {
     setEditingId(item.id);
     setActiveTab('create'); // Switch to the form tab
     
+    // Check if the structure_type is one of the dropdown values
+    const standardTypes = [
+      "Detached Duplex", "Semi-Detached Duplex", "Terrace Duplex",
+      "Detached Bungalow", "Semi-Detached Bungalow", "Detached House",
+      "Semi-Detached House", "Terrace House", "Bungalow", "Duplex",
+      "Terrace", "Penthouse", "Apartment", "Mansion"
+    ];
+    
+    const isStandard = !item.structure_type || standardTypes.includes(item.structure_type);
+
     // Load listing core fields into formData
     setFormData({
       title: item.title || '',
@@ -333,7 +345,9 @@ export default function AdminPortal() {
       property_type: item.property_type || 'residential',
       status: item.status || 'available',
       cover_image_url: item.photo || item.cover_image_url || COVER_IMAGE_PRESETS[0].url,
-      features: item.features ? item.features.join(', ') : ''
+      features: item.features ? item.features.join(', ') : '',
+      structure_type: item.structure_type ? (isStandard ? item.structure_type : 'Other') : '',
+      custom_structure_type: item.structure_type ? (isStandard ? '' : item.structure_type) : ''
     });
 
     // Fetch existing gallery media
@@ -374,7 +388,9 @@ export default function AdminPortal() {
       property_type: 'residential',
       status: 'available',
       cover_image_url: COVER_IMAGE_PRESETS[0].url,
-      features: ''
+      features: '',
+      structure_type: '',
+      custom_structure_type: ''
     });
     setGalleryUrls([]);
     setFormSuccessMessage('');
@@ -408,6 +424,11 @@ export default function AdminPortal() {
 
     const cleanTitle = formData.title.trim();
 
+    let structureTypeVal = formData.structure_type;
+    if (structureTypeVal === 'Other' && formData.custom_structure_type) {
+      structureTypeVal = formData.custom_structure_type.trim();
+    }
+
     const dbPayload = {
       title: cleanTitle,
       description: formData.description.trim(),
@@ -420,7 +441,8 @@ export default function AdminPortal() {
       property_type: formData.property_type,
       status: formData.status,
       photo: finalCoverUrl,
-      features: featuresArray
+      features: featuresArray,
+      structure_type: structureTypeVal || null
     };
 
     try {
@@ -723,7 +745,7 @@ export default function AdminPortal() {
                       <div className={styles.rowInfo}>
                         <h4 className={styles.rowTitle}>{item.title}</h4>
                         <p className={styles.rowSpecs}>
-                          {item.location_area} · {formatConvertedPrice(item.price_ngn, 'ngn')} · {item.bedrooms || 0} Bed
+                          {item.location_area} · {formatConvertedPrice(item.price_ngn, 'ngn')} · {item.bedrooms || 0} Bed{item.structure_type ? ` · ${item.structure_type}` : ''}
                         </p>
                       </div>
 
@@ -918,6 +940,49 @@ export default function AdminPortal() {
                           className={styles.input}
                         />
                       </div>
+                    </div>
+
+                    <div className={styles.formRow} style={{ marginTop: '10px' }}>
+                      <div className={styles.formGroup}>
+                        <label className={styles.label}>Building Design / Structure Type</label>
+                        <select
+                          name="structure_type"
+                          value={formData.structure_type}
+                          onChange={handleInputChange}
+                          className={styles.select}
+                        >
+                          <option value="">Select Design (Optional)</option>
+                          <option value="Detached Duplex">Detached Duplex</option>
+                          <option value="Semi-Detached Duplex">Semi-Detached Duplex</option>
+                          <option value="Terrace Duplex">Terrace Duplex</option>
+                          <option value="Detached Bungalow">Detached Bungalow</option>
+                          <option value="Semi-Detached Bungalow">Semi-Detached Bungalow</option>
+                          <option value="Detached House">Detached House</option>
+                          <option value="Semi-Detached House">Semi-Detached House</option>
+                          <option value="Terrace House">Terrace House</option>
+                          <option value="Bungalow">Bungalow</option>
+                          <option value="Duplex">Duplex</option>
+                          <option value="Terrace">Terrace</option>
+                          <option value="Penthouse">Penthouse</option>
+                          <option value="Apartment">Apartment</option>
+                          <option value="Mansion">Mansion</option>
+                          <option value="Other">Other (Custom)</option>
+                        </select>
+                      </div>
+
+                      {formData.structure_type === 'Other' && (
+                        <div className={styles.formGroup}>
+                          <label className={styles.label}>Custom Structure Type</label>
+                          <input
+                            type="text"
+                            name="custom_structure_type"
+                            placeholder="e.g. Maisonette, Loft..."
+                            value={formData.custom_structure_type || ''}
+                            onChange={handleInputChange}
+                            className={styles.input}
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

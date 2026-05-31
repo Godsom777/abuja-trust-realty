@@ -67,7 +67,8 @@ export default async function PropertyDetailPage({ params }) {
         size_sqm: data.size_sqm || data.sizeSqm || 0,
         cover_image_url: data.cover_image_url || data.photo || null,
         location_area: data.district || data.location_area || 'Abuja',
-        location_city: data.location_city || 'Abuja'
+        location_city: data.location_city || 'Abuja',
+        structure_type: data.structure_type || null
       };
     }
   } catch (err) {

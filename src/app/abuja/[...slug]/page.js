@@ -59,6 +59,7 @@ export default async function PropertyDetailPage({ params }) {
     transactionType: rawListing.transaction_type || rawListing.transactionType || "sale",
     propertyType: rawListing.property_type || rawListing.propertyType || "residential",
     sizeSqm: rawListing.size_sqm || rawListing.sizeSqm,
+    structureType: rawListing.structure_type || rawListing.structureType || null,
   };
 
   // Fetch associated media for slideshow (photos & videos)
@@ -154,6 +155,15 @@ export default async function PropertyDetailPage({ params }) {
               </span>
               <span className={styles.specLabel}>Property Type</span>
             </div>
+            {listing.structureType && (
+              <div className={styles.specBox}>
+                <i className="fa-solid fa-house"></i>
+                <span className={styles.specVal} style={{ textTransform: "capitalize" }}>
+                  {listing.structureType}
+                </span>
+                <span className={styles.specLabel}>Design</span>
+              </div>
+            )}
           </div>
 
           <div className={styles.section}>

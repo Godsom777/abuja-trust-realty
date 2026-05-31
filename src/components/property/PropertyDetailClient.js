@@ -43,7 +43,8 @@ export default function PropertyDetailClient({ property, media = [] }) {
     size_sqm,
     status = 'available',
     transaction_type = 'sale',
-    features = []
+    features = [],
+    structure_type
   } = property;
 
   const isSaved = mounted && savedProperties.includes(id);
@@ -145,6 +146,9 @@ export default function PropertyDetailClient({ property, media = [] }) {
               value={`${size_sqm.toLocaleString()} sqm (${(size_sqm / 10000).toLocaleString(undefined, { maximumFractionDigits: 4 })} ha)`} 
               label="Size" 
             />
+          )}
+          {structure_type && (
+            <SpecChip iconClass="fa-house" value={structure_type} label="Design" />
           )}
         </div>
 
