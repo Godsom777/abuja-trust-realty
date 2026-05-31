@@ -1043,3 +1043,66 @@
     margin-top: 4px;
   }
 }
+
+.editRowBtn {
+  color: var(--color-muted);
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-smooth);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+  cursor: pointer;
+}
+
+.editRowBtn:hover {
+  color: var(--color-accent);
+  background-color: rgba(192, 125, 74, 0.05);
+  border-color: var(--color-accent);
+}
+
+.formActionsRow {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.cancelEditBtn {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-body);
+  height: 48px;
+  border-radius: var(--radius-button);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-smooth);
+  width: 200px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.cancelEditBtn:hover {
+  border-color: var(--color-muted);
+  background-color: rgba(26, 21, 18, 0.03);
+}
+
+.editingBadge {
+  background-color: rgba(192, 125, 74, 0.08);
+  color: var(--color-accent);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}

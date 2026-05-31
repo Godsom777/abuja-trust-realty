@@ -59,6 +59,7 @@ export default function AdminPortal() {
     features: ''
   });
   const [formSubmitLoading, setFormSubmitLoading] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   const [formSuccessMessage, setFormSuccessMessage] = useState('');
   const [formErrorMessage, setFormErrorMessage] = useState('');
 
@@ -313,7 +314,74 @@ export default function AdminPortal() {
     }
   };
 
-  // Create listing submission
+  // Handle Edit Trigger
+  const handleEditClick = async (item) => {
+    setEditingId(item.id);
+    setActiveTab('create'); // Switch to the form tab
+    
+    // Load listing core fields into formData
+    setFormData({
+      title: item.title || '',
+      description: item.description || '',
+      location_area: item.district || item.location_area || 'Maitama',
+      location_city: item.location_city || 'Abuja',
+      price_ngn: item.price_ngn || '',
+      bedrooms: item.bedrooms || '',
+      size_sqm: item.size_sqm || '',
+      size_hectares: item.size_sqm ? (item.size_sqm / 10000).toString() : '',
+      transaction_type: item.transaction_type || 'sale',
+      property_type: item.property_type || 'residential',
+      status: item.status || 'available',
+      cover_image_url: item.photo || item.cover_image_url || COVER_IMAGE_PRESETS[0].url,
+      features: item.features ? item.features.join(', ') : ''
+    });
+
+    // Fetch existing gallery media
+    setGalleryLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('property_media')
+        .select('url')
+        .eq('property_id', item.id)
+        .order('display_order', { ascending: true });
+
+      if (data && !error) {
+        setGalleryUrls(data.map(m => m.url));
+      } else {
+        setGalleryUrls([]);
+      }
+    } catch (err) {
+      console.error("Failed to load gallery for edit:", err);
+      setGalleryUrls([]);
+    } finally {
+      setGalleryLoading(false);
+    }
+  };
+
+  // Reset form and cancel edit
+  const resetForm = () => {
+    setEditingId(null);
+    setFormData({
+      title: '',
+      description: '',
+      location_area: 'Maitama',
+      location_city: 'Abuja',
+      price_ngn: '',
+      bedrooms: '',
+      size_sqm: '',
+      size_hectares: '',
+      transaction_type: 'sale',
+      property_type: 'residential',
+      status: 'available',
+      cover_image_url: COVER_IMAGE_PRESETS[0].url,
+      features: ''
+    });
+    setGalleryUrls([]);
+    setFormSuccessMessage('');
+    setFormErrorMessage('');
+  };
+
+  // Combined Form Submission (Create & Edit)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormSubmitLoading(true);
@@ -327,20 +395,7 @@ export default function AdminPortal() {
       return;
     }
 
-    // 1. Generate SEO Slug
-    const cleanTitle = formData.title.trim();
-    const bedPart = formData.bedrooms ? `${formData.bedrooms}-bedroom-` : '';
-    const typePart = slugify(formData.property_type.toLowerCase());
-    const areaPart = slugify(formData.location_area.toLowerCase());
-    
-    let baseSlug = `${bedPart}${typePart}-${areaPart}`;
-    if (!baseSlug) baseSlug = slugify(cleanTitle.toLowerCase());
-    
-    // Add random suffix to ensure absolute slug uniqueness
-    const suffix = Math.random().toString(36).substring(2, 6).toUpperCase();
-    const finalSlug = `${baseSlug}-${suffix}`;
-
-    // 2. Format features array
+    // Format features array
     const featuresArray = formData.features
       ? formData.features.split(',').map(f => f.trim()).filter(Boolean)
       : [];
@@ -350,6 +405,8 @@ export default function AdminPortal() {
     if (finalCoverUrl === COVER_IMAGE_PRESETS[0].url && galleryUrls.length > 0) {
       finalCoverUrl = galleryUrls[0];
     }
+
+    const cleanTitle = formData.title.trim();
 
     const dbPayload = {
       title: cleanTitle,
@@ -363,59 +420,94 @@ export default function AdminPortal() {
       property_type: formData.property_type,
       status: formData.status,
       photo: finalCoverUrl,
-      features: featuresArray,
-      slug: finalSlug,
-      created_at: new Date().toISOString()
+      features: featuresArray
     };
 
     try {
-      const { data, error } = await supabase
-        .from('properties')
-        .insert([dbPayload])
-        .select();
+      if (editingId) {
+        // UPDATE existing listing
+        const { error } = await supabase
+          .from('properties')
+          .update(dbPayload)
+          .eq('id', editingId);
 
-      if (error) {
-        throw error;
-      }
+        if (error) throw error;
 
-      // If additional media files were uploaded, insert them into property_media table
-      if (data && data[0] && galleryUrls.length > 0) {
-        const mediaPayload = galleryUrls.map((url, idx) => ({
-          property_id: data[0].id,
-          url: url,
-          is_video: url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.includes('/video/') || url.includes('video'),
-          display_order: idx
-        }));
-
-        const { error: mediaError } = await supabase
+        // Clear and rebuild associated gallery media to sync changes
+        await supabase
           .from('property_media')
-          .insert(mediaPayload);
+          .delete()
+          .eq('property_id', editingId);
 
-        if (mediaError) {
-          console.error("Failed to save property media files to database:", mediaError);
+        if (galleryUrls.length > 0) {
+          const mediaPayload = galleryUrls.map((url, idx) => ({
+            property_id: editingId,
+            url: url,
+            is_video: url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.includes('/video/') || url.includes('video'),
+            display_order: idx
+          }));
+
+          const { error: mediaError } = await supabase
+            .from('property_media')
+            .insert(mediaPayload);
+
+          if (mediaError) {
+            console.error("Failed to save property media files to database:", mediaError);
+          }
         }
-      }
 
-      setFormSuccessMessage(`Property Listing successfully published! Slug: ${finalSlug}`);
-      // Reset form and upload states
-      setFormData({
-        title: '',
-        description: '',
-        location_area: 'Maitama',
-        location_city: 'Abuja',
-        price_ngn: '',
-        bedrooms: '',
-        size_sqm: '',
-        size_hectares: '',
-        transaction_type: 'sale',
-        property_type: 'residential',
-        status: 'available',
-        cover_image_url: COVER_IMAGE_PRESETS[0].url,
-        features: ''
-      });
-      setGalleryUrls([]);
+        setFormSuccessMessage(`Property Listing successfully updated!`);
+        resetForm();
+        fetchListings(); // Refresh registry
+      } else {
+        // CREATE new listing
+        // 1. Generate SEO Slug
+        const bedPart = formData.bedrooms ? `${formData.bedrooms}-bedroom-` : '';
+        const typePart = slugify(formData.property_type.toLowerCase());
+        const areaPart = slugify(formData.location_area.toLowerCase());
+        
+        let baseSlug = `${bedPart}${typePart}-${areaPart}`;
+        if (!baseSlug) baseSlug = slugify(cleanTitle.toLowerCase());
+        
+        const suffix = Math.random().toString(36).substring(2, 6).toUpperCase();
+        const finalSlug = `${baseSlug}-${suffix}`;
+
+        const insertPayload = {
+          ...dbPayload,
+          slug: finalSlug,
+          created_at: new Date().toISOString()
+        };
+
+        const { data, error } = await supabase
+          .from('properties')
+          .insert([insertPayload])
+          .select();
+
+        if (error) throw error;
+
+        // If additional media files were uploaded, insert them into property_media table
+        if (data && data[0] && galleryUrls.length > 0) {
+          const mediaPayload = galleryUrls.map((url, idx) => ({
+            property_id: data[0].id,
+            url: url,
+            is_video: url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.includes('/video/') || url.includes('video'),
+            display_order: idx
+          }));
+
+          const { error: mediaError } = await supabase
+            .from('property_media')
+            .insert(mediaPayload);
+
+          if (mediaError) {
+            console.error("Failed to save property media files to database:", mediaError);
+          }
+        }
+
+        setFormSuccessMessage(`Property Listing successfully published! Slug: ${finalSlug}`);
+        resetForm();
+      }
     } catch (err) {
-      setFormErrorMessage(err.message || "Failed to publish listing to Supabase.");
+      setFormErrorMessage(err.message || `Failed to ${editingId ? 'update' : 'publish'} listing to Supabase.`);
     }
     setFormSubmitLoading(false);
   };
@@ -645,6 +737,15 @@ export default function AdminPortal() {
                           <Badge status={item.status} />
                         </button>
 
+                        {/* Edit Action Button */}
+                        <button
+                          onClick={() => handleEditClick(item)}
+                          className={styles.editRowBtn}
+                          title="Edit Listing"
+                        >
+                          <i className="fa-solid fa-pen-to-square"></i>
+                        </button>
+
                         {/* Delete Trigger */}
                         {deleteId === item.id ? (
                           <div className={styles.confirmDelete}>
@@ -672,7 +773,14 @@ export default function AdminPortal() {
           {activeTab === 'create' && (
             <div className={styles.tabContent}>
               <div className={styles.sectionHeader}>
-                <h2 className={styles.sectionTitle}>Publish Vetted Listing</h2>
+                <h2 className={styles.sectionTitle}>
+                  {editingId ? 'Edit Vetted Listing' : 'Publish Vetted Listing'}
+                </h2>
+                {editingId && (
+                  <span className={styles.editingBadge}>
+                    <i className="fa-solid fa-pen-to-square"></i> Editing Mode
+                  </span>
+                )}
               </div>
               
               <form onSubmit={handleSubmit} className={styles.form}>
@@ -937,21 +1045,33 @@ export default function AdminPortal() {
                   </div>
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={formSubmitLoading}
-                  className={styles.submitBtn}
-                >
-                  {formSubmitLoading ? (
-                    <>
-                      <i className="fa-solid fa-spinner fa-spin"></i> Publishing Vetted Listing...
-                    </>
-                  ) : (
-                    <>
-                      <i className="fa-solid fa-cloud-arrow-up"></i> Publish Vetted Listing
-                    </>
+                <div className={styles.formActionsRow}>
+                  <button
+                    type="submit"
+                    disabled={formSubmitLoading}
+                    className={styles.submitBtn}
+                  >
+                    {formSubmitLoading ? (
+                      <>
+                        <i className="fa-solid fa-spinner fa-spin"></i> {editingId ? 'Saving Changes...' : 'Publishing Vetted Listing...'}
+                      </>
+                    ) : (
+                      <>
+                        <i className={editingId ? 'fa-solid fa-floppy-disk' : 'fa-solid fa-cloud-arrow-up'}></i> {editingId ? 'Save Changes' : 'Publish Vetted Listing'}
+                      </>
+                    )}
+                  </button>
+                  
+                  {editingId && (
+                    <button
+                      type="button"
+                      onClick={resetForm}
+                      className={styles.cancelEditBtn}
+                    >
+                      Cancel Edit
+                    </button>
                   )}
-                </button>
+                </div>
               </form>
             </div>
           )}
