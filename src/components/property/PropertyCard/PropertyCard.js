@@ -7,7 +7,7 @@ import { formatConvertedPrice } from '@/lib/currency';
 import { useAppStore } from '@/store/useAppStore';
 import styles from './PropertyCard.module.css';
 
-export default function PropertyCard({ property }) {
+export default function PropertyCard({ property, viewMode = 'list' }) {
   const { currency, toggleSaveProperty, savedProperties } = useAppStore();
   const [mounted, setMounted] = useState(false);
 
@@ -50,7 +50,7 @@ export default function PropertyCard({ property }) {
   };
 
   return (
-    <Link href={`/property/${slug}`} className={styles.card}>
+    <Link href={`/property/${slug}`} className={`${styles.card} ${viewMode === 'grid' ? styles.cardGrid : ''}`}>
       {/* 16:9 Aspect Ratio Media Wrapper */}
       <div className={styles.mediaContainer}>
         {isVideo ? (

@@ -181,3 +181,66 @@
   50% { transform: scale(1.3); }
   100% { transform: scale(1); }
 }
+
+/* Compact Card Styling for Grid View */
+.cardGrid .content {
+  padding: 12px;
+  gap: 6px;
+}
+
+.cardGrid .location {
+  font-size: 8.5px;
+  letter-spacing: 0.5px;
+}
+
+.cardGrid .title {
+  font-size: 15px;
+  line-height: 1.35;
+  margin-bottom: 2px;
+}
+
+.cardGrid .footerRow {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding-top: 8px;
+  margin-top: 2px;
+}
+
+.cardGrid .price {
+  font-size: 14.5px;
+}
+
+.cardGrid .specs {
+  width: 100%;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.cardGrid .specItem {
+  font-size: 10.5px;
+}
+
+.cardGrid .specItem i {
+  font-size: 9.5px;
+}
+
+.cardGrid .saveBtn {
+  width: 28px;
+  height: 28px;
+  font-size: 11px;
+  top: 8px;
+  right: 8px;
+}
+
+.cardGrid .badgeGroup {
+  top: 8px;
+  left: 8px;
+  gap: 4px;
+}
+
+.cardGrid .typeBadge {
+  padding: 3px 8px;
+  font-size: 9px;
+  letter-spacing: 0.3px;
+}

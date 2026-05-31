@@ -1,14 +1,30 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useAppStore } from '@/store/useAppStore';
 import PropertyGrid from '../property/PropertyGrid/PropertyGrid';
 import WhatsAppFAB from '../property/WhatsAppFAB/WhatsAppFAB';
 import styles from './HomeClient.module.css';
 
 export default function HomeClient({ initialListings = [], initialDistricts = [] }) {
+  const router = useRouter();
+  const { savedProperties, viewMode, setViewMode } = useAppStore();
+  const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState('all'); // 'all' | 'sale' | 'rent' | 'off-plan'
   const [selectedDistrict, setSelectedDistrict] = useState('all');
+
+  const searchParams = useSearchParams();
+  const filter = searchParams ? searchParams.get('filter') : null;
+
+  // Safe client-side hydration to prevent SSR mismatch
+  useEffect(() => {
+    useAppStore.persist.rehydrate();
+    setMounted(true);
+  }, []);
+
+  const currentViewMode = mounted ? viewMode : 'list';
 
   const filterTypes = [
     { key: 'all', label: 'All Listings' },
@@ -19,7 +35,15 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
 
   // Client-side filtering logic (Instant response, zero lag!)
   const filteredListings = useMemo(() => {
-    return initialListings.filter((listing) => {
+    let list = initialListings;
+    
+    // Filter by saved properties if the Saved Tab filter is active
+    if (filter === 'saved') {
+      if (!mounted) return []; // Render empty while checking localStorage on initial client mount
+      list = list.filter(listing => savedProperties.includes(listing.id));
+    }
+
+    return list.filter((listing) => {
       // 1. Transaction Type filter
       if (selectedType !== 'all' && (listing.transaction_type || '').toLowerCase() !== selectedType) {
         return false;
@@ -47,7 +71,7 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
 
       return true;
     });
-  }, [initialListings, selectedType, selectedDistrict, searchQuery]);
+  }, [initialListings, selectedType, selectedDistrict, searchQuery, filter, savedProperties, mounted]);
 
   return (
     <div className={styles.container}>
@@ -119,18 +143,63 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
       {/* Vetted listings grid */}
       <section className={styles.gridSection}>
         <div className={styles.gridHeader}>
-          <h2 className={styles.gridTitle}>Vetted Properties</h2>
-          <span className={styles.count}>{filteredListings.length} found</span>
+          <div className={styles.gridTitleBlock}>
+            <h2 className={styles.gridTitle}>
+              {filter === 'saved' ? 'Saved Properties' : 'Vetted Properties'}
+            </h2>
+            <span className={styles.count}>{filteredListings.length} found</span>
+          </div>
+
+          {/* Segmented layout mode toggle */}
+          <div className={styles.toggleContainer}>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`${styles.toggleBtn} ${currentViewMode === 'list' ? styles.toggleBtnActive : ''}`}
+              aria-label="List View"
+              title="List View"
+            >
+              <i className="fa-solid fa-bars"></i>
+            </button>
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`${styles.toggleBtn} ${currentViewMode === 'grid' ? styles.toggleBtnActive : ''}`}
+              aria-label="Grid View"
+              title="Grid View"
+            >
+              <i className="fa-solid fa-table-cells-large"></i>
+            </button>
+          </div>
         </div>
 
-        <PropertyGrid
-          properties={filteredListings}
-          emptyMessage={
-            searchQuery || selectedType !== 'all' || selectedDistrict !== 'all'
-              ? "No properties match your current filters. Try resetting search or type parameters."
-              : "No properties listed yet. Check back soon!"
-          }
-        />
+        {filter === 'saved' && mounted && savedProperties.length === 0 ? (
+          <div className={styles.savedEmptyState}>
+            <div className={styles.savedEmptyIcon}>
+              <i className="fa-regular fa-heart"></i>
+            </div>
+            <h3 className={styles.savedEmptyTitle}>Your Saved Collection is Empty</h3>
+            <p className={styles.savedEmptyText}>
+              Keep track of properties you're interested in. Tap the heart icon on any property card to save it here.
+            </p>
+            <button
+              onClick={() => router.push('/')}
+              className={`btn btn-primary ${styles.exploreBtn}`}
+            >
+              <i className="fa-solid fa-magnifying-glass"></i>
+              Explore Listings
+            </button>
+          </div>
+        ) : (
+          <PropertyGrid
+            properties={filteredListings}
+            loading={filter === 'saved' && !mounted}
+            viewMode={currentViewMode}
+            emptyMessage={
+              searchQuery || selectedType !== 'all' || selectedDistrict !== 'all'
+                ? "No properties match your current filters. Try resetting search or type parameters."
+                : "No properties listed yet. Check back soon!"
+            }
+          />
+        )}
       </section>
 
       {/* Trust banner */}

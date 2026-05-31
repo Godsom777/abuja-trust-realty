@@ -8,13 +8,13 @@ import styles from './PropertyGrid.module.css';
  * @param {boolean} loading 
  * @param {string} emptyMessage 
  */
-export default function PropertyGrid({ properties = [], loading = false, emptyMessage = 'No properties found. Check back later.' }) {
+export default function PropertyGrid({ properties = [], loading = false, emptyMessage = 'No properties found. Check back later.', viewMode = 'list' }) {
   
   if (loading) {
     return (
-      <div className={styles.grid}>
-        {[1, 2, 3].map((n) => (
-          <div key={n} className={styles.skeletonCard}>
+      <div className={`${styles.grid} ${viewMode === 'grid' ? styles.isGridView : ''}`}>
+        {[1, 2, 3, 4].map((n) => (
+          <div key={n} className={`${styles.skeletonCard} ${viewMode === 'grid' ? styles.skeletonCardGrid : ''}`}>
             <div className={`skeleton ${styles.skeletonImage}`} />
             <div className={styles.skeletonContent}>
               <div className={`skeleton ${styles.skeletonLocation}`} />
@@ -42,9 +42,9 @@ export default function PropertyGrid({ properties = [], loading = false, emptyMe
   }
 
   return (
-    <div className={styles.grid}>
+    <div className={`${styles.grid} ${viewMode === 'grid' ? styles.isGridView : ''}`}>
       {properties.map((property) => (
-        <PropertyCard key={property.id} property={property} />
+        <PropertyCard key={property.id} property={property} viewMode={viewMode} />
       ))}
     </div>
   );

@@ -6,6 +6,7 @@ export const useAppStore = create(
     (set, get) => ({
       currency: 'ngn',
       savedProperties: [],
+      viewMode: 'list',
       
       // Rates relative to 1 NGN (e.g. 1 NGN = X USD)
       // These are stable conversion rates based on market guidelines:
@@ -17,6 +18,7 @@ export const useAppStore = create(
       },
 
       setCurrency: (currency) => set({ currency }),
+      setViewMode: (viewMode) => set({ viewMode }),
       
       toggleSaveProperty: (propertyId) => {
         const { savedProperties } = get();

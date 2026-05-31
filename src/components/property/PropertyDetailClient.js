@@ -217,6 +217,8 @@ export default function PropertyDetailClient({ property, media = [] }) {
           </button>
         </div>
       </div>
+      {/* Visual Bottom spacer to prevent overlaps with sticky bar */}
+      <div style={{ height: '110px' }} />
     </div>
   );
 }
