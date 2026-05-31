@@ -32,7 +32,7 @@ export const useAppStore = create(
       }
     }),
     {
-      name: 'abode-app-storage', // name of the item in localStorage
+      name: 'abujatrust-app-storage', // name of the item in localStorage
       // Avoid Next.js hydration issues by using a custom partialize or custom storage wait
       skipHydration: true,
     }

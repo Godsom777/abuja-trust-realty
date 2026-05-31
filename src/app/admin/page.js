@@ -34,6 +34,11 @@ export default function AdminPortal() {
   const [enquiries, setEnquiries] = useState([]);
   const [loadingEnquiries, setLoadingEnquiries] = useState(false);
 
+  // Upload States
+  const [coverLoading, setCoverLoading] = useState(false);
+  const [galleryUrls, setGalleryUrls] = useState([]);
+  const [galleryLoading, setGalleryLoading] = useState(false);
+
   // Form State for creating a property
   const [formData, setFormData] = useState({
     title: '',
@@ -54,20 +59,93 @@ export default function AdminPortal() {
   const [formSuccessMessage, setFormSuccessMessage] = useState('');
   const [formErrorMessage, setFormErrorMessage] = useState('');
 
+  // Handle Cover Image Upload from Device
+  const handleCoverUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
+    setCoverLoading(true);
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+    const filePath = `cover-${fileName}`;
+
+    try {
+      const { data, error } = await supabase.storage
+        .from('property-media')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (error) throw error;
+
+      const { data: publicUrlData } = supabase.storage
+        .from('property-media')
+        .getPublicUrl(filePath);
+
+      setFormData(prev => ({
+        ...prev,
+        cover_image_url: publicUrlData.publicUrl
+      }));
+    } catch (err) {
+      console.error("Cover upload error:", err);
+      alert("Failed to upload cover image: " + err.message);
+    } finally {
+      setCoverLoading(false);
+    }
+  };
+
+  // Handle Additional Media Uploads (Images & Videos) from Device
+  const handleGalleryUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+
+    setGalleryLoading(true);
+    const uploadedUrls = [];
+
+    try {
+      for (const file of files) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+        const filePath = `gallery-${fileName}`;
+
+        const { data, error } = await supabase.storage
+          .from('property-media')
+          .upload(filePath, file, {
+            cacheControl: '3600',
+            upsert: false
+          });
+
+        if (error) throw error;
+
+        const { data: publicUrlData } = supabase.storage
+          .from('property-media')
+          .getPublicUrl(filePath);
+
+        uploadedUrls.push(publicUrlData.publicUrl);
+      }
+
+      setGalleryUrls(prev => [...prev, ...uploadedUrls]);
+    } catch (err) {
+      console.error("Gallery upload error:", err);
+      alert("Failed to upload media files: " + err.message);
+    } finally {
+      setGalleryLoading(false);
+    }
+  };
 
   // Auto passcode validation
   const handleLogin = (e) => {
     e.preventDefault();
     const inputPass = (passcode || '').trim();
-    console.log("Passcode attempt in Abode Admin:", inputPass);
+    console.log("Passcode attempt in Abuja Trust Realty Admin:", inputPass);
     
     if (inputPass === '1238' || inputPass === 'admin1238') {
       setIsAuthenticated(true);
       setAuthError('');
       if (typeof window !== 'undefined') {
         try {
-          localStorage.setItem('abode_admin_session', 'active');
+          localStorage.setItem('abujatrust_admin_session', 'active');
         } catch (err) {
           console.warn("Local storage write blocked by browser settings/sandbox:", err);
         }
@@ -82,7 +160,7 @@ export default function AdminPortal() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       try {
-        const session = localStorage.getItem('abode_admin_session');
+        const session = localStorage.getItem('abujatrust_admin_session');
         if (session === 'active') {
           setIsAuthenticated(true);
         }
@@ -96,7 +174,7 @@ export default function AdminPortal() {
     setIsAuthenticated(false);
     if (typeof window !== 'undefined') {
       try {
-        localStorage.removeItem('abode_admin_session');
+        localStorage.removeItem('abujatrust_admin_session');
       } catch (err) {
         console.warn("Local storage clear blocked by browser settings/sandbox:", err);
       }
@@ -234,8 +312,7 @@ export default function AdminPortal() {
     const dbPayload = {
       title: cleanTitle,
       description: formData.description.trim(),
-      location_area: formData.location_area,
-      location_city: formData.location_city,
+      district: formData.location_area,
       price_ngn: price,
       bedrooms: formData.bedrooms ? parseInt(formData.bedrooms) : null,
       bathrooms: formData.bathrooms ? parseInt(formData.bathrooms) : null,
@@ -243,7 +320,7 @@ export default function AdminPortal() {
       transaction_type: formData.transaction_type,
       property_type: formData.property_type,
       status: formData.status,
-      cover_image_url: formData.cover_image_url.trim(),
+      photo: formData.cover_image_url.trim(),
       features: featuresArray,
       slug: finalSlug,
       created_at: new Date().toISOString()
@@ -259,8 +336,26 @@ export default function AdminPortal() {
         throw error;
       }
 
+      // If additional media files were uploaded, insert them into property_media table
+      if (data && data[0] && galleryUrls.length > 0) {
+        const mediaPayload = galleryUrls.map((url, idx) => ({
+          property_id: data[0].id,
+          url: url,
+          is_video: url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.includes('/video/') || url.includes('video'),
+          display_order: idx
+        }));
+
+        const { error: mediaError } = await supabase
+          .from('property_media')
+          .insert(mediaPayload);
+
+        if (mediaError) {
+          console.error("Failed to save property media files to database:", mediaError);
+        }
+      }
+
       setFormSuccessMessage(`Property Listing successfully published! Slug: ${finalSlug}`);
-      // Reset form
+      // Reset form and upload states
       setFormData({
         title: '',
         description: '',
@@ -276,6 +371,7 @@ export default function AdminPortal() {
         cover_image_url: COVER_IMAGE_PRESETS[0].url,
         features: ''
       });
+      setGalleryUrls([]);
     } catch (err) {
       setFormErrorMessage(err.message || "Failed to publish listing to Supabase.");
     }
@@ -320,7 +416,7 @@ export default function AdminPortal() {
       {/* Navigation Header */}
       <header className={styles.header}>
         <div className={styles.headerTitleGroup}>
-          <h1 className={styles.headline}>Abode Control</h1>
+          <h1 className={styles.headline}>Abuja Trust Realty Panel</h1>
           <span className={styles.badge}>ADMIN MODE</span>
         </div>
         <button onClick={handleSignOut} className={styles.signOutBtn}>
@@ -543,16 +639,33 @@ export default function AdminPortal() {
 
               {/* Cover Image selector */}
               <div className={styles.formGroup}>
-                <label className={styles.label}>Visual Cover Image URL</label>
-                <input
-                  type="text"
-                  name="cover_image_url"
-                  required
-                  placeholder="Paste Unsplash/Cloudinary link"
-                  value={formData.cover_image_url}
-                  onChange={handleInputChange}
-                  className={styles.input}
-                />
+                <label className={styles.label}>Visual Cover Image</label>
+                <div className={styles.uploadContainer}>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleCoverUpload}
+                    className={styles.fileInput}
+                    id="cover-upload"
+                  />
+                  <label htmlFor="cover-upload" className={styles.uploadLabel}>
+                    <i className="fa-solid fa-cloud-arrow-up"></i>
+                    {coverLoading ? 'Uploading image...' : 'Choose Cover Image from Device'}
+                  </label>
+                </div>
+                
+                <div className={styles.inputSpacing}>
+                  <span className={styles.orSpan}>— OR paste image URL —</span>
+                  <input
+                    type="text"
+                    name="cover_image_url"
+                    required
+                    placeholder="Paste Unsplash/Cloudinary link"
+                    value={formData.cover_image_url}
+                    onChange={handleInputChange}
+                    className={styles.input}
+                  />
+                </div>
                 
                 {/* Visual presets row */}
                 <div className={styles.presetsRow}>
@@ -567,6 +680,49 @@ export default function AdminPortal() {
                     </button>
                   ))}
                 </div>
+              </div>
+
+              {/* Additional Property Media Upload */}
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Additional Media (Photos & Videos from Device)</label>
+                <div className={styles.uploadContainer}>
+                  <input
+                    type="file"
+                    accept="image/*,video/*"
+                    multiple
+                    onChange={handleGalleryUpload}
+                    className={styles.fileInput}
+                    id="gallery-upload"
+                    disabled={galleryLoading}
+                  />
+                  <label htmlFor="gallery-upload" className={styles.uploadLabel}>
+                    <i className="fa-solid fa-photo-film"></i>
+                    {galleryLoading ? 'Uploading media...' : 'Upload Photos & Videos from Device'}
+                  </label>
+                </div>
+                {galleryUrls.length > 0 && (
+                  <div className={styles.mediaPreviewList}>
+                    {galleryUrls.map((mediaItem, idx) => {
+                      const isVideo = mediaItem.endsWith('.mp4') || mediaItem.endsWith('.webm') || mediaItem.endsWith('.mov') || mediaItem.includes('video');
+                      return (
+                        <div key={idx} className={styles.mediaPreviewItem}>
+                          {isVideo ? (
+                            <video src={mediaItem} className={styles.previewMedia} muted />
+                          ) : (
+                            <img src={mediaItem} alt={`Uploaded ${idx + 1}`} className={styles.previewMedia} />
+                          )}
+                          <button
+                            type="button"
+                            className={styles.removeMediaBtn}
+                            onClick={() => setGalleryUrls(prev => prev.filter((_, i) => i !== idx))}
+                          >
+                            <i className="fa-solid fa-circle-xmark"></i>
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               {/* Description */}

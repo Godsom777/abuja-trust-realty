@@ -39,7 +39,7 @@ export async function generateMetadata({ params }) {
   }
 
   return {
-    title: "Verified Listing — Abode Abuja",
+    title: "Verified Listing — Abuja Trust Realty",
     description: "Verified direct-to-owner property showcase in Abuja, Nigeria."
   };
 }

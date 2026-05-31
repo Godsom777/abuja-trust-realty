@@ -4,12 +4,18 @@ import React, { useState } from 'react';
 import styles from './PhotoGallery.module.css';
 
 /**
- * Premium Photo Gallery Component with hand-built lightbox
- * @param {Array} images - Array of image URL strings
+ * Premium Photo Gallery Component with hand-built lightbox and video support
+ * @param {Array} images - Array of image/video URL strings
  */
 export default function PhotoGallery({ images = [] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+
+  // Helper to check if a URL is a video file
+  const isVideoUrl = (url) => {
+    if (!url) return false;
+    return url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.includes('video') || url.includes('/video/');
+  };
 
   // If no images provided, use a default fallback
   const galleryImages = images.length > 0 
@@ -26,30 +32,49 @@ export default function PhotoGallery({ images = [] }) {
     setCurrentIndex((prev) => (prev === galleryImages.length - 1 ? 0 : prev + 1));
   };
 
+  const currentItem = galleryImages[currentIndex];
+
   return (
     <div className={styles.gallery}>
-      {/* Main Image Viewport */}
-      <div className={styles.viewport} onClick={() => setLightboxOpen(true)}>
-        <img
-          src={galleryImages[currentIndex]}
-          alt={`View ${currentIndex + 1}`}
-          className={styles.mainImage}
-        />
+      {/* Main Image/Video Viewport */}
+      <div 
+        className={styles.viewport} 
+        onClick={() => {
+          if (!isVideoUrl(currentItem)) {
+            setLightboxOpen(true);
+          }
+        }}
+        style={{ cursor: isVideoUrl(currentItem) ? 'default' : 'zoom-in' }}
+      >
+        {isVideoUrl(currentItem) ? (
+          <video
+            src={currentItem}
+            controls
+            className={styles.mainVideo}
+            onClick={(e) => e.stopPropagation()}
+          />
+        ) : (
+          <img
+            src={currentItem}
+            alt={`View ${currentIndex + 1}`}
+            className={styles.mainImage}
+          />
+        )}
         <div className={styles.overlay} />
 
         {/* Floating Indicator */}
         <div className={styles.counter}>
-          <i className="fa-regular fa-image"></i>
+          <i className="fa-regular fa-images"></i>
           {currentIndex + 1} / {galleryImages.length}
         </div>
 
-        {/* Navigation Arrows (Only show if multiple images) */}
+        {/* Navigation Arrows (Only show if multiple items) */}
         {galleryImages.length > 1 && (
           <>
-            <button className={`${styles.navBtn} ${styles.prevBtn}`} onClick={handlePrev} aria-label="Previous image">
+            <button className={`${styles.navBtn} ${styles.prevBtn}`} onClick={handlePrev} aria-label="Previous">
               <i className="fa-solid fa-chevron-left"></i>
             </button>
-            <button className={`${styles.navBtn} ${styles.nextBtn}`} onClick={handleNext} aria-label="Next image">
+            <button className={`${styles.navBtn} ${styles.nextBtn}`} onClick={handleNext} aria-label="Next">
               <i className="fa-solid fa-chevron-right"></i>
             </button>
           </>
@@ -67,7 +92,16 @@ export default function PhotoGallery({ images = [] }) {
                 className={`${styles.thumbBtn} ${isActive ? styles.thumbActive : ''}`}
                 onClick={() => setCurrentIndex(idx)}
               >
-                <img src={img} alt={`Thumb ${idx + 1}`} className={styles.thumbImage} />
+                {isVideoUrl(img) ? (
+                  <div className={styles.thumbVideoWrapper}>
+                    <video src={img} className={styles.thumbVideo} muted preload="metadata" />
+                    <div className={styles.playOverlay}>
+                      <i className="fa-solid fa-circle-play"></i>
+                    </div>
+                  </div>
+                ) : (
+                  <img src={img} alt={`Thumb ${idx + 1}`} className={styles.thumbImage} />
+                )}
               </button>
             );
           })}
@@ -82,11 +116,20 @@ export default function PhotoGallery({ images = [] }) {
           </button>
           
           <div className={styles.lightboxViewport} onClick={(e) => e.stopPropagation()}>
-            <img
-              src={galleryImages[currentIndex]}
-              alt={`Fullscreen view ${currentIndex + 1}`}
-              className={styles.lightboxImage}
-            />
+            {isVideoUrl(currentItem) ? (
+              <video
+                src={currentItem}
+                controls
+                autoPlay
+                className={styles.lightboxVideo}
+              />
+            ) : (
+              <img
+                src={currentItem}
+                alt={`Fullscreen view ${currentIndex + 1}`}
+                className={styles.lightboxImage}
+              />
+            )}
             
             {galleryImages.length > 1 && (
               <>

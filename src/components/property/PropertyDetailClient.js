@@ -52,8 +52,8 @@ export default function PropertyDetailClient({ property, media = [] }) {
   // Map database media url strings or fallback to cover image
   const imageUrls = media.length > 0
     ? media.map(m => m.url)
-    : property.cover_image_url
-      ? [property.cover_image_url]
+    : property.photo || property.cover_image_url
+      ? [property.photo || property.cover_image_url]
       : [];
 
   const mainPrice = price_ngn

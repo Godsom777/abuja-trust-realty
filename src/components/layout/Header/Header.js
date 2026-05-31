@@ -9,7 +9,7 @@ export default function Header() {
       <div className={styles.headerInner}>
         {/* Wordmark Logo */}
         <Link href="/" className={styles.logo}>
-          Abode
+          Abuja Trust Realty
         </Link>
         
         {/* Floating Currency Swapper */}

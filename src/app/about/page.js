@@ -37,7 +37,7 @@ export default function AboutPage() {
       {/* Narrative Section */}
       <section className={styles.narrative}>
         <p className={styles.lead}>
-          Abode was built to solve the primary friction point of Abuja real estate: <strong>the trust deficit.</strong>
+          Abuja Trust Realty was built to solve the primary friction point of Abuja real estate: <strong>the trust deficit.</strong>
         </p>
         <p className={styles.bodyText}>
           For Nigerians in the diaspora, buying or renting a home back home is often filled with anxiety, speculative agent fees, and double-dealing. We eliminate the middlemen.
@@ -49,7 +49,7 @@ export default function AboutPage() {
 
       {/* Steps Flow (How it Works) */}
       <section className={styles.stepsSection}>
-        <h2 className={styles.sectionHeading}>How Abode Works</h2>
+        <h2 className={styles.sectionHeading}>How Abuja Trust Realty Works</h2>
         
         <div className={styles.stepsGrid}>
           {STEPS.map((step, idx) => (
@@ -79,7 +79,7 @@ export default function AboutPage() {
       </section>
 
       <footer className={styles.footer}>
-        <p>© {new Date().getFullYear()} Abode. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} Abuja Trust Realty. All rights reserved.</p>
         <p className={styles.footerSubtitle}>Direct, vetted real estate for the diaspora.</p>
       </footer>
     </div>

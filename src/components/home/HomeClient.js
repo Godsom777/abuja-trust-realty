@@ -139,7 +139,7 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
           <i className="fa-solid fa-shield-halved"></i>
         </div>
         <div className={styles.trustContent}>
-          <h4 className={styles.trustTitle}>The Abode Trust Commitment</h4>
+          <h4 className={styles.trustTitle}>The Abuja Trust Realty Commitment</h4>
           <p className={styles.trustText}>
             Every property listed undergoes title and physical site verification. Negotiations occur on shared WhatsApp groups with platform support.
           </p>

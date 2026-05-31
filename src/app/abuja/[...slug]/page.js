@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import styles from "./page.module.css";
 import { supabase } from "@/lib/supabase";
+import PhotoGallery from "@/components/property/PhotoGallery/PhotoGallery";
 
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;
@@ -58,12 +59,31 @@ export default async function PropertyDetailPage({ params }) {
     sizeSqm: rawListing.size_sqm || rawListing.sizeSqm,
   };
 
+  // Fetch associated media for slideshow (photos & videos)
+  let media = [];
+  try {
+    const { data: mediaData, error: mediaError } = await supabase
+      .from('property_media')
+      .select('*')
+      .eq('property_id', listing.id)
+      .order('display_order', { ascending: true });
+
+    if (mediaData && !mediaError) {
+      media = mediaData.map(m => m.url);
+    }
+  } catch (err) {
+    console.warn("Could not load property media, falling back to cover image.", err);
+  }
+
+  // Fallback to cover photo if no gallery media exists
+  const mediaUrls = media.length > 0 ? media : [listing.photo].filter(Boolean);
+
   const transLabel = TRANSACTION_LABELS[listing.transactionType] || listing.transactionType;
   const dealRef = `ABJ-2026-${listing.id.toString().padStart(4, "0")}`;
   const waMessage = encodeURIComponent(
     `Hello Abuja Trust Realty,\n\I am interested in this property:\n*${listing.title}*\nRef: ${dealRef}\nLink: https://abujatrust.com${listing.slug}`
   );
-  const waLink = `https://wa.me/2348000000000?text=${waMessage}`;
+  const waLink = `https://wa.me/2348032591590?text=${waMessage}`;
 
   return (
     <div className={styles.page}>
@@ -78,28 +98,9 @@ export default async function PropertyDetailPage({ params }) {
         </div>
       </div>
 
-      {/* ── Hero Image Gallery ── */}
-      <div className={styles.heroImageContainer}>
-        <div
-          className={styles.mainImage}
-          style={{
-            backgroundImage: listing.photo
-              ? `url(${listing.photo})`
-              : `url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=1200')`,
-          }}
-        >
-          <div className={styles.badges}>
-            <span className={`badge ${listing.transactionType === "sale" ? "badge-sale" : "badge-rent"}`}>
-              {transLabel}
-            </span>
-            {listing.featured && (
-              <span className="badge badge-featured">
-                <i className="fa-solid fa-star"></i> Featured
-              </span>
-            )}
-          </div>
-          <button className={styles.topRightHeart}><i className="fa-regular fa-heart"></i></button>
-        </div>
+      {/* ── Dynamic Hero Gallery (Images/Videos) ── */}
+      <div className="container" style={{ marginTop: '24px', marginBottom: '24px' }}>
+        <PhotoGallery images={mediaUrls} />
       </div>
 
       {/* ── Content Layout ── */}

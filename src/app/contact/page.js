@@ -46,8 +46,8 @@ export default function ContactPage() {
           </div>
           <h3 className={styles.cardTitle}>Documentation & Support</h3>
           <p className={styles.cardDesc}>For formal proposals, title verification documents, and administrative support.</p>
-          <a href="mailto:hello@abode.com" className={styles.emailLink}>
-            <i className="fa-solid fa-arrow-up-right-from-square"></i> hello@abode.com
+          <a href="mailto:hello@abujatrust.com" className={styles.emailLink}>
+            <i className="fa-solid fa-arrow-up-right-from-square"></i> hello@abujatrust.com
           </a>
         </div>
       </section>

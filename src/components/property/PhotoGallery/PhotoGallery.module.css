@@ -232,3 +232,53 @@
     border-color: rgba(255, 255, 255, 0.1);
   }
 }
+
+/* Video Support Styling */
+.mainVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.thumbVideoWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.thumbVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.playOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-size: 14px;
+  transition: var(--transition-smooth);
+}
+
+.thumbVideoWrapper:hover .playOverlay {
+  background-color: rgba(0, 0, 0, 0.15);
+  color: var(--color-accent);
+}
+
+.lightboxVideo {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  outline: none;
+}
