@@ -63,7 +63,7 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
 
         {/* Instantly Responsive Search Input */}
         <div className={styles.searchWrap}>
-          <i className="fa-solid fa-magnifying-glass styles.searchIcon"></i>
+          <i className="fa-solid fa-magnifying-glass"></i>
           <input
             type="text"
             placeholder="Search Maitama, Wuse, duplex, size..."

@@ -22,7 +22,7 @@ export default function SignInPage() {
           <Link href="/" className={styles.logo}>
             <span className={styles.logoIcon}>◆</span>
             <span className={styles.logoText}>
-              Abuja Trust<span className={styles.logoAccent}> Realty</span>
+              ABJ-Realty<span className={styles.logoAccent}>.</span>
             </span>
           </Link>
           <h2 className={styles.brandTitle}>

@@ -20,16 +20,25 @@
 
 .logo {
   font-family: var(--font-display);
-  font-size: 26px;
+  font-size: 25px;
   font-weight: 700;
   letter-spacing: -0.5px;
   color: var(--color-text);
   transition: var(--transition-smooth);
 }
 
-.logo:hover {
+.logoDot {
   color: var(--color-accent);
+}
+
+.logo:hover {
   opacity: 0.9;
+}
+
+@media (max-width: 480px) {
+  .logo {
+    font-size: 19px;
+  }
 }
 
 .actions {

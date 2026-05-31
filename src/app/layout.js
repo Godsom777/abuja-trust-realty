@@ -1,8 +1,7 @@
 import { Suspense } from "react";
 import "./globals.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import Header from "@/components/layout/Header/Header";
-import BottomNav from "@/components/layout/BottomNav/BottomNav";
+import LayoutWrapper from "@/components/layout/LayoutWrapper";
 
 export const metadata = {
   title: "Abuja Trust Realty — Verified Property Discoveries in Abuja",
@@ -39,15 +38,9 @@ export default function RootLayout({ children }) {
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body>
-        <main>
-          <Header />
-          <div style={{ flex: 1, paddingBottom: '90px' }}>
-            {children}
-          </div>
-          <Suspense fallback={null}>
-            <BottomNav />
-          </Suspense>
-        </main>
+        <LayoutWrapper>
+          {children}
+        </LayoutWrapper>
       </body>
     </html>
   );

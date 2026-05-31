@@ -36,7 +36,7 @@ export default function Navbar() {
           <Link href="/" className={styles.logo} id="nav-logo">
             <i className={`fa-solid fa-diamond ${styles.logoIcon}`}></i>
             <span className={styles.logoText}>
-              Abuja Trust<span className={styles.logoAccent}> Realty</span>
+              ABJ-Realty<span className={styles.logoAccent}>.</span>
             </span>
           </Link>
 
@@ -94,7 +94,7 @@ export default function Navbar() {
               <Link href="/" className={styles.logo} onClick={() => setMobileOpen(false)}>
                 <i className={`fa-solid fa-diamond ${styles.logoIcon}`}></i>
                 <span className={styles.logoText}>
-                  Abuja Trust<span className={styles.logoAccent}> Realty</span>
+                  ABJ-Realty<span className={styles.logoAccent}>.</span>
                 </span>
               </Link>
               <button

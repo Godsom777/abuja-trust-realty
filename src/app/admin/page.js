@@ -220,7 +220,15 @@ export default function AdminPortal() {
     setLoadingEnquiries(false);
   };
 
-  // Trigger loads on tab switch
+  // Load listings and enquiries on authentication mount to populate dashboard stats
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchListings();
+      fetchEnquiries();
+    }
+  }, [isAuthenticated]);
+
+  // Refetch when tabs switch to ensure real-time data freshness
   useEffect(() => {
     if (isAuthenticated) {
       if (activeTab === 'listings') {
@@ -229,7 +237,7 @@ export default function AdminPortal() {
         fetchEnquiries();
       }
     }
-  }, [isAuthenticated, activeTab]);
+  }, [activeTab]);
 
   // Form input changes
   const handleInputChange = (e) => {
@@ -434,421 +442,552 @@ export default function AdminPortal() {
   }
 
   return (
-    <div className={styles.panel}>
-      {/* Navigation Header */}
-      <header className={styles.header}>
-        <div className={styles.headerTitleGroup}>
-          <h1 className={styles.headline}>Abuja Trust Realty Panel</h1>
-          <span className={styles.badge}>ADMIN MODE</span>
+    <div className={styles.adminLayout}>
+      {/* Left Sidebar on Desktop */}
+      <aside className={styles.sidebar}>
+        <div className={styles.sidebarTop}>
+          <div className={styles.logoGroup}>
+            <span className={styles.logoText}>
+              ABJ-Realty<span className={styles.logoDot}>.</span>
+            </span>
+          </div>
+          <span className={styles.adminBadge}>ADMIN PORTAL</span>
         </div>
-        <button onClick={handleSignOut} className={styles.signOutBtn}>
-          <i className="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
-        </button>
-      </header>
 
-      {/* Tabs list selector */}
-      <div className={styles.tabsRow}>
-        <button
-          onClick={() => setActiveTab('listings')}
-          className={`${styles.tabBtn} ${activeTab === 'listings' ? styles.tabActive : ''}`}
-        >
-          <i className="fa-solid fa-list-check"></i> Manage Listings
-        </button>
-        <button
-          onClick={() => setActiveTab('create')}
-          className={`${styles.tabBtn} ${activeTab === 'create' ? styles.tabActive : ''}`}
-        >
-          <i className="fa-solid fa-circle-plus"></i> Add Property
-        </button>
-        <button
-          onClick={() => setActiveTab('enquiries')}
-          className={`${styles.tabBtn} ${activeTab === 'enquiries' ? styles.tabActive : ''}`}
-        >
-          <i className="fa-solid fa-chart-line"></i> Enquiry Logs
-        </button>
-      </div>
+        <nav className={styles.sidebarNav}>
+          <button
+            onClick={() => setActiveTab('listings')}
+            className={`${styles.navBtn} ${activeTab === 'listings' ? styles.navActive : ''}`}
+          >
+            <i className="fa-solid fa-list-check"></i>
+            <span>Manage Listings</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('create')}
+            className={`${styles.navBtn} ${activeTab === 'create' ? styles.navActive : ''}`}
+          >
+            <i className="fa-solid fa-circle-plus"></i>
+            <span>Add Property</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('enquiries')}
+            className={`${styles.navBtn} ${activeTab === 'enquiries' ? styles.navActive : ''}`}
+          >
+            <i className="fa-solid fa-chart-line"></i>
+            <span>Enquiry Logs</span>
+          </button>
+        </nav>
 
-      <div className={styles.content}>
-        
-        {/* Manage Listings TAB */}
-        {activeTab === 'listings' && (
-          <div className={styles.tabContent}>
-            <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>Property Registry</h2>
-              <span className={styles.counter}>{listings.length} Listings Total</span>
+        <div className={styles.sidebarBottom}>
+          <div className={styles.adminProfile}>
+            <div className={styles.avatar}><i className="fa-solid fa-user-shield"></i></div>
+            <div className={styles.profileInfo}>
+              <span className={styles.profileName}>Administrator</span>
+              <span className={styles.profileStatus}>Session Active</span>
+            </div>
+          </div>
+          <button onClick={handleSignOut} className={styles.sidebarSignOutBtn}>
+            <i className="fa-solid fa-arrow-right-from-bracket"></i>
+            <span>Sign Out</span>
+          </button>
+        </div>
+      </aside>
+
+      {/* Main dashboard content area */}
+      <div className={styles.mainContainer}>
+        {/* Mobile Header (only visible on mobile screens) */}
+        <header className={styles.mobileHeader}>
+          <div className={styles.mobileHeaderLeft}>
+            <span className={styles.logoText}>ABJ-Realty<span className={styles.logoDot}>.</span></span>
+            <span className={styles.adminBadge}>ADMIN</span>
+          </div>
+          <button onClick={handleSignOut} className={styles.mobileSignOutBtn} title="Sign Out">
+            <i className="fa-solid fa-arrow-right-from-bracket"></i>
+          </button>
+        </header>
+
+        {/* Mobile navigation row (only visible on mobile screens) */}
+        <div className={styles.mobileNavRow}>
+          <button
+            onClick={() => setActiveTab('listings')}
+            className={`${styles.mobileNavBtn} ${activeTab === 'listings' ? styles.mobileNavActive : ''}`}
+          >
+            <i className="fa-solid fa-list-check"></i>
+            <span>Listings</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('create')}
+            className={`${styles.mobileNavBtn} ${activeTab === 'create' ? styles.mobileNavActive : ''}`}
+          >
+            <i className="fa-solid fa-circle-plus"></i>
+            <span>Add Vetted</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('enquiries')}
+            className={`${styles.mobileNavBtn} ${activeTab === 'enquiries' ? styles.mobileNavActive : ''}`}
+          >
+            <i className="fa-solid fa-chart-line"></i>
+            <span>Logs</span>
+          </button>
+        </div>
+
+        {/* Shared Dashboard Stats Summary Grid */}
+        <section className={styles.statsSection}>
+          <div className={styles.statsGrid}>
+            <div className={styles.statCard}>
+              <div className={styles.statIcon} style={{ background: '#f5f0e8', color: '#1a1512' }}>
+                <i className="fa-solid fa-building"></i>
+              </div>
+              <div className={styles.statInfo}>
+                <span className={styles.statLabel}>Total Listings</span>
+                <span className={styles.statValue}>{listings.length}</span>
+              </div>
+            </div>
+            
+            <div className={styles.statCard}>
+              <div className={styles.statIcon} style={{ background: '#E8F5EE', color: '#2D7D52' }}>
+                <i className="fa-solid fa-circle-check"></i>
+              </div>
+              <div className={styles.statInfo}>
+                <span className={styles.statLabel}>Available</span>
+                <span className={styles.statValue}>{listings.filter(item => item.status === 'available').length}</span>
+              </div>
             </div>
 
-            {loadingListings ? (
-              <div className={styles.loader}>
-                <i className="fa-solid fa-spinner fa-spin"></i> Loading registry...
+            <div className={styles.statCard}>
+              <div className={styles.statIcon} style={{ background: '#FEF3EC', color: '#C07D4A' }}>
+                <i className="fa-solid fa-hourglass-half"></i>
               </div>
-            ) : listings.length === 0 ? (
-              <div className={styles.empty}>
-                <p>No listings exist in the registry. Head to the 'Add Property' tab to seed listings.</p>
+              <div className={styles.statInfo}>
+                <span className={styles.statLabel}>Reserved/Sold</span>
+                <span className={styles.statValue}>{listings.filter(item => item.status === 'reserved' || item.status === 'sold').length}</span>
               </div>
-            ) : (
-              <div className={styles.list}>
-                {listings.map((item) => (
-                  <div key={item.id} className={styles.listingRow}>
-                    <img
-                      src={item.cover_image_url || COVER_IMAGE_PRESETS[0].url}
-                      alt={item.title}
-                      className={item.cover_image_url ? styles.rowThumb : `${styles.rowThumb} ${styles.thumbFallback}`}
-                    />
-                    
-                    <div className={styles.rowInfo}>
-                      <h4 className={styles.rowTitle}>{item.title}</h4>
-                      <p className={styles.rowSpecs}>
-                        {item.location_area} · {formatConvertedPrice(item.price_ngn, 'ngn')} · {item.bedrooms || 0} Bed
-                      </p>
-                    </div>
+            </div>
 
-                    <div className={styles.rowActions}>
-                      {/* Status Toggle Trigger */}
-                      <button
-                        onClick={() => toggleStatus(item.id, item.status)}
-                        className={styles.statusToggleBtn}
-                        title="Click to cycle status"
-                      >
-                        <Badge status={item.status} />
-                      </button>
-
-                      {/* Delete Trigger */}
-                      {deleteId === item.id ? (
-                        <div className={styles.confirmDelete}>
-                          <button onClick={() => deleteListing(item.id)} className={styles.confirmBtn}>Confirm</button>
-                          <button onClick={() => setDeleteId(null)} className={styles.cancelBtn}>Cancel</button>
-                        </div>
-                      ) : (
-                        <button
-                          onClick={() => setDeleteId(item.id)}
-                          className={styles.deleteBtn}
-                          title="Delete Listing"
-                        >
-                          <i className="fa-solid fa-trash-can"></i>
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
+            <div className={styles.statCard}>
+              <div className={styles.statIcon} style={{ background: '#eef2ff', color: '#4f46e5' }}>
+                <i className="fa-brands fa-whatsapp"></i>
               </div>
-            )}
+              <div className={styles.statInfo}>
+                <span className={styles.statLabel}>Enquiry Clicks</span>
+                <span className={styles.statValue}>{enquiries.length}</span>
+              </div>
+            </div>
           </div>
-        )}
+        </section>
 
-        {/* Add Property TAB */}
-        {activeTab === 'create' && (
-          <div className={styles.tabContent}>
-            <h2 className={styles.sectionTitle}>Publish New Vetted Property</h2>
-            
-            <form onSubmit={handleSubmit} className={styles.form}>
-              {formSuccessMessage && <div className={styles.successMessage}><i className="fa-solid fa-circle-check"></i> {formSuccessMessage}</div>}
-              {formErrorMessage && <div className={styles.errorMessage}><i className="fa-solid fa-circle-exclamation"></i> {formErrorMessage}</div>}
-
-              {/* Title input */}
-              <div className={styles.formGroup}>
-                <label className={styles.label}>Listing Title</label>
-                <input
-                  type="text"
-                  name="title"
-                  required
-                  placeholder="e.g. Elegant 5 Bedroom Detached Duplex"
-                  value={formData.title}
-                  onChange={handleInputChange}
-                  className={styles.input}
-                />
+        {/* Dynamic Content Panel */}
+        <main className={styles.contentArea}>
+          
+          {/* Manage Listings TAB */}
+          {activeTab === 'listings' && (
+            <div className={styles.tabContent}>
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>Property Registry</h2>
+                <span className={styles.counter}>{listings.length} Listings Total</span>
               </div>
 
-              {/* Prices input in Naira */}
-              <div className={styles.formRow}>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Price in Naira (NGN)</label>
-                  <input
-                    type="number"
-                    name="price_ngn"
-                    required
-                    placeholder="e.g. 150000000"
-                    value={formData.price_ngn}
-                    onChange={handleInputChange}
-                    className={styles.input}
-                  />
-                  <small className={styles.inputHelper}>Calculates to: {formData.price_ngn ? formatConvertedPrice(formData.price_ngn, 'usd') : '$0'} USD / {formData.price_ngn ? formatConvertedPrice(formData.price_ngn, 'gbp') : '£0'} GBP</small>
+              {loadingListings ? (
+                <div className={styles.loader}>
+                  <i className="fa-solid fa-spinner fa-spin"></i> Loading registry...
                 </div>
+              ) : listings.length === 0 ? (
+                <div className={styles.empty}>
+                  <p>No listings exist in the registry. Head to the 'Add Property' tab to seed listings.</p>
+                </div>
+              ) : (
+                <div className={styles.list}>
+                  {listings.map((item) => (
+                    <div key={item.id} className={styles.listingRow}>
+                      <img
+                        src={item.cover_image_url || COVER_IMAGE_PRESETS[0].url}
+                        alt={item.title}
+                        className={item.cover_image_url ? styles.rowThumb : `${styles.rowThumb} ${styles.thumbFallback}`}
+                      />
+                      
+                      <div className={styles.rowInfo}>
+                        <h4 className={styles.rowTitle}>{item.title}</h4>
+                        <p className={styles.rowSpecs}>
+                          {item.location_area} · {formatConvertedPrice(item.price_ngn, 'ngn')} · {item.bedrooms || 0} Bed
+                        </p>
+                      </div>
 
-                {/* District */}
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Abuja District</label>
-                  <select
-                    name="location_area"
-                    value={formData.location_area}
-                    onChange={handleInputChange}
-                    className={styles.select}
-                  >
-                    {DEFAULT_DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
-                  </select>
-                </div>
-              </div>
+                      <div className={styles.rowActions}>
+                        {/* Status Toggle Trigger */}
+                        <button
+                          onClick={() => toggleStatus(item.id, item.status)}
+                          className={styles.statusToggleBtn}
+                          title="Click to cycle status"
+                        >
+                          <Badge status={item.status} />
+                        </button>
 
-              {/* Transaction Type & Property Type */}
-              <div className={styles.formRow}>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Transaction Mode</label>
-                  <select
-                    name="transaction_type"
-                    value={formData.transaction_type}
-                    onChange={handleInputChange}
-                    className={styles.select}
-                  >
-                    <option value="sale">For Sale</option>
-                    <option value="rent">For Rent</option>
-                    <option value="off-plan">Off-Plan</option>
-                  </select>
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Category Type</label>
-                  <select
-                    name="property_type"
-                    value={formData.property_type}
-                    onChange={handleInputChange}
-                    className={styles.select}
-                  >
-                    <option value="residential">Residential</option>
-                    <option value="commercial">Commercial</option>
-                    <option value="multi-purpose">Multi-purpose</option>
-                    <option value="land">Land Block</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Specifications row */}
-              <div className={styles.formRow}>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Bedrooms</label>
-                  <input
-                    type="number"
-                    name="bedrooms"
-                    placeholder="e.g. 4"
-                    value={formData.bedrooms}
-                    onChange={handleInputChange}
-                    className={styles.input}
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Size (sqm)</label>
-                  <input
-                    type="number"
-                    name="size_sqm"
-                    placeholder="e.g. 650"
-                    value={formData.size_sqm}
-                    onChange={handleInputChange}
-                    className={styles.input}
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Size (hectares)</label>
-                  <input
-                    type="number"
-                    step="any"
-                    name="size_hectares"
-                    placeholder="e.g. 1.5"
-                    value={formData.size_hectares}
-                    onChange={handleInputChange}
-                    className={styles.input}
-                  />
-                </div>
-              </div>
-
-              {/* Cover Image selector */}
-              <div className={styles.formGroup}>
-                <label className={styles.label}>Visual Cover Image</label>
-                <div className={styles.uploadContainer}>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleCoverUpload}
-                    className={styles.fileInput}
-                    id="cover-upload"
-                  />
-                  <label htmlFor="cover-upload" className={styles.uploadLabel}>
-                    <i className="fa-solid fa-cloud-arrow-up"></i>
-                    {coverLoading ? 'Uploading image...' : 'Choose Cover Image from Device'}
-                  </label>
-                </div>
-                
-                <div className={styles.inputSpacing}>
-                  <span className={styles.orSpan}>— OR paste image URL —</span>
-                  <input
-                    type="text"
-                    name="cover_image_url"
-                    required
-                    placeholder="Paste Unsplash/Cloudinary link"
-                    value={formData.cover_image_url}
-                    onChange={handleInputChange}
-                    className={styles.input}
-                  />
-                </div>
-                
-                {/* Visual presets row */}
-                <div className={styles.presetsRow}>
-                  {COVER_IMAGE_PRESETS.map((preset, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, cover_image_url: preset.url }))}
-                      className={`${styles.presetBtn} ${formData.cover_image_url === preset.url ? styles.presetActive : ''}`}
-                    >
-                      {preset.label}
-                    </button>
+                        {/* Delete Trigger */}
+                        {deleteId === item.id ? (
+                          <div className={styles.confirmDelete}>
+                            <button onClick={() => deleteListing(item.id)} className={styles.confirmBtn}>Confirm</button>
+                            <button onClick={() => setDeleteId(null)} className={styles.cancelBtn}>Cancel</button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setDeleteId(item.id)}
+                            className={styles.deleteBtn}
+                            title="Delete Listing"
+                          >
+                            <i className="fa-solid fa-trash-can"></i>
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   ))}
                 </div>
+              )}
+            </div>
+          )}
+
+          {/* Add Vetted Property TAB */}
+          {activeTab === 'create' && (
+            <div className={styles.tabContent}>
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>Publish Vetted Listing</h2>
+              </div>
+              
+              <form onSubmit={handleSubmit} className={styles.form}>
+                {formSuccessMessage && <div className={styles.successMessage}><i className="fa-solid fa-circle-check"></i> {formSuccessMessage}</div>}
+                {formErrorMessage && <div className={styles.errorMessage}><i className="fa-solid fa-circle-exclamation"></i> {formErrorMessage}</div>}
+
+                {/* Section 1: Core Details */}
+                <div className={styles.formCard}>
+                  <h3 className={styles.formCardTitle}>
+                    <i className="fa-solid fa-circle-info"></i> Core Details
+                  </h3>
+                  <div className={styles.formCardBody}>
+                    <div className={styles.formGroup}>
+                      <label className={styles.label}>Listing Title</label>
+                      <input
+                        type="text"
+                        name="title"
+                        required
+                        placeholder="e.g. Elegant 5 Bedroom Detached Duplex"
+                        value={formData.title}
+                        onChange={handleInputChange}
+                        className={styles.input}
+                      />
+                    </div>
+
+                    <div className={styles.formRow}>
+                      <div className={styles.formGroup}>
+                        <label className={styles.label}>Price in Naira (NGN)</label>
+                        <input
+                          type="number"
+                          name="price_ngn"
+                          required
+                          placeholder="e.g. 150000000"
+                          value={formData.price_ngn}
+                          onChange={handleInputChange}
+                          className={styles.input}
+                        />
+                        <small className={styles.inputHelper}>Calculates to: {formData.price_ngn ? formatConvertedPrice(formData.price_ngn, 'usd') : '$0'} USD / {formData.price_ngn ? formatConvertedPrice(formData.price_ngn, 'gbp') : '£0'} GBP</small>
+                      </div>
+
+                      <div className={styles.formGroup}>
+                        <label className={styles.label}>Abuja District</label>
+                        <select
+                          name="location_area"
+                          value={formData.location_area}
+                          onChange={handleInputChange}
+                          className={styles.select}
+                        >
+                          {DEFAULT_DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section 2: Mode & Classification */}
+                <div className={styles.formCard}>
+                  <h3 className={styles.formCardTitle}>
+                    <i className="fa-solid fa-sliders"></i> Mode & Classification
+                  </h3>
+                  <div className={styles.formCardBody}>
+                    <div className={styles.formRow}>
+                      <div className={styles.formGroup}>
+                        <label className={styles.label}>Transaction Mode</label>
+                        <select
+                          name="transaction_type"
+                          value={formData.transaction_type}
+                          onChange={handleInputChange}
+                          className={styles.select}
+                        >
+                          <option value="sale">For Sale</option>
+                          <option value="rent">For Rent</option>
+                          <option value="off-plan">Off-Plan</option>
+                        </select>
+                      </div>
+
+                      <div className={styles.formGroup}>
+                        <label className={styles.label}>Category Type</label>
+                        <select
+                          name="property_type"
+                          value={formData.property_type}
+                          onChange={handleInputChange}
+                          className={styles.select}
+                        >
+                          <option value="residential">Residential</option>
+                          <option value="commercial">Commercial</option>
+                          <option value="multi-purpose">Multi-purpose</option>
+                          <option value="land">Land Block</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section 3: Structural Specs */}
+                <div className={styles.formCard}>
+                  <h3 className={styles.formCardTitle}>
+                    <i className="fa-solid fa-ruler-combined"></i> Structural Specifications
+                  </h3>
+                  <div className={styles.formCardBody}>
+                    <div className={styles.formRow}>
+                      <div className={styles.formGroup}>
+                        <label className={styles.label}>Bedrooms</label>
+                        <input
+                          type="number"
+                          name="bedrooms"
+                          placeholder="e.g. 4"
+                          value={formData.bedrooms}
+                          onChange={handleInputChange}
+                          className={styles.input}
+                        />
+                      </div>
+
+                      <div className={styles.formGroup}>
+                        <label className={styles.label}>Size (sqm)</label>
+                        <input
+                          type="number"
+                          name="size_sqm"
+                          placeholder="e.g. 650"
+                          value={formData.size_sqm}
+                          onChange={handleInputChange}
+                          className={styles.input}
+                        />
+                      </div>
+
+                      <div className={styles.formGroup}>
+                        <label className={styles.label}>Size (hectares)</label>
+                        <input
+                          type="number"
+                          step="any"
+                          name="size_hectares"
+                          placeholder="e.g. 1.5"
+                          value={formData.size_hectares}
+                          onChange={handleInputChange}
+                          className={styles.input}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section 4: Media & Narrative */}
+                <div className={styles.formCard}>
+                  <h3 className={styles.formCardTitle}>
+                    <i className="fa-solid fa-photo-film"></i> Media & Narrative
+                  </h3>
+                  <div className={styles.formCardBody}>
+                    {/* Cover Image Selector */}
+                    <div className={styles.formGroup}>
+                      <label className={styles.label}>Visual Cover Image</label>
+                      <div className={styles.uploadContainer}>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleCoverUpload}
+                          className={styles.fileInput}
+                          id="cover-upload"
+                        />
+                        <label htmlFor="cover-upload" className={styles.uploadLabel}>
+                          <i className="fa-solid fa-cloud-arrow-up"></i>
+                          {coverLoading ? 'Uploading image...' : 'Choose Cover Image from Device'}
+                        </label>
+                      </div>
+                      
+                      <div className={styles.inputSpacing}>
+                        <span className={styles.orSpan}>— OR paste image URL —</span>
+                        <input
+                          type="text"
+                          name="cover_image_url"
+                          required
+                          placeholder="Paste Unsplash/Cloudinary link"
+                          value={formData.cover_image_url}
+                          onChange={handleInputChange}
+                          className={styles.input}
+                        />
+                      </div>
+                      
+                      {/* Visual presets row */}
+                      <div className={styles.presetsRow}>
+                        {COVER_IMAGE_PRESETS.map((preset, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, cover_image_url: preset.url }))}
+                            className={`${styles.presetBtn} ${formData.cover_image_url === preset.url ? styles.presetActive : ''}`}
+                          >
+                            {preset.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Additional Property Media Upload */}
+                    <div className={styles.formGroup} style={{ marginTop: '10px' }}>
+                      <label className={styles.label}>Additional Media (Photos & Videos)</label>
+                      <div className={styles.uploadContainer}>
+                        <input
+                          type="file"
+                          accept="image/*,video/*"
+                          multiple
+                          onChange={handleGalleryUpload}
+                          className={styles.fileInput}
+                          id="gallery-upload"
+                          disabled={galleryLoading}
+                        />
+                        <label htmlFor="gallery-upload" className={styles.uploadLabel}>
+                          <i className="fa-solid fa-photo-film"></i>
+                          {galleryLoading ? 'Uploading media...' : 'Upload Photos & Videos from Device'}
+                        </label>
+                      </div>
+                      {galleryUrls.length > 0 && (
+                        <div className={styles.mediaPreviewList}>
+                          {galleryUrls.map((mediaItem, idx) => {
+                            const isVideo = mediaItem.endsWith('.mp4') || mediaItem.endsWith('.webm') || mediaItem.endsWith('.mov') || mediaItem.includes('video');
+                            return (
+                              <div key={idx} className={styles.mediaPreviewItem}>
+                                {isVideo ? (
+                                  <video src={mediaItem} className={styles.previewMedia} muted />
+                                ) : (
+                                  <img src={mediaItem} alt={`Uploaded ${idx + 1}`} className={styles.previewMedia} />
+                                )}
+                                <button
+                                  type="button"
+                                  className={styles.removeMediaBtn}
+                                  onClick={() => setGalleryUrls(prev => prev.filter((_, i) => i !== idx))}
+                                >
+                                  <i className="fa-solid fa-circle-xmark"></i>
+                                </button>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Description */}
+                    <div className={styles.formGroup} style={{ marginTop: '10px' }}>
+                      <label className={styles.label}>Property Narrative Description</label>
+                      <textarea
+                        name="description"
+                        required
+                        placeholder="Enter deep description details, structural benefits, proximity rules..."
+                        value={formData.description}
+                        onChange={handleInputChange}
+                        className={styles.textarea}
+                      ></textarea>
+                    </div>
+
+                    {/* Vetted features list */}
+                    <div className={styles.formGroup} style={{ marginTop: '10px' }}>
+                      <label className={styles.label}>Vetted Amenities (Comma-separated)</label>
+                      <input
+                        type="text"
+                        name="features"
+                        placeholder="e.g. 24/7 Power, Fitted Kitchen, Swimming Pool, C of O"
+                        value={formData.features}
+                        onChange={handleInputChange}
+                        className={styles.input}
+                      />
+                      <small className={styles.inputHelper}>Separate each custom vetted feature tag with a comma.</small>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={formSubmitLoading}
+                  className={styles.submitBtn}
+                >
+                  {formSubmitLoading ? (
+                    <>
+                      <i className="fa-solid fa-spinner fa-spin"></i> Publishing Vetted Listing...
+                    </>
+                  ) : (
+                    <>
+                      <i className="fa-solid fa-cloud-arrow-up"></i> Publish Vetted Listing
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
+          )}
+
+          {/* Enquiry Logs TAB */}
+          {activeTab === 'enquiries' && (
+            <div className={styles.tabContent}>
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>Enquiry Logs Metrics</h2>
+                <span className={styles.counter}>{enquiries.length} Inquiries Clicked</span>
               </div>
 
-              {/* Additional Property Media Upload */}
-              <div className={styles.formGroup}>
-                <label className={styles.label}>Additional Media (Photos & Videos from Device)</label>
-                <div className={styles.uploadContainer}>
-                  <input
-                    type="file"
-                    accept="image/*,video/*"
-                    multiple
-                    onChange={handleGalleryUpload}
-                    className={styles.fileInput}
-                    id="gallery-upload"
-                    disabled={galleryLoading}
-                  />
-                  <label htmlFor="gallery-upload" className={styles.uploadLabel}>
-                    <i className="fa-solid fa-photo-film"></i>
-                    {galleryLoading ? 'Uploading media...' : 'Upload Photos & Videos from Device'}
-                  </label>
+              {loadingEnquiries ? (
+                <div className={styles.loader}>
+                  <i className="fa-solid fa-spinner fa-spin"></i> Loading logs...
                 </div>
-                {galleryUrls.length > 0 && (
-                  <div className={styles.mediaPreviewList}>
-                    {galleryUrls.map((mediaItem, idx) => {
-                      const isVideo = mediaItem.endsWith('.mp4') || mediaItem.endsWith('.webm') || mediaItem.endsWith('.mov') || mediaItem.includes('video');
+              ) : enquiries.length === 0 ? (
+                <div className={styles.empty}>
+                  <p>No user inquiry clicks have occurred yet. Logs are written whenever visitors click WhatsApp CTAs.</p>
+                </div>
+              ) : (
+                <div className={styles.logsTable}>
+                  <div className={styles.tableHeader}>
+                    <div className={styles.colTitle}>Property & Location</div>
+                    <div className={styles.colCurr}>Currency</div>
+                    <div className={styles.colTime}>Timestamp</div>
+                  </div>
+                  
+                  <div className={styles.tableBody}>
+                    {enquiries.map((enq) => {
+                      const date = enq.clicked_at 
+                        ? new Date(enq.clicked_at).toLocaleString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })
+                        : 'Just now';
+
                       return (
-                        <div key={idx} className={styles.mediaPreviewItem}>
-                          {isVideo ? (
-                            <video src={mediaItem} className={styles.previewMedia} muted />
-                          ) : (
-                            <img src={mediaItem} alt={`Uploaded ${idx + 1}`} className={styles.previewMedia} />
-                          )}
-                          <button
-                            type="button"
-                            className={styles.removeMediaBtn}
-                            onClick={() => setGalleryUrls(prev => prev.filter((_, i) => i !== idx))}
-                          >
-                            <i className="fa-solid fa-circle-xmark"></i>
-                          </button>
+                        <div key={enq.id} className={styles.logRow}>
+                          <div className={styles.colTitle}>
+                            <strong>{enq.property_title || 'General Enquiry'}</strong>
+                            <span className={styles.logLoc}>{enq.property_location || 'General Landing'}</span>
+                          </div>
+                          <div className={styles.colCurr}>
+                            <span className={styles.currTag}>{enq.currency_shown || 'NGN'}</span>
+                          </div>
+                          <div className={styles.colTime}>{date}</div>
                         </div>
                       );
                     })}
                   </div>
-                )}
-              </div>
-
-              {/* Description */}
-              <div className={styles.formGroup}>
-                <label className={styles.label}>Property Narrative Description</label>
-                <textarea
-                  name="description"
-                  required
-                  placeholder="Enter deep description details, structural benefits, proximity rules..."
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  className={styles.textarea}
-                ></textarea>
-              </div>
-
-              {/* Vetted features list */}
-              <div className={styles.formGroup}>
-                <label className={styles.label}>Vetted Amenities (Comma-separated)</label>
-                <input
-                  type="text"
-                  name="features"
-                  placeholder="e.g. 24/7 Power, Fitted Kitchen, Swimming Pool, C of O"
-                  value={formData.features}
-                  onChange={handleInputChange}
-                  className={styles.input}
-                />
-                <small className={styles.inputHelper}>Separate each custom vetted feature tag with a comma.</small>
-              </div>
-
-              <button
-                type="submit"
-                disabled={formSubmitLoading}
-                className={styles.submitBtn}
-              >
-                {formSubmitLoading ? (
-                  <>
-                    <i className="fa-solid fa-spinner fa-spin"></i> Publishing to Supabase...
-                  </>
-                ) : (
-                  <>
-                    <i className="fa-solid fa-cloud-arrow-up"></i> Publish Vetted Listing
-                  </>
-                )}
-              </button>
-            </form>
-          </div>
-        )}
-
-        {/* Enquiry Logs TAB */}
-        {activeTab === 'enquiries' && (
-          <div className={styles.tabContent}>
-            <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>Enquiry Logs Metrics</h2>
-              <span className={styles.counter}>{enquiries.length} Inquiries Clicked</span>
+                </div>
+              )}
             </div>
+          )}
 
-            {loadingEnquiries ? (
-              <div className={styles.loader}>
-                <i className="fa-solid fa-spinner fa-spin"></i> Loading logs...
-              </div>
-            ) : enquiries.length === 0 ? (
-              <div className={styles.empty}>
-                <p>No user inquiry clicks have occurred yet. Logs are written whenever visitors click WhatsApp CTAs.</p>
-              </div>
-            ) : (
-              <div className={styles.logsTable}>
-                <div className={styles.tableHeader}>
-                  <div className={styles.colTitle}>Property & Location</div>
-                  <div className={styles.colCurr}>Currency</div>
-                  <div className={styles.colTime}>Timestamp</div>
-                </div>
-                
-                <div className={styles.tableBody}>
-                  {enquiries.map((enq) => {
-                    const date = enq.clicked_at 
-                      ? new Date(enq.clicked_at).toLocaleString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })
-                      : 'Just now';
-
-                    return (
-                      <div key={enq.id} className={styles.logRow}>
-                        <div className={styles.colTitle}>
-                          <strong>{enq.property_title || 'General Enquiry'}</strong>
-                          <span className={styles.logLoc}>{enq.property_location || 'General Landing'}</span>
-                        </div>
-                        <div className={styles.colCurr}>
-                          <span className={styles.currTag}>{enq.currency_shown || 'NGN'}</span>
-                        </div>
-                        <div className={styles.colTime}>{date}</div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
+        </main>
       </div>
     </div>
   );
