@@ -22,7 +22,6 @@ export default function PropertyCard({
   transactionType = "sale",
   priceNgn,
   bedrooms,
-  bathrooms,
   sizeSqm,
   photo,
   verified = true,
@@ -81,16 +80,10 @@ export default function PropertyCard({
               {bedrooms}
             </span>
           )}
-          {bathrooms != null && (
-            <span className={styles.feature}>
-              <i className="fa-solid fa-bath"></i>
-              {bathrooms}
-            </span>
-          )}
-          {sizeSqm != null && (
+          {sizeSqm != null && sizeSqm > 0 && (
             <span className={styles.feature}>
               <i className="fa-solid fa-ruler-combined"></i>
-              {sizeSqm.toLocaleString()} sqm
+              {sizeSqm.toLocaleString()} sqm ({(sizeSqm / 10000).toLocaleString(undefined, { maximumFractionDigits: 3 })} ha)
             </span>
           )}
         </div>

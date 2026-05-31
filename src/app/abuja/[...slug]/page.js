@@ -136,18 +136,13 @@ export default async function PropertyDetailPage({ params }) {
                 <span className={styles.specLabel}>Bedrooms</span>
               </div>
             )}
-            {listing.bathrooms != null && (
-              <div className={styles.specBox}>
-                <i className="fa-solid fa-bath"></i>
-                <span className={styles.specVal}>{listing.bathrooms}</span>
-                <span className={styles.specLabel}>Bathrooms</span>
-              </div>
-            )}
-            {listing.sizeSqm != null && (
+            {listing.sizeSqm != null && listing.sizeSqm > 0 && (
               <div className={styles.specBox}>
                 <i className="fa-solid fa-ruler-combined"></i>
-                <span className={styles.specVal}>{listing.sizeSqm.toLocaleString()}</span>
-                <span className={styles.specLabel}>Square Meters</span>
+                <span className={styles.specVal}>
+                  {listing.sizeSqm.toLocaleString()} sqm / {(listing.sizeSqm / 10000).toLocaleString(undefined, { maximumFractionDigits: 4 })} ha
+                </span>
+                <span className={styles.specLabel}>Property Size</span>
               </div>
             )}
             <div className={styles.specBox}>

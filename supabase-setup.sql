@@ -14,7 +14,7 @@ ALTER TABLE properties ADD COLUMN IF NOT EXISTS featured boolean DEFAULT false;
 -- 2. Create the 'property_media' table for multiple images/videos
 CREATE TABLE IF NOT EXISTS property_media (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  property_id uuid REFERENCES properties(id) ON DELETE CASCADE,
+  property_id bigint REFERENCES properties(id) ON DELETE CASCADE,
   url text NOT NULL,
   is_video boolean DEFAULT false,
   display_order integer DEFAULT 0,

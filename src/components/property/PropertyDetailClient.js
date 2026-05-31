@@ -40,7 +40,6 @@ export default function PropertyDetailClient({ property, media = [] }) {
     location_city,
     price_ngn,
     bedrooms,
-    bathrooms,
     size_sqm,
     status = 'available',
     transaction_type = 'sale',
@@ -137,9 +136,16 @@ export default function PropertyDetailClient({ property, media = [] }) {
 
         {/* Spec Chips Matrix */}
         <div className={styles.specs}>
-          <SpecChip iconClass="fa-bed" value={bedrooms} label="Beds" />
-          <SpecChip iconClass="fa-bath" value={bathrooms} label="Baths" />
-          <SpecChip iconClass="fa-ruler-combined" value={size_sqm} label="sqm" />
+          {bedrooms !== undefined && bedrooms !== null && (
+            <SpecChip iconClass="fa-bed" value={bedrooms} label="Beds" />
+          )}
+          {size_sqm !== undefined && size_sqm !== null && size_sqm > 0 && (
+            <SpecChip 
+              iconClass="fa-ruler-combined" 
+              value={`${size_sqm.toLocaleString()} sqm (${(size_sqm / 10000).toLocaleString(undefined, { maximumFractionDigits: 4 })} ha)`} 
+              label="Size" 
+            />
+          )}
         </div>
 
         <div className={styles.divider}></div>

@@ -15,9 +15,17 @@ const TRANSACTION_TYPES = [
 const PROPERTY_TYPES = [
   { value: "all", label: "All Properties" },
   { value: "residential", label: "Residential" },
-  { value: "land", label: "Land" },
   { value: "commercial", label: "Commercial" },
+  { value: "multi-purpose", label: "Multi-purpose" },
+  { value: "land", label: "Land" },
 ];
+
+const FALLBACK_DISTRICTS = [
+  "Maitama", "Asokoro", "Wuse", "Wuse 2", "Garki", "Garki 2", "Jabi", "Gwarinpa", "Apo", 
+  "Life Camp", "Lugbe", "Guzape", "Katampe", "Katampe Extension", "Mabushi", "Utako", 
+  "Wuye", "Central Business District", "Lokogoma", "Galadimawa", "Kaura", "Durumi", 
+  "Kubwa", "Kuje", "Gwagwalada", "Bwari", "Karsana", "Karmo", "Idu", "Karu", "Nyanya", "Jikwoyi"
+].sort();
 
 export default function BrowseListingsPage() {
   const [allListings, setAllListings] = useState([]);
@@ -57,6 +65,8 @@ export default function BrowseListingsPage() {
 
       if (districtsData && districtsData.length > 0) {
         setDistricts(["All Districts", ...districtsData.map(d => d.name)]);
+      } else {
+        setDistricts(["All Districts", ...FALLBACK_DISTRICTS]);
       }
 
       setLoading(false);

@@ -4,18 +4,11 @@ import HomeClient from "@/components/home/HomeClient";
 export const revalidate = 0; // Disable static caching so it always fetches fresh data from Supabase
 
 const FALLBACK_DISTRICTS = [
-  "Maitama",
-  "Asokoro",
-  "Wuse",
-  "Wuse 2",
-  "Garki",
-  "Jabi",
-  "Gwarinpa",
-  "Apo",
-  "Life Camp",
-  "Lugbe",
-  "Katampe"
-];
+  "Maitama", "Asokoro", "Wuse", "Wuse 2", "Garki", "Garki 2", "Jabi", "Gwarinpa", "Apo", 
+  "Life Camp", "Lugbe", "Guzape", "Katampe", "Katampe Extension", "Mabushi", "Utako", 
+  "Wuye", "Central Business District", "Lokogoma", "Galadimawa", "Kaura", "Durumi", 
+  "Kubwa", "Kuje", "Gwagwalada", "Bwari", "Karsana", "Karmo", "Idu", "Karu", "Nyanya", "Jikwoyi"
+].sort();
 
 export default async function HomePage() {
   // 1. Fetch properties from Supabase

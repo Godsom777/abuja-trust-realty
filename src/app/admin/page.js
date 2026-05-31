@@ -8,8 +8,11 @@ import slugify from 'slugify';
 import styles from './page.module.css';
 
 const DEFAULT_DISTRICTS = [
-  "Maitama", "Asokoro", "Wuse", "Wuse 2", "Garki", "Jabi", "Gwarinpa", "Apo", "Life Camp", "Lugbe"
-];
+  "Maitama", "Asokoro", "Wuse", "Wuse 2", "Garki", "Garki 2", "Jabi", "Gwarinpa", "Apo", 
+  "Life Camp", "Lugbe", "Guzape", "Katampe", "Katampe Extension", "Mabushi", "Utako", 
+  "Wuye", "Central Business District", "Lokogoma", "Galadimawa", "Kaura", "Durumi", 
+  "Kubwa", "Kuje", "Gwagwalada", "Bwari", "Karsana", "Karmo", "Idu", "Karu", "Nyanya", "Jikwoyi"
+].sort();
 
 // Presets of stunning architectural houses to seed testing easily!
 const COVER_IMAGE_PRESETS = [
@@ -47,8 +50,8 @@ export default function AdminPortal() {
     location_city: 'Abuja',
     price_ngn: '',
     bedrooms: '',
-    bathrooms: '',
     size_sqm: '',
+    size_hectares: '',
     transaction_type: 'sale',
     property_type: 'residential',
     status: 'available',
@@ -231,10 +234,29 @@ export default function AdminPortal() {
   // Form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    if (name === 'size_sqm') {
+      const parsed = parseFloat(value);
+      const hectaresVal = !isNaN(parsed) && parsed > 0 ? (parsed / 10000).toString() : '';
+      setFormData(prev => ({
+        ...prev,
+        size_sqm: value,
+        size_hectares: hectaresVal
+      }));
+    } else if (name === 'size_hectares') {
+      const parsed = parseFloat(value);
+      const sqmVal = !isNaN(parsed) && parsed > 0 ? Math.round(parsed * 10000).toString() : '';
+      setFormData(prev => ({
+        ...prev,
+        size_hectares: value,
+        size_sqm: sqmVal
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
   // Status toggle from the listing grid/row
@@ -315,7 +337,7 @@ export default function AdminPortal() {
       district: formData.location_area,
       price_ngn: price,
       bedrooms: formData.bedrooms ? parseInt(formData.bedrooms) : null,
-      bathrooms: formData.bathrooms ? parseInt(formData.bathrooms) : null,
+      bathrooms: null,
       size_sqm: formData.size_sqm ? parseFloat(formData.size_sqm) : null,
       transaction_type: formData.transaction_type,
       property_type: formData.property_type,
@@ -363,8 +385,8 @@ export default function AdminPortal() {
         location_city: 'Abuja',
         price_ngn: '',
         bedrooms: '',
-        bathrooms: '',
         size_sqm: '',
+        size_hectares: '',
         transaction_type: 'sale',
         property_type: 'residential',
         status: 'available',
@@ -593,6 +615,7 @@ export default function AdminPortal() {
                   >
                     <option value="residential">Residential</option>
                     <option value="commercial">Commercial</option>
+                    <option value="multi-purpose">Multi-purpose</option>
                     <option value="land">Land Block</option>
                   </select>
                 </div>
@@ -613,24 +636,25 @@ export default function AdminPortal() {
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label className={styles.label}>Bathrooms</label>
-                  <input
-                    type="number"
-                    name="bathrooms"
-                    placeholder="e.g. 5"
-                    value={formData.bathrooms}
-                    onChange={handleInputChange}
-                    className={styles.input}
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
                   <label className={styles.label}>Size (sqm)</label>
                   <input
                     type="number"
                     name="size_sqm"
                     placeholder="e.g. 650"
                     value={formData.size_sqm}
+                    onChange={handleInputChange}
+                    className={styles.input}
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>Size (hectares)</label>
+                  <input
+                    type="number"
+                    step="any"
+                    name="size_hectares"
+                    placeholder="e.g. 1.5"
+                    value={formData.size_hectares}
                     onChange={handleInputChange}
                     className={styles.input}
                   />

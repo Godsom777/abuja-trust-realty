@@ -25,7 +25,6 @@ export default function PropertyCard({ property }) {
     location_city,
     price_ngn,
     bedrooms,
-    bathrooms,
     size_sqm,
     status = 'available',
     transaction_type = 'sale',
@@ -101,16 +100,10 @@ export default function PropertyCard({ property }) {
                 {bedrooms}
               </span>
             )}
-            {bathrooms !== undefined && bathrooms !== null && (
-              <span className={styles.specItem}>
-                <i className="fa-solid fa-bath"></i>
-                {bathrooms}
-              </span>
-            )}
-            {size_sqm !== undefined && size_sqm !== null && (
+            {size_sqm !== undefined && size_sqm !== null && size_sqm > 0 && (
               <span className={styles.specItem}>
                 <i className="fa-solid fa-ruler-combined"></i>
-                {size_sqm}m²
+                {size_sqm.toLocaleString()}m² ({(size_sqm / 10000).toLocaleString(undefined, { maximumFractionDigits: 3 })} ha)
               </span>
             )}
           </div>
