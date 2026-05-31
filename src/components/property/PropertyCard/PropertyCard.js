@@ -49,12 +49,25 @@ export default function PropertyCard({ property, viewMode = 'list' }) {
     toggleSaveProperty(id);
   };
 
-  const area = location_area || property.district || 'Abuja';
+  // Helper to format/abbreviate long district names for cleaner grid columns
+  const formatLocation = (loc) => {
+    if (!loc) return '';
+    const mapping = {
+      "central business district": "CBD",
+      "katampe extension": "Katampe Ext",
+      "wuse 2": "Wuse II",
+      "garki 2": "Garki II"
+    };
+    const key = loc.toLowerCase().trim();
+    return mapping[key] || loc;
+  };
+
+  const area = formatLocation(location_area || property.district || 'Abuja');
   const city = location_city || 'Abuja';
 
   return (
     <Link href={`/property/${slug}`} className={`${styles.card} ${viewMode === 'grid' ? styles.cardGrid : ''}`}>
-      {/* 16:9 Aspect Ratio Media Wrapper */}
+      {/* 16:9 Aspect Ratio Media Wrapper — 100% naked visual design */}
       <div className={styles.mediaContainer}>
         {isVideo ? (
           <video
@@ -73,55 +86,59 @@ export default function PropertyCard({ property, viewMode = 'list' }) {
             loading="lazy"
           />
         )}
-        <div className={styles.imageOverlay} />
-
-        {/* Status Badge Group */}
-        <div className={styles.badgeGroup}>
-          <Badge status={status} />
-          <span className={`${styles.typeBadge} ${transaction_type === 'rent' ? styles.typeRent : styles.typeSale}`}>
-            {typeLabel}
-          </span>
-        </div>
-
-        {/* Favorite Save Button */}
-        <button
-          onClick={handleSaveClick}
-          className={`${styles.saveBtn} ${isSaved ? styles.saved : ''}`}
-          aria-label={isSaved ? "Remove from saved" : "Save property"}
-        >
-          <i className={`${isSaved ? 'fa-solid' : 'fa-regular'} fa-heart`}></i>
-        </button>
       </div>
 
       {/* Card Info Content */}
       <div className={styles.content}>
-        {/* Location Smallcaps */}
-        <div className={styles.location}>
-          <i className={`fa-solid fa-location-dot ${styles.locationIcon}`}></i>
-          {area}, {city}
+        {/* Row 1: Spaced location + type on the left, Airbnb-style status dot indicator on the right */}
+        <div className={styles.metaRow}>
+          <div className={styles.metaLeft}>
+            <span className={styles.location}>
+              <i className={`fa-solid fa-location-dot ${styles.locationIcon}`}></i>
+              {area}
+            </span>
+            <span className={styles.metaDot}>•</span>
+            <span className={styles.typeText}>{typeLabel}</span>
+          </div>
+          <div className={`${styles.statusIndicator} ${styles[status]}`}>
+            <span className={styles.statusDot}></span>
+            <span className={styles.statusLabel}>{status}</span>
+          </div>
         </div>
 
-        {/* Serif Title */}
+        {/* Row 2: Serif Title */}
         <h3 className={styles.title}>{title}</h3>
 
-        {/* Price & Specs row */}
+        {/* Row 3: Specifications with visual separators */}
+        <div className={styles.specsRow}>
+          {bedrooms !== undefined && bedrooms !== null && (
+            <span className={styles.specItem}>
+              <i className="fa-solid fa-bed"></i>
+              {bedrooms} {bedrooms === 1 ? 'Bed' : 'Beds'}
+            </span>
+          )}
+          {bedrooms !== undefined && bedrooms !== null && size_sqm !== undefined && size_sqm !== null && size_sqm > 0 && (
+            <span className={styles.specDivider}>|</span>
+          )}
+          {size_sqm !== undefined && size_sqm !== null && size_sqm > 0 && (
+            <span className={styles.specItem}>
+              <i className="fa-solid fa-ruler-combined"></i>
+              {size_sqm.toLocaleString()} m²
+            </span>
+          )}
+        </div>
+
+        {/* Row 4: Price & Tactile Circular Save Button aligned side-by-side */}
         <div className={styles.footerRow}>
           <span className={styles.price}>{formattedPrice}</span>
           
-          <div className={styles.specs}>
-            {bedrooms !== undefined && bedrooms !== null && (
-              <span className={styles.specItem}>
-                <i className="fa-solid fa-bed"></i>
-                {bedrooms}
-              </span>
-            )}
-            {size_sqm !== undefined && size_sqm !== null && size_sqm > 0 && (
-              <span className={styles.specItem}>
-                <i className="fa-solid fa-ruler-combined"></i>
-                {size_sqm.toLocaleString()}m² ({(size_sqm / 10000).toLocaleString(undefined, { maximumFractionDigits: 3 })} ha)
-              </span>
-            )}
-          </div>
+          <button
+            onClick={handleSaveClick}
+            className={`${styles.saveBtn} ${isSaved ? styles.saved : ''}`}
+            aria-label={isSaved ? "Remove from saved" : "Save property"}
+          >
+            <i className={`${isSaved ? 'fa-solid' : 'fa-regular'} fa-heart`}></i>
+          </button>
         </div>
       </div>
     </Link>
