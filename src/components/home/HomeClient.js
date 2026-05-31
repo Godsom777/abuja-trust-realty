@@ -14,6 +14,7 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState('all'); // 'all' | 'sale' | 'rent' | 'off-plan'
   const [selectedDistrict, setSelectedDistrict] = useState('all');
+  const [sortBy, setSortBy] = useState('newest');
 
   const searchParams = useSearchParams();
   const filter = searchParams ? searchParams.get('filter') : null;
@@ -43,7 +44,7 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
       list = list.filter(listing => savedProperties.includes(listing.id));
     }
 
-    return list.filter((listing) => {
+    const filtered = list.filter((listing) => {
       // 1. Transaction Type filter
       if (selectedType !== 'all' && (listing.transaction_type || '').toLowerCase() !== selectedType) {
         return false;
@@ -71,7 +72,36 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
 
       return true;
     });
-  }, [initialListings, selectedType, selectedDistrict, searchQuery, filter, savedProperties, mounted]);
+
+    // Apply Sorting logic
+    const sorted = [...filtered];
+    if (sortBy === 'price-asc') {
+      sorted.sort((a, b) => (a.price_ngn || 0) - (b.price_ngn || 0));
+    } else if (sortBy === 'price-desc') {
+      sorted.sort((a, b) => (b.price_ngn || 0) - (a.price_ngn || 0));
+    } else if (sortBy === 'rooms-desc') {
+      sorted.sort((a, b) => (b.bedrooms || 0) - (a.bedrooms || 0));
+    } else if (sortBy === 'size-desc') {
+      sorted.sort((a, b) => (b.size_sqm || 0) - (a.size_sqm || 0));
+    } else if (sortBy === 'location-asc') {
+      sorted.sort((a, b) => {
+        const locA = (a.location_area || a.district || 'Abuja').toLowerCase();
+        const locB = (b.location_area || b.district || 'Abuja').toLowerCase();
+        return locA.localeCompare(locB);
+      });
+    } else if (sortBy === 'type-asc') {
+      sorted.sort((a, b) => {
+        const typeA = (a.property_type || a.propertyType || 'residential').toLowerCase();
+        const typeB = (b.property_type || b.propertyType || 'residential').toLowerCase();
+        return typeA.localeCompare(typeB);
+      });
+    } else {
+      // Sort by newest first (default fallback)
+      sorted.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+    }
+
+    return sorted;
+  }, [initialListings, selectedType, selectedDistrict, searchQuery, filter, savedProperties, mounted, sortBy]);
 
   return (
     <div className={styles.container}>
@@ -136,6 +166,25 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
                 {dist}
               </option>
             ))}
+          </select>
+        </div>
+
+        {/* Sort Select Input */}
+        <div className={styles.selectWrap}>
+          <label htmlFor="sort-select" className={styles.selectLabel}>Sort By</label>
+          <select
+            id="sort-select"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className={styles.select}
+          >
+            <option value="newest">Newest Listed</option>
+            <option value="price-asc">Price: Low → High</option>
+            <option value="price-desc">Price: High → Low</option>
+            <option value="rooms-desc">Rooms: Most First</option>
+            <option value="size-desc">Size: Largest First</option>
+            <option value="location-asc">Location: A → Z</option>
+            <option value="type-asc">Type: A → Z</option>
           </select>
         </div>
       </section>

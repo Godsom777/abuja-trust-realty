@@ -49,6 +49,9 @@ export default function PropertyCard({ property, viewMode = 'list' }) {
     toggleSaveProperty(id);
   };
 
+  const area = location_area || property.district || 'Abuja';
+  const city = location_city || 'Abuja';
+
   return (
     <Link href={`/property/${slug}`} className={`${styles.card} ${viewMode === 'grid' ? styles.cardGrid : ''}`}>
       {/* 16:9 Aspect Ratio Media Wrapper */}
@@ -94,8 +97,8 @@ export default function PropertyCard({ property, viewMode = 'list' }) {
       <div className={styles.content}>
         {/* Location Smallcaps */}
         <div className={styles.location}>
-          <i className="fa-solid fa-location-dot styles.locationIcon"></i>
-          {location_area}, {location_city}
+          <i className={`fa-solid fa-location-dot ${styles.locationIcon}`}></i>
+          {area}, {city}
         </div>
 
         {/* Serif Title */}

@@ -27,7 +27,9 @@ export default async function HomePage() {
         transaction_type: item.transaction_type || item.transactionType || 'sale',
         property_type: item.property_type || item.propertyType || 'residential',
         size_sqm: item.size_sqm || item.sizeSqm || 0,
-        cover_image_url: item.cover_image_url || item.photo || null
+        cover_image_url: item.cover_image_url || item.photo || null,
+        location_area: item.district || item.location_area || 'Abuja',
+        location_city: item.location_city || 'Abuja'
       }));
     }
   } catch (err) {
