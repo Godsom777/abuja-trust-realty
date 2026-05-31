@@ -58,7 +58,8 @@ export default function AdminPortal() {
     cover_image_url: COVER_IMAGE_PRESETS[0].url,
     features: '',
     structure_type: '',
-    custom_structure_type: ''
+    custom_structure_type: '',
+    title_document: ''
   });
   const [formSubmitLoading, setFormSubmitLoading] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -347,7 +348,8 @@ export default function AdminPortal() {
       cover_image_url: item.photo || item.cover_image_url || COVER_IMAGE_PRESETS[0].url,
       features: item.features ? item.features.join(', ') : '',
       structure_type: item.structure_type ? (isStandard ? item.structure_type : 'Other') : '',
-      custom_structure_type: item.structure_type ? (isStandard ? '' : item.structure_type) : ''
+      custom_structure_type: item.structure_type ? (isStandard ? '' : item.structure_type) : '',
+      title_document: item.title_document || ''
     });
 
     // Fetch existing gallery media
@@ -390,7 +392,8 @@ export default function AdminPortal() {
       cover_image_url: COVER_IMAGE_PRESETS[0].url,
       features: '',
       structure_type: '',
-      custom_structure_type: ''
+      custom_structure_type: '',
+      title_document: ''
     });
     setGalleryUrls([]);
     setFormSuccessMessage('');
@@ -442,7 +445,8 @@ export default function AdminPortal() {
       status: formData.status,
       photo: finalCoverUrl,
       features: featuresArray,
-      structure_type: structureTypeVal || null
+      structure_type: structureTypeVal || null,
+      title_document: formData.title_document || null
     };
 
     try {
@@ -1106,6 +1110,22 @@ export default function AdminPortal() {
                         className={styles.input}
                       />
                       <small className={styles.inputHelper}>Separate each custom vetted feature tag with a comma.</small>
+                    </div>
+
+                    {/* Title Document Dropdown */}
+                    <div className={styles.formGroup} style={{ marginTop: '10px' }}>
+                      <label className={styles.label}>Title Document</label>
+                      <select
+                        name="title_document"
+                        value={formData.title_document}
+                        onChange={handleInputChange}
+                        className={styles.select}
+                      >
+                        <option value="">None / Select Title Document</option>
+                        <option value="Certificate of Occupancy (cofo)">Certificate of Occupancy (cofo)</option>
+                        <option value="Right of Occupancy (RofO)">Right of Occupancy (RofO)</option>
+                        <option value="FCDA Allocation/Approval">FCDA Allocation/Approval</option>
+                      </select>
                     </div>
                   </div>
                 </div>

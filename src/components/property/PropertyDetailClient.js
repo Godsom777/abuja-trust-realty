@@ -44,7 +44,8 @@ export default function PropertyDetailClient({ property, media = [] }) {
     status = 'available',
     transaction_type = 'sale',
     features = [],
-    structure_type
+    structure_type,
+    title_document
   } = property;
 
   const isSaved = mounted && savedProperties.includes(id);
@@ -149,6 +150,9 @@ export default function PropertyDetailClient({ property, media = [] }) {
           )}
           {structure_type && (
             <SpecChip iconClass="fa-house" value={structure_type} label="Design" />
+          )}
+          {title_document && (
+            <SpecChip iconClass="fa-file-contract" value={title_document} label="Title" />
           )}
         </div>
 

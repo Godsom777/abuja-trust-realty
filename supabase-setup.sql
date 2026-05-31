@@ -11,6 +11,7 @@ ALTER TABLE properties ADD COLUMN IF NOT EXISTS district text;
 ALTER TABLE properties ADD COLUMN IF NOT EXISTS verified boolean DEFAULT true;
 ALTER TABLE properties ADD COLUMN IF NOT EXISTS featured boolean DEFAULT false;
 ALTER TABLE properties ADD COLUMN IF NOT EXISTS structure_type text;
+ALTER TABLE properties ADD COLUMN IF NOT EXISTS title_document text;
 
 -- 2. Create the 'property_media' table for multiple images/videos
 CREATE TABLE IF NOT EXISTS property_media (

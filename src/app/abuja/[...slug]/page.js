@@ -60,6 +60,7 @@ export default async function PropertyDetailPage({ params }) {
     propertyType: rawListing.property_type || rawListing.propertyType || "residential",
     sizeSqm: rawListing.size_sqm || rawListing.sizeSqm,
     structureType: rawListing.structure_type || rawListing.structureType || null,
+    titleDocument: rawListing.title_document || rawListing.titleDocument || null,
   };
 
   // Fetch associated media for slideshow (photos & videos)
@@ -162,6 +163,13 @@ export default async function PropertyDetailPage({ params }) {
                   {listing.structureType}
                 </span>
                 <span className={styles.specLabel}>Design</span>
+              </div>
+            )}
+            {listing.titleDocument && (
+              <div className={styles.specBox}>
+                <i className="fa-solid fa-file-contract"></i>
+                <span className={styles.specVal}>{listing.titleDocument}</span>
+                <span className={styles.specLabel}>Title Document</span>
               </div>
             )}
           </div>
