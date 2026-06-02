@@ -2,10 +2,21 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import Badge from '../../ui/Badge/Badge';
 import { formatConvertedPrice } from '@/lib/currency';
 import { useAppStore } from '@/store/useAppStore';
 import styles from './PropertyCard.module.css';
+
+const TRANSACTION_LABELS = {
+  sale: 'For Sale',
+  rent: 'For Rent',
+  'off-plan': 'Off-Plan',
+};
+
+const STATUS_COLORS = {
+  available: styles.statusAvailable,
+  reserved: styles.statusReserved,
+  sold: styles.statusSold,
+};
 
 export default function PropertyCard({ property, viewMode = 'list' }) {
   const { currency, toggleSaveProperty, savedProperties } = useAppStore();
@@ -33,15 +44,27 @@ export default function PropertyCard({ property, viewMode = 'list' }) {
 
   const isSaved = mounted && savedProperties.includes(id);
 
-  // Fallback image if cover_image_url is missing
-  const imageUrl = cover_image_url || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=800';
-  const isVideo = imageUrl && (imageUrl.endsWith('.mp4') || imageUrl.endsWith('.webm') || imageUrl.endsWith('.mov') || imageUrl.includes('video'));
+  const imageUrl = cover_image_url ||
+    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=800';
+  const isVideo = imageUrl && (
+    imageUrl.endsWith('.mp4') ||
+    imageUrl.endsWith('.webm') ||
+    imageUrl.endsWith('.mov') ||
+    imageUrl.includes('video')
+  );
 
   const formattedPrice = price_ngn
     ? formatConvertedPrice(price_ngn, currency, true)
-    : 'Price on Enquiry';
+    : 'Enquire';
 
-  const typeLabel = transaction_type === 'rent' ? 'For Rent' : transaction_type === 'off-plan' ? 'Off-Plan' : 'For Sale';
+  const typeLabel = TRANSACTION_LABELS[transaction_type] || 'For Sale';
+
+  // Compact size display
+  const sizeDisplay = size_sqm && size_sqm > 0
+    ? (size_sqm >= 10000
+        ? `${(size_sqm / 10000).toFixed(2)}ha`
+        : `${size_sqm.toLocaleString()}sqm`)
+    : null;
 
   const handleSaveClick = (e) => {
     e.preventDefault();
@@ -49,30 +72,19 @@ export default function PropertyCard({ property, viewMode = 'list' }) {
     toggleSaveProperty(id);
   };
 
-  // Helper to format/abbreviate long district names for cleaner grid columns
-  const formatLocation = (loc) => {
-    if (!loc) return '';
-    const mapping = {
-      "central business district": "CBD",
-      "katampe extension": "Katampe Ext",
-      "wuse 2": "Wuse II",
-      "garki 2": "Garki II"
-    };
-    const key = loc.toLowerCase().trim();
-    return mapping[key] || loc;
-  };
-
-  const area = formatLocation(location_area || property.district || 'Abuja');
-  const city = location_city || 'Abuja';
+  const area = location_area || property.district || 'Abuja';
 
   return (
-    <Link href={`/property/${slug}`} className={`${styles.card} ${viewMode === 'grid' ? styles.cardGrid : ''}`}>
-      {/* 16:9 Aspect Ratio Media Wrapper — 100% naked visual design */}
-      <div className={styles.mediaContainer}>
+    <Link
+      href={`/property/${slug}`}
+      className={`${styles.card} ${viewMode === 'grid' ? styles.cardGrid : ''}`}
+    >
+      {/* ── Full-bleed Media ── */}
+      <div className={styles.mediaWrap}>
         {isVideo ? (
           <video
             src={imageUrl}
-            className={styles.image}
+            className={styles.media}
             muted
             loop
             autoPlay
@@ -82,63 +94,69 @@ export default function PropertyCard({ property, viewMode = 'list' }) {
           <img
             src={imageUrl}
             alt={title}
-            className={styles.image}
+            className={styles.media}
             loading="lazy"
           />
         )}
-      </div>
 
-      {/* Card Info Content */}
-      <div className={styles.content}>
-        {/* Row 1: Spaced location + type on the left, Airbnb-style status dot indicator on the right */}
-        <div className={styles.metaRow}>
-          <div className={styles.metaLeft}>
+        {/* Rich gradient overlay */}
+        <div className={styles.overlay} />
+
+        {/* Top badges */}
+        <div className={styles.topBadges}>
+          <span className={`${styles.typeBadge} ${styles[`type_${transaction_type?.replace('-', '_')}`]}`}>
+            {typeLabel}
+          </span>
+          {status === 'available' && (
+            <span className={styles.statusPill}>
+              <span className={styles.statusDot} />
+              Available
+            </span>
+          )}
+          {status === 'reserved' && (
+            <span className={`${styles.statusPill} ${styles.statusPillReserved}`}>
+              <span className={styles.statusDot} />
+              Reserved
+            </span>
+          )}
+        </div>
+
+        {/* Save button */}
+        <button
+          onClick={handleSaveClick}
+          className={`${styles.saveBtn} ${isSaved ? styles.saved : ''}`}
+          aria-label={isSaved ? 'Remove from saved' : 'Save property'}
+        >
+          <i className={`${isSaved ? 'fa-solid' : 'fa-regular'} fa-heart`}></i>
+        </button>
+
+        {/* ── Text overlay at bottom ── */}
+        <div className={styles.textOverlay}>
+          {/* Price in Clash Display */}
+          <div className={styles.price}>{formattedPrice}</div>
+
+          <h3 className={styles.title}>{title}</h3>
+
+          <div className={styles.metaRow}>
             <span className={styles.location}>
-              <i className={`fa-solid fa-location-dot ${styles.locationIcon}`}></i>
+              <i className="fa-solid fa-location-dot"></i>
               {area}
             </span>
-            <span className={styles.metaDot}>•</span>
-            <span className={styles.typeText}>{typeLabel}</span>
+            <div className={styles.specs}>
+              {bedrooms != null && (
+                <span className={styles.spec}>
+                  <i className="fa-solid fa-bed"></i>
+                  {bedrooms}
+                </span>
+              )}
+              {sizeDisplay && (
+                <span className={styles.spec}>
+                  <i className="fa-solid fa-ruler-combined"></i>
+                  {sizeDisplay}
+                </span>
+              )}
+            </div>
           </div>
-          <div className={`${styles.statusIndicator} ${styles[status]}`}>
-            <span className={styles.statusDot}></span>
-            <span className={styles.statusLabel}>{status}</span>
-          </div>
-        </div>
-
-        {/* Row 2: Serif Title */}
-        <h3 className={styles.title}>{title}</h3>
-
-        {/* Row 3: Specifications with visual separators */}
-        <div className={styles.specsRow}>
-          {bedrooms !== undefined && bedrooms !== null && (
-            <span className={styles.specItem}>
-              <i className="fa-solid fa-bed"></i>
-              {bedrooms} {bedrooms === 1 ? 'Bed' : 'Beds'}
-            </span>
-          )}
-          {bedrooms !== undefined && bedrooms !== null && size_sqm !== undefined && size_sqm !== null && size_sqm > 0 && (
-            <span className={styles.specDivider}>|</span>
-          )}
-          {size_sqm !== undefined && size_sqm !== null && size_sqm > 0 && (
-            <span className={styles.specItem}>
-              <i className="fa-solid fa-ruler-combined"></i>
-              {size_sqm.toLocaleString()} m²
-            </span>
-          )}
-        </div>
-
-        {/* Row 4: Price & Tactile Circular Save Button aligned side-by-side */}
-        <div className={styles.footerRow}>
-          <span className={styles.price}>{formattedPrice}</span>
-          
-          <button
-            onClick={handleSaveClick}
-            className={`${styles.saveBtn} ${isSaved ? styles.saved : ''}`}
-            aria-label={isSaved ? "Remove from saved" : "Save property"}
-          >
-            <i className={`${isSaved ? 'fa-solid' : 'fa-regular'} fa-heart`}></i>
-          </button>
         </div>
       </div>
     </Link>

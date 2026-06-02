@@ -1,23 +1,71 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAppStore } from '@/store/useAppStore';
 import PropertyGrid from '../property/PropertyGrid/PropertyGrid';
 import WhatsAppFAB from '../property/WhatsAppFAB/WhatsAppFAB';
 import styles from './HomeClient.module.css';
 
+// Districts to scroll in the marquee strip
+const MARQUEE_DISTRICTS = [
+  'Maitama', 'Asokoro', 'Wuse 2', 'Gwarinpa', 'Jabi',
+  'Life Camp', 'Katampe', 'Apo', 'Garki', 'Utako',
+  'Wuye', 'Mabushi', 'Guzape', 'Lugbe', 'Kaura',
+];
+
+// Animated counter hook — counts up when the ref enters the viewport
+function useCountUp(target, duration = 1600, startOnVisible = true) {
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const started = useRef(false);
+
+  useEffect(() => {
+    if (!startOnVisible) return;
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !started.current) {
+          started.current = true;
+          const startTime = performance.now();
+          const tick = (now) => {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            // Ease out cubic
+            const eased = 1 - Math.pow(1 - progress, 3);
+            setCount(Math.round(eased * target));
+            if (progress < 1) requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+        }
+      },
+      { threshold: 0.4 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [target, duration, startOnVisible]);
+
+  return { count, ref };
+}
+
 export default function HomeClient({ initialListings = [], initialDistricts = [] }) {
   const router = useRouter();
   const { savedProperties, viewMode, setViewMode } = useAppStore();
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedType, setSelectedType] = useState('all'); // 'all' | 'sale' | 'rent' | 'off-plan'
+  const [selectedType, setSelectedType] = useState('all');
   const [selectedDistrict, setSelectedDistrict] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
 
   const searchParams = useSearchParams();
   const filter = searchParams ? searchParams.get('filter') : null;
+
+  // Animated counters
+  const { count: propCount, ref: propRef } = useCountUp(120);
+  const { count: respCount, ref: respRef } = useCountUp(48);
+  const { count: verCount, ref: verRef } = useCountUp(100);
 
   // Safe client-side hydration to prevent SSR mismatch
   useEffect(() => {
@@ -34,33 +82,25 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
     { key: 'off-plan', label: 'Off-Plan' }
   ];
 
-  // Client-side filtering logic (Instant response, zero lag!)
+  // Client-side filtering logic
   const filteredListings = useMemo(() => {
     let list = initialListings;
-    
-    // Filter by saved properties if the Saved Tab filter is active
+
     if (filter === 'saved') {
-      if (!mounted) return []; // Render empty while checking localStorage on initial client mount
+      if (!mounted) return [];
       list = list.filter(listing => savedProperties.includes(listing.id));
     }
 
     const filtered = list.filter((listing) => {
-      // 1. Transaction Type filter
       if (selectedType !== 'all' && (listing.transaction_type || '').toLowerCase() !== selectedType) {
         return false;
       }
-      
-      // 2. District filter
       if (selectedDistrict !== 'all') {
         const area = (listing.location_area || '').toLowerCase();
         const city = (listing.location_city || '').toLowerCase();
         const dist = selectedDistrict.toLowerCase();
-        if (area !== dist && city !== dist) {
-          return false;
-        }
+        if (area !== dist && city !== dist) return false;
       }
-
-      // 3. Search query keyword filter
       if (searchQuery.trim() !== '') {
         const query = searchQuery.toLowerCase();
         const titleMatch = (listing.title || '').toLowerCase().includes(query);
@@ -69,11 +109,9 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
         const descMatch = (listing.description || '').toLowerCase().includes(query);
         return titleMatch || areaMatch || cityMatch || descMatch;
       }
-
       return true;
     });
 
-    // Apply Sorting logic
     const sorted = [...filtered];
     if (sortBy === 'price-asc') {
       sorted.sort((a, b) => (a.price_ngn || 0) - (b.price_ngn || 0));
@@ -96,7 +134,6 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
         return typeA.localeCompare(typeB);
       });
     } else {
-      // Sort by newest first (default fallback)
       sorted.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
     }
 
@@ -105,18 +142,53 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
 
   return (
     <div className={styles.container}>
-      {/* Editorial Hero Block */}
+
+      {/* ── Editorial Hero Block with staggered entry animations ── */}
       <section className={styles.hero}>
         <div className={styles.tagLineBlock}>
-          <span className={styles.subtitle}>Curated Real Estate</span>
-          <h1 className={styles.headline}>Find your home, from anywhere.</h1>
-          <p className={styles.description}>
-            Vetted individual owners. Zero agent friction. Secure WhatsApp handoffs. Trusted by Nigerians in the diaspora.
+          <span
+            className={`${styles.subtitle} animate-fade-up`}
+            style={{ '--delay': '60ms' }}
+          >
+            Curated Real Estate
+          </span>
+          <h1
+            className={`${styles.headline} animate-fade-up`}
+            style={{ '--delay': '140ms' }}
+          >
+            Find your home,<br />from anywhere.
+          </h1>
+          <p
+            className={`${styles.description} animate-fade-up`}
+            style={{ '--delay': '220ms' }}
+          >
+            Vetted individual owners. Zero agent friction. Secure WhatsApp handoffs.
+            Trusted by Nigerians in the diaspora.
           </p>
         </div>
 
+        {/* Scrolling District Marquee Strip */}
+        <div
+          className={`${styles.marqueeStrip} animate-fade-up`}
+          style={{ '--delay': '290ms' }}
+          aria-hidden="true"
+        >
+          <div className={styles.marqueeTrack}>
+            {/* Duplicated for seamless looping */}
+            {[...MARQUEE_DISTRICTS, ...MARQUEE_DISTRICTS].map((d, i) => (
+              <span key={i} className={styles.marqueeItem}>
+                <i className="fa-solid fa-location-dot"></i>
+                {d}
+              </span>
+            ))}
+          </div>
+        </div>
+
         {/* Instantly Responsive Search Input */}
-        <div className={styles.searchWrap}>
+        <div
+          className={`${styles.searchWrap} animate-fade-up`}
+          style={{ '--delay': '360ms' }}
+        >
           <i className="fa-solid fa-magnifying-glass"></i>
           <input
             type="text"
@@ -133,7 +205,7 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
         </div>
       </section>
 
-      {/* Filter Controls Row */}
+      {/* ── Filter Controls Row ── */}
       <section className={styles.filtersSection}>
         {/* Category Horizontal Chips */}
         <div className={styles.chipsRow}>
@@ -151,7 +223,7 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
           })}
         </div>
 
-        {/* District Select Input */}
+        {/* District Select */}
         <div className={styles.selectWrap}>
           <label htmlFor="district-select" className={styles.selectLabel}>Location</label>
           <select
@@ -162,14 +234,12 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
           >
             <option value="all">All Abuja Districts</option>
             {initialDistricts.map((dist) => (
-              <option key={dist} value={dist}>
-                {dist}
-              </option>
+              <option key={dist} value={dist}>{dist}</option>
             ))}
           </select>
         </div>
 
-        {/* Sort Select Input */}
+        {/* Sort Select */}
         <div className={styles.selectWrap}>
           <label htmlFor="sort-select" className={styles.selectLabel}>Sort By</label>
           <select
@@ -189,7 +259,7 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
         </div>
       </section>
 
-      {/* Vetted listings grid */}
+      {/* ── Vetted listings grid ── */}
       <section className={styles.gridSection}>
         <div className={styles.gridHeader}>
           <div className={styles.gridTitleBlock}>
@@ -251,17 +321,49 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
         )}
       </section>
 
-      {/* Trust banner */}
-      <section className={styles.trustBanner}>
-        <div className={styles.trustIcon}>
-          <i className="fa-solid fa-shield-halved"></i>
+      {/* ── Elevated Trust Section: Icon Trio + Animated Counters ── */}
+      <section className={styles.trustSection}>
+
+        {/* Part 1: Icon Trio Strip */}
+        <div className={styles.trustIconStrip}>
+          <div className={styles.trustIconCard}>
+            <div className={styles.trustIconCircle}>
+              <i className="fa-solid fa-shield-halved"></i>
+            </div>
+            <span className={styles.trustIconLabel}>Title Verified</span>
+          </div>
+          <div className={styles.trustIconCard}>
+            <div className={styles.trustIconCircle}>
+              <i className="fa-solid fa-user-slash"></i>
+            </div>
+            <span className={styles.trustIconLabel}>Zero Agents</span>
+          </div>
+          <div className={styles.trustIconCard}>
+            <div className={styles.trustIconCircle}>
+              <i className="fa-brands fa-whatsapp"></i>
+            </div>
+            <span className={styles.trustIconLabel}>Direct WhatsApp</span>
+          </div>
         </div>
-        <div className={styles.trustContent}>
-          <h4 className={styles.trustTitle}>The Abuja Trust Realty Commitment</h4>
-          <p className={styles.trustText}>
-            Every property listed undergoes title and physical site verification. Negotiations occur on shared WhatsApp groups with platform support.
-          </p>
+
+        {/* Part 2: Animated Counters */}
+        <div className={styles.trustCounterRow}>
+          <div className={styles.trustCounter} ref={propRef}>
+            <span className={styles.counterNum}>{propCount}+</span>
+            <span className={styles.counterLabel}>Properties Vetted</span>
+          </div>
+          <div className={styles.trustCounterDivider} />
+          <div className={styles.trustCounter} ref={respRef}>
+            <span className={styles.counterNum}>{respCount}h</span>
+            <span className={styles.counterLabel}>Avg. Response</span>
+          </div>
+          <div className={styles.trustCounterDivider} />
+          <div className={styles.trustCounter} ref={verRef}>
+            <span className={styles.counterNum}>{verCount}%</span>
+            <span className={styles.counterLabel}>Owner Verified</span>
+          </div>
         </div>
+
       </section>
 
       {/* WhatsApp General Floating CTA */}

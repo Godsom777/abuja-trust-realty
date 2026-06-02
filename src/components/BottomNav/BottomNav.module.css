@@ -1,41 +1,77 @@
+/* ── Floating Pill Bottom Navigation ── */
 .bottomNav {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background-color: var(--bg-card, #ffffff);
-  border-top: 1px solid var(--border-color, #eaeaea);
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 40px);
+  max-width: 520px;
+  z-index: 100;
+
+  /* Frosted glass pill */
+  background: rgba(245, 240, 232, 0.88);
+  backdrop-filter: blur(20px) saturate(200%);
+  -webkit-backdrop-filter: blur(20px) saturate(200%);
+  border: 1px solid rgba(228, 221, 212, 0.75);
+  border-radius: var(--radius-pill, 100px);
+  box-shadow: var(--shadow-float, 0 16px 40px rgba(26, 21, 18, 0.14)),
+              0 2px 8px rgba(26, 21, 18, 0.06);
+
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 12px 0;
-  padding-bottom: calc(12px + env(safe-area-inset-bottom));
-  z-index: 100;
-  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+  padding: 10px 16px;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
 }
 
+/* ── Nav Items ── */
 .navItem {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   text-decoration: none;
-  color: var(--text-muted, #737373);
-  font-size: 11px;
+  color: var(--color-muted, #8B7D72);
+  font-family: var(--font-ui);
+  font-size: 10px;
   font-weight: 500;
-  transition: color 0.2s ease;
+  letter-spacing: 0.3px;
+  padding: 6px 14px;
+  border-radius: 30px;
+  transition: var(--transition-smooth);
+  min-width: 56px;
 }
 
 .navItem i {
-  font-size: 20px;
-  margin-bottom: 2px;
+  font-size: 18px;
+  line-height: 1;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.navItem:hover,
-.navItem:active {
-  color: var(--color-emerald, #1b7a4e);
+.navItem span {
+  transition: color 0.2s ease, font-weight 0.2s ease;
 }
 
+.navItem:hover {
+  color: var(--color-text, #1A1512);
+}
+
+.navItem:hover i {
+  transform: translateY(-2px) scale(1.08);
+}
+
+/* ── Active State ── */
+.navItem.active {
+  color: var(--color-accent, #B36A35);
+  font-weight: 700;
+  background: var(--color-accent-subtle, rgba(179, 106, 53, 0.08));
+}
+
+.navItem.active i {
+  color: var(--color-accent, #B36A35);
+}
+
+/* ── Desktop: hide bottom nav ── */
 @media (min-width: 769px) {
   .bottomNav {
     display: none;

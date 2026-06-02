@@ -1,292 +1,292 @@
+/* ── Cinematic Full-Bleed Property Card (Grid version) ── */
 .card {
-  display: flex;
-  flex-direction: column;
-  background-color: var(--color-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-card);
-  overflow: hidden;
-  transition: var(--transition-bouncy);
+  display: block;
   text-decoration: none;
   color: inherit;
-  width: 100%;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  background-color: #1A1512;
 }
 
 .card:hover {
-  transform: translateY(-4px);
-  border-color: var(--color-accent);
-  box-shadow: 0 8px 24px rgba(26, 21, 18, 0.04);
+  transform: translateY(-5px) scale(1.01);
+  box-shadow: var(--shadow-card-hover);
 }
 
-.mediaContainer {
+.card:active {
+  transform: scale(0.98);
+}
+
+/* ── Media wrapper — sets the card height via aspect-ratio ── */
+.mediaWrap {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
-  background-color: var(--color-border);
+  aspect-ratio: 4 / 3;
   overflow: hidden;
 }
 
-.image {
+/* In grid view use a slightly taller ratio for dramatic effect */
+.cardGrid .mediaWrap {
+  aspect-ratio: 3 / 4;
+}
+
+.media {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.8s ease;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.card:hover .image {
-  transform: scale(1.04);
+.card:hover .media {
+  transform: scale(1.07);
 }
 
-.content {
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+/* ── Gradient overlay ── */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(12, 8, 5, 0.15) 0%,
+    rgba(12, 8, 5, 0) 30%,
+    rgba(12, 8, 5, 0.5) 62%,
+    rgba(8, 5, 3, 0.92) 100%
+  );
+  pointer-events: none;
 }
 
-/* Metadata Row: Location + Type & Status Indicators */
-.metaRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
-.metaLeft {
+/* ── Top Badges ── */
+.topBadges {
+  position: absolute;
+  top: 12px;
+  left: 12px;
   display: flex;
   align-items: center;
   gap: 6px;
+  z-index: 3;
 }
 
-.location {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+.typeBadge {
   font-family: var(--font-ui);
-  font-size: 10px;
-  font-weight: 600;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--color-text-body);
+  padding: 4px 10px;
+  border-radius: 20px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
-.locationIcon {
-  color: var(--color-accent);
-  font-size: 10px;
+.type_sale {
+  background: rgba(45, 125, 82, 0.82);
+  color: #FFFFFF;
 }
 
-.metaDot {
-  color: var(--color-border);
-  font-size: 12px;
+.type_rent {
+  background: rgba(179, 106, 53, 0.82);
+  color: #FFFFFF;
 }
 
-.typeText {
-  font-family: var(--font-ui);
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--color-muted);
+.type_off_plan {
+  background: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-/* Subtle Status Dots */
-.statusIndicator {
+/* Status pill (available / reserved) */
+.statusPill {
   display: flex;
   align-items: center;
   gap: 5px;
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-family: var(--font-ui);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.statusPillReserved .statusDot {
+  background: var(--color-accent);
+  box-shadow: 0 0 6px rgba(179, 106, 53, 0.7);
 }
 
 .statusDot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
+  background: var(--color-available);
+  box-shadow: 0 0 6px rgba(45, 125, 82, 0.7);
+  flex-shrink: 0;
 }
 
-.statusLabel {
-  font-family: var(--font-ui);
-  font-size: 9px;
+/* ── Save Button ── */
+.saveBtn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 3;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-bouncy);
+}
+
+.saveBtn:hover {
+  background: rgba(255, 255, 255, 0.28);
+  transform: scale(1.12);
+}
+
+.saveBtn:active {
+  transform: scale(0.90);
+}
+
+.saveBtn.saved {
+  background: rgba(229, 62, 62, 0.82);
+  border-color: rgba(229, 62, 62, 0.5);
+  color: #FFFFFF;
+  animation: heartPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes heartPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+
+/* ── Text Overlay ── */
+.textOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px 16px 18px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Price — Clash Display */
+.price {
+  font-family: var(--font-data);
+  font-size: 22px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
+  color: #FFFFFF;
+  line-height: 1;
+  letter-spacing: -0.3px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
 }
 
-/* Colors mapped from design system tokens */
-.statusIndicator.available .statusDot {
-  background-color: var(--color-available);
-  box-shadow: 0 0 8px rgba(45, 125, 82, 0.4);
-}
-.statusIndicator.available .statusLabel {
-  color: var(--color-available);
-}
-
-.statusIndicator.reserved .statusDot {
-  background-color: var(--color-reserved);
-  box-shadow: 0 0 8px rgba(192, 125, 74, 0.4);
-}
-.statusIndicator.reserved .statusLabel {
-  color: var(--color-reserved);
-}
-
-.statusIndicator.sold .statusDot {
-  background-color: var(--color-sold);
-}
-.statusIndicator.sold .statusLabel {
-  color: var(--color-sold);
-}
-
-/* Serif Title */
+/* Title — Cormorant Garamond italic */
 .title {
   font-family: var(--font-display);
-  font-size: 21px;
-  font-weight: 600;
-  color: var(--color-text);
+  font-size: 15.5px;
+  font-weight: 500;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.90);
   line-height: 1.25;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* Horizontal Specifications */
-.specsRow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--color-text-body);
-}
-
-.specItem {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-family: var(--font-ui);
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.specItem i {
-  color: var(--color-muted);
-  font-size: 11px;
-}
-
-.specDivider {
-  color: var(--color-border);
-  font-size: 11px;
-  font-weight: 300;
-}
-
-/* Footer Section: Price & Save Button aligned side-by-side */
-.footerRow {
+/* Bottom meta row */
+.metaRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-top: 1px solid var(--color-border);
-  padding-top: 12px;
-  margin-top: 2px;
+  gap: 8px;
+  margin-top: 3px;
 }
 
-.price {
-  font-family: var(--font-ui);
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--color-accent);
-}
-
-.saveBtn {
-  background-color: rgba(26, 21, 18, 0.04);
-  border: 1px solid transparent;
-  color: var(--color-muted);
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
+.location {
   display: flex;
   align-items: center;
-  justify-content: center;
-  transition: var(--transition-bouncy);
+  gap: 5px;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.68);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.saveBtn:hover {
-  background-color: rgba(192, 125, 74, 0.08);
-  color: var(--color-accent);
-  transform: scale(1.08);
-}
-
-.saveBtn.saved {
-  color: #e53e3e;
-  background-color: rgba(229, 62, 62, 0.06);
-  border-color: rgba(229, 62, 62, 0.15);
-  animation: heartPop 0.3s ease;
-}
-
-@keyframes heartPop {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.3); }
-  100% { transform: scale(1); }
-}
-
-/* Compact Card Styling for Grid View */
-.cardGrid .content {
-  padding: 12px;
-  gap: 8px;
-}
-
-.cardGrid .metaRow {
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-.cardGrid .metaLeft {
-  gap: 4px;
-}
-
-.cardGrid .location {
-  font-size: 8.5px;
-  letter-spacing: 0.5px;
-}
-
-.cardGrid .typeText {
-  font-size: 8.5px;
-  letter-spacing: 0.5px;
-}
-
-.cardGrid .metaDot {
-  font-size: 10px;
-}
-
-.cardGrid .statusLabel {
-  font-size: 8px;
-}
-
-.cardGrid .title {
-  font-size: 16px;
-  line-height: 1.3;
-}
-
-.cardGrid .specsRow {
-  gap: 6px;
-}
-
-.cardGrid .specItem {
-  font-size: 10.5px;
-}
-
-.cardGrid .specItem i {
-  font-size: 9.5px;
-}
-
-.cardGrid .specDivider {
+.location i {
   font-size: 9px;
+  color: var(--color-accent);
+  flex-shrink: 0;
 }
 
-.cardGrid .footerRow {
-  padding-top: 8px;
-  margin-top: 0;
+.specs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.spec {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.78);
+  white-space: nowrap;
+}
+
+.spec i {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.50);
+}
+
+/* ─────────────────────────────────────
+   GRID VIEW OVERRIDES
+───────────────────────────────────── */
+.cardGrid {
+  /* grid card is taller (portrait) — handled by .cardGrid .mediaWrap */
 }
 
 .cardGrid .price {
-  font-size: 14.5px;
+  font-size: 19px;
 }
 
-.cardGrid .saveBtn {
-  width: 30px;
-  height: 30px;
-  font-size: 12px;
+.cardGrid .title {
+  font-size: 14px;
+}
+
+.cardGrid .textOverlay {
+  padding: 12px 14px 16px;
+}
+
+.cardGrid .location {
+  font-size: 10px;
+}
+
+.cardGrid .spec {
+  font-size: 9.5px;
 }

@@ -32,11 +32,15 @@ export default function Navbar() {
         id="main-navigation"
       >
         <div className={styles.inner}>
-          {/* Logo */}
+          {/* Brand Mark — "Abuja Realty." with building icon */}
           <Link href="/" className={styles.logo} id="nav-logo">
-            <i className={`fa-solid fa-diamond ${styles.logoIcon}`}></i>
+            <div className={styles.logoIconWrap}>
+              <i className={`fa-solid fa-building ${styles.logoIcon}`}></i>
+            </div>
             <span className={styles.logoText}>
-              ABJ-Realty<span className={styles.logoAccent}>.</span>
+              <span className={styles.logoAbuja}>Abuja </span>
+              <span className={styles.logoRealty}>Realty</span>
+              <span className={styles.logoAccent}>.</span>
             </span>
           </Link>
 
@@ -92,9 +96,13 @@ export default function Navbar() {
           >
             <div className={styles.mobileHeader}>
               <Link href="/" className={styles.logo} onClick={() => setMobileOpen(false)}>
-                <i className={`fa-solid fa-diamond ${styles.logoIcon}`}></i>
+                <div className={styles.logoIconWrap}>
+                  <i className={`fa-solid fa-building ${styles.logoIcon}`}></i>
+                </div>
                 <span className={styles.logoText}>
-                  ABJ-Realty<span className={styles.logoAccent}>.</span>
+                  <span className={styles.logoAbuja}>Abuja </span>
+                  <span className={styles.logoRealty}>Realty</span>
+                  <span className={styles.logoAccent}>.</span>
                 </span>
               </Link>
               <button

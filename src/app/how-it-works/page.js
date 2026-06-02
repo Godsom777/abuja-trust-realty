@@ -22,7 +22,14 @@ export default async function HowItWorksPage() {
       {/* Hero */}
       <section className={styles.hero}>
         <div className="container">
-          <span className="text-label">Our Process</span>
+          <span style={{
+            fontFamily: 'var(--font-ui)',
+            fontSize: '10.5px',
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            letterSpacing: '2px',
+            color: 'var(--color-accent)'
+          }}>Our Process</span>
           <h1>Trust Built Into Every Step</h1>
           <p className={styles.heroSub}>
             We're not an open marketplace. We're a managed, admin-curated directory

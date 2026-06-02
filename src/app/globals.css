@@ -93,7 +93,51 @@ button {
   background: var(--color-muted);
 }
 
-/* Global Animations / Hover Utilities */
+/* ─── Global Animations ─── */
+
+/* Staggered fade-up — hero entry animation */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Simple fade in */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Pulse for skeletons */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Marquee scroll */
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ─── Animation Utility Classes ─── */
+/* Usage: add class + set --delay CSS var inline for staggering */
+.animate-fade-up {
+  animation: fadeUp 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease both;
+  animation-delay: var(--delay, 0ms);
+}
+
+/* ─── Hover Utilities ─── */
 .hover-lift {
   transition: var(--transition-bouncy);
 }
@@ -110,7 +154,7 @@ button {
   transform: scale(0.96);
 }
 
-/* Standard Layout Containers */
+/* ─── Standard Layout Containers ─── */
 .container {
   padding-left: var(--page-horizontal);
   padding-right: var(--page-horizontal);
@@ -122,16 +166,7 @@ button {
   justify-content: center;
 }
 
-/* Skeleton Loading Animation */
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.4;
-  }
-}
-
+/* ─── Skeleton Loading ─── */
 .skeleton {
   animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   background-color: var(--color-border);

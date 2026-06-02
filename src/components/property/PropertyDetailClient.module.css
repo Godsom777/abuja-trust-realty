@@ -147,10 +147,12 @@
 }
 
 .mainPrice {
-  font-family: var(--font-ui);
-  font-size: 26px;
+  font-family: var(--font-data);
+  font-size: 36px;
   font-weight: 700;
   color: var(--color-accent);
+  letter-spacing: -0.5px;
+  line-height: 1;
 }
 
 .comparison {
@@ -259,16 +261,19 @@
 /* Fixed bottom action WhatsApp bar */
 .bottomBar {
   position: fixed;
-  bottom: 58px; /* sits right above BottomNav */
+  bottom: 90px; /* sits above the floating pill bottom nav */
   left: 50%;
   transform: translateX(-50%);
-  width: 100%;
-  max-width: 600px;
+  width: calc(100% - 40px);
+  max-width: 520px;
   z-index: 95;
-  background-color: rgba(255, 255, 255, 0.95);
-  border-top: 1px solid var(--color-border);
-  padding: 10px var(--page-horizontal);
-  box-shadow: 0 -4px 20px rgba(26, 21, 18, 0.05);
+  background: rgba(245, 240, 232, 0.90);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(228, 221, 212, 0.7);
+  border-radius: 20px;
+  padding: 12px 16px;
+  box-shadow: 0 8px 32px rgba(26, 21, 18, 0.10);
 }
 
 .bottomBarInner {
@@ -293,39 +298,47 @@
 }
 
 .bottomPrice {
-  font-family: var(--font-ui);
-  font-size: 16px;
+  font-family: var(--font-data);
+  font-size: 18px;
   font-weight: 700;
   color: var(--color-accent);
+  letter-spacing: -0.3px;
 }
 
 .enquireBtn {
   flex: 1;
-  background-color: var(--color-whatsapp);
+  background: linear-gradient(135deg, #25D366 0%, #1aaa52 100%);
   color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 12px 18px;
-  border-radius: var(--radius-button);
+  gap: 9px;
+  padding: 0 20px;
+  height: 52px;
+  border-radius: 16px;
   font-family: var(--font-ui);
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 700;
-  box-shadow: var(--shadow-fab);
-  max-width: 250px;
+  letter-spacing: 0.2px;
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.32);
+  max-width: 260px;
   transition: var(--transition-bouncy);
 }
 
+.enquireBtn i {
+  font-size: 18px;
+}
+
 .enquireBtn:hover:not(:disabled) {
-  background-color: #20ba5a;
+  background: linear-gradient(135deg, #20cc5f 0%, #15994a 100%);
   transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(37, 211, 102, 0.38);
 }
 
 .enquireBtn:disabled {
-  opacity: 0.65;
+  opacity: 0.6;
   cursor: not-allowed;
-  background-color: var(--color-muted);
+  background: var(--color-muted);
   box-shadow: none;
 }
 
@@ -338,20 +351,21 @@
     padding: 12px 14px;
   }
   .mainPrice {
-    font-size: 22px;
+    font-size: 30px;
   }
   .featuresGrid {
     grid-template-columns: 1fr;
     gap: 8px;
   }
   .bottomBar {
-    padding: 8px 16px;
+    padding: 10px 14px;
+    width: calc(100% - 32px);
   }
   .bottomPrice {
-    font-size: 15px;
+    font-size: 16px;
   }
   .enquireBtn {
-    padding: 10px 14px;
-    font-size: 12.5px;
+    font-size: 13px;
+    height: 48px;
   }
 }

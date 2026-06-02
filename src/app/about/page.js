@@ -170,7 +170,7 @@ export default function AboutPage() {
                 <i className="fa-regular fa-circle-question"></i>
                 {faq.q}
               </h4>
-              <p className={faq.a}>{faq.a}</p>
+              <p className={styles.faqAnswer}>{faq.a}</p>
             </div>
           ))}
         </div>
