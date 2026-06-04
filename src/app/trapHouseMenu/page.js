@@ -10,12 +10,12 @@ export default function TrapHouseMenu() {
       title: "Wine & Liqueur",
       icon: "🍷",
       items: [
-        { name: "Asconi Agor", price: "₦30,000", image: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?q=80&w=600&auto=format&fit=crop", note: "No sides" },
-        { name: "Four cousins", price: "₦30,000", image: "https://images.unsplash.com/photo-1584916201218-f4242ceb4809?q=80&w=600&auto=format&fit=crop", note: "No sides" },
-        { name: "Pastoral", price: "₦60,000", image: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?q=80&w=600&auto=format&fit=crop", note: "Comes with chicken wings" },
-        { name: "Thomas Barton", price: "₦60,000", image: "https://images.unsplash.com/photo-1585553616435-2dc0a54e271d?q=80&w=600&auto=format&fit=crop", note: "Comes with chicken wings" },
-        { name: "Cooper & Thief", price: "₦130,000", image: "https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?q=80&w=600&auto=format&fit=crop", note: "Comes with chicken wings" },
-        { name: "Baileys", price: "₦160,000", image: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?q=80&w=600&auto=format&fit=crop", note: "Comes with chicken wings" },
+        { name: "Asconi Agor", price: "₦30,000", image: "/menu/asconi_agor.png", note: "No sides" },
+        { name: "Four Cousins", price: "₦30,000", image: "/menu/four_cousins.png", note: "No sides" },
+        { name: "Pastoral", price: "₦60,000", image: "/menu/pastoral.png", note: "Comes with chicken wings" },
+        { name: "Thomas Barton", price: "₦60,000", image: "/menu/thomas_barton.png", note: "Comes with chicken wings" },
+        { name: "Cooper & Thief", price: "₦130,000", image: "/menu/cooper_thief.png", note: "Comes with chicken wings" },
+        { name: "Baileys", price: "₦160,000", image: "/menu/baileys.png", note: "Comes with chicken wings" },
       ]
     },
     {
@@ -23,15 +23,15 @@ export default function TrapHouseMenu() {
       title: "Whiskey, Cognac & Tequila",
       icon: "🥃",
       items: [
-        { name: "Buen Amigo Tequila", price: "₦60,000", image: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=600&auto=format&fit=crop", note: "Comes with chicken wings" },
-        { name: "Teeling Whiskey", price: "₦60,000", image: "https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=600&auto=format&fit=crop", note: "Comes with chicken wings" },
-        { name: "Jameson Green", price: "₦70,000", image: "https://images.unsplash.com/photo-1563223771-5fe4038fbfc9?q=80&w=600&auto=format&fit=crop", note: "Comes with chicken wings" },
-        { name: "Belaire", price: "₦120,000", image: "https://images.unsplash.com/photo-1597075687490-8f673c6c17f6?q=80&w=600&auto=format&fit=crop", note: "Comes with chicken wings" },
-        { name: "Martel VS", price: "₦160,000", image: "https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=600&auto=format&fit=crop", note: "Comes with chicken wings" },
-        { name: "Hennessy VS", price: "₦160,000", image: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=600&auto=format&fit=crop", note: "Comes with chicken wings" },
-        { name: "Bisquit & Dubouché", price: "₦170,000", image: "https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=600&auto=format&fit=crop", note: "Comes with chicken wings" },
-        { name: "Hennessy VSOP", price: "₦190,000", image: "https://images.unsplash.com/photo-1563223771-5fe4038fbfc9?q=80&w=600&auto=format&fit=crop", note: "Comes with chicken wings" },
-        { name: "Casamigo Tequila", price: "₦300,000", image: "https://images.unsplash.com/photo-1597075687490-8f673c6c17f6?q=80&w=600&auto=format&fit=crop", note: "Comes with chicken wings" },
+        { name: "Buen Amigo Tequila", price: "₦60,000", image: "https://images.pexels.com/photos/602750/pexels-photo-602750.jpeg?w=600&auto=compress", note: "Comes with chicken wings" },
+        { name: "Teeling Whiskey", price: "₦60,000", image: "https://images.pexels.com/photos/338713/pexels-photo-338713.jpeg?w=600&auto=compress", note: "Comes with chicken wings" },
+        { name: "Jameson Green", price: "₦70,000", image: "https://images.pexels.com/photos/1283219/pexels-photo-1283219.jpeg?w=600&auto=compress", note: "Comes with chicken wings" },
+        { name: "Belaire", price: "₦120,000", image: "https://images.pexels.com/photos/2789328/pexels-photo-2789328.jpeg?w=600&auto=compress", note: "Comes with chicken wings" },
+        { name: "Martel VS", price: "₦160,000", image: "https://images.pexels.com/photos/1170599/pexels-photo-1170599.jpeg?w=600&auto=compress", note: "Comes with chicken wings" },
+        { name: "Hennessy VS", price: "₦160,000", image: "https://images.pexels.com/photos/4553027/pexels-photo-4553027.jpeg?w=600&auto=compress", note: "Comes with chicken wings" },
+        { name: "Bisquit & Dubouché", price: "₦170,000", image: "https://images.pexels.com/photos/1170599/pexels-photo-1170599.jpeg?w=600&auto=compress", note: "Comes with chicken wings" },
+        { name: "Hennessy VSOP", price: "₦190,000", image: "https://images.pexels.com/photos/4553027/pexels-photo-4553027.jpeg?w=600&auto=compress", note: "Comes with chicken wings" },
+        { name: "Casamigo Tequila", price: "₦300,000", image: "https://images.pexels.com/photos/5946627/pexels-photo-5946627.jpeg?w=600&auto=compress", note: "Comes with chicken wings" },
       ]
     },
     {
@@ -39,9 +39,9 @@ export default function TrapHouseMenu() {
       title: "Specials & Extras",
       icon: "🍹",
       items: [
-        { name: "Cocktails", price: "₦7,000", image: "https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=600&auto=format&fit=crop", note: "No sides" },
-        { name: "Shisha", price: "₦10,000", image: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?q=80&w=600&auto=format&fit=crop", note: "Available in multiple flavors" },
-        { name: "Juice", price: "On Demand", image: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?q=80&w=600&auto=format&fit=crop", note: "" },
+        { name: "Cocktails", price: "₦7,000", image: "https://images.pexels.com/photos/3019019/pexels-photo-3019019.jpeg?w=600&auto=compress", note: "No sides" },
+        { name: "Shisha", price: "₦10,000", image: "https://images.pexels.com/photos/5947019/pexels-photo-5947019.jpeg?w=600&auto=compress", note: "Available in multiple flavors" },
+        { name: "Juice", price: "On Demand", image: "https://images.pexels.com/photos/1536304/pexels-photo-1536304.jpeg?w=600&auto=compress", note: "Available on demand 🥤" },
       ]
     }
   ];
@@ -68,7 +68,7 @@ export default function TrapHouseMenu() {
             <div className={styles.grid}>
               {category.items.map((item, idx) => (
                 <div key={idx} className={styles.card}>
-                  <img src={item.image} alt={item.name} className={styles.cardImage} />
+                  <img src={item.image} alt={item.name} className={styles.cardImage} loading="lazy" />
                   <div className={styles.cardBody}>
                     <h3 className={styles.itemName}>{item.name}</h3>
                     <p className={styles.itemPrice}>{item.price}</p>
