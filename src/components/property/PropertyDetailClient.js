@@ -6,7 +6,7 @@ import PhotoGallery from './PhotoGallery/PhotoGallery';
 import Badge from '../ui/Badge/Badge';
 import SpecChip from '../ui/SpecChip/SpecChip';
 import { formatConvertedPrice, getComparisonPriceString } from '@/lib/currency';
-import { getPropertyEnquiryLink } from '@/lib/whatsapp';
+import { getPropertyEnquiryLink, getWhatsAppNumber } from '@/lib/whatsapp';
 import { useAppStore } from '@/store/useAppStore';
 import { supabase } from '@/lib/supabase';
 import styles from './PropertyDetailClient.module.css';
@@ -200,25 +200,30 @@ export default function PropertyDetailClient({ property, media = [] }) {
             <span className={styles.bottomPrice}>{mainPrice}</span>
           </div>
           
-          <button
-            onClick={handleEnquiry}
-            disabled={enquiring || status === 'sold'}
-            className={`${styles.enquireBtn} hover-lift`}
-          >
-            {enquiring ? (
-              <>
-                <i className="fa-solid fa-spinner fa-spin"></i>
-                Connecting...
-              </>
-            ) : status === 'sold' ? (
-              'Sold / Unavailable'
-            ) : (
-              <>
-                <i className="fa-brands fa-whatsapp"></i>
-                Direct WhatsApp Inquiry
-              </>
-            )}
-          </button>
+          <div className={styles.actionGroup}>
+            <a href={`tel:+${getWhatsAppNumber()}`} className={styles.callBtnIcon} title="Call Owner">
+              <i className="fa-solid fa-phone"></i>
+            </a>
+            <button
+              onClick={handleEnquiry}
+              disabled={enquiring || status === 'sold'}
+              className={`${styles.enquireBtn} hover-lift`}
+            >
+              {enquiring ? (
+                <>
+                  <i className="fa-solid fa-spinner fa-spin"></i>
+                  Connecting...
+                </>
+              ) : status === 'sold' ? (
+                'Sold / Unavailable'
+              ) : (
+                <>
+                  <i className="fa-brands fa-whatsapp"></i>
+                  WhatsApp Inquiry
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </div>
       {/* Visual Bottom spacer to prevent overlaps with sticky bar */}

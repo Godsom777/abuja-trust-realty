@@ -1,6 +1,6 @@
 import { formatConvertedPrice } from './currency';
 
-const DEFAULT_WHATSAPP_NUMBER = '2348032591590';
+const DEFAULT_WHATSAPP_NUMBER = '2349041983976';
 
 /**
  * Returns the configured WhatsApp number from environment variables

@@ -1,11 +1,19 @@
-.fab {
+.fabContainer {
   position: fixed;
   bottom: 74px; /* Perfectly floated above BottomNav (58px + padding) */
   right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 90;
+}
+
+.fab {
   background-color: var(--color-whatsapp);
   color: #FFFFFF;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   padding: 10px 18px;
   border-radius: 28px;
@@ -14,7 +22,6 @@
   font-weight: 600;
   box-shadow: var(--shadow-fab);
   text-decoration: none;
-  z-index: 90;
   transition: var(--transition-bouncy);
 }
 
@@ -24,6 +31,31 @@
 }
 
 .fab:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.fabCall {
+  background-color: var(--color-accent);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  align-self: flex-end;
+  border-radius: 50%;
+  font-size: 18px;
+  box-shadow: var(--shadow-fab);
+  text-decoration: none;
+  transition: var(--transition-bouncy);
+}
+
+.fabCall:hover {
+  background-color: #16242c;
+  transform: translateY(-3px) scale(1.03);
+}
+
+.fabCall:active {
   transform: translateY(0) scale(0.97);
 }
 
@@ -37,7 +69,7 @@
 
 @media (min-width: 600px) {
   /* Anchor to the right edge of our max-width phone layout frame on desktop viewports */
-  .fab {
+  .fabContainer {
     right: calc(50vw - 300px + 16px);
   }
 }

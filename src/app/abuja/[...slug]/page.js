@@ -3,6 +3,7 @@ import Link from "next/link";
 import styles from "./page.module.css";
 import { supabase } from "@/lib/supabase";
 import PhotoGallery from "@/components/property/PhotoGallery/PhotoGallery";
+import { getWhatsAppNumber } from "@/lib/whatsapp";
 
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;
@@ -87,7 +88,10 @@ export default async function PropertyDetailPage({ params }) {
   const waMessage = encodeURIComponent(
     `Hello Abuja Trust Realty,\n\I am interested in this property:\n*${listing.title}*\nRef: ${dealRef}\nLink: https://abujatrust.com${listing.slug}`
   );
-  const waLink = `https://wa.me/2348032591590?text=${waMessage}`;
+  
+  const phone = getWhatsAppNumber();
+  const waLink = `https://wa.me/${phone}?text=${waMessage}`;
+  const callLink = `tel:+${phone}`;
 
   return (
     <div className={styles.page}>
@@ -209,10 +213,15 @@ export default async function PropertyDetailPage({ params }) {
             </div>
 
             <div className={styles.pricingActions}>
-              <a href={waLink} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp" style={{ width: "100%", padding: "16px", borderRadius: "12px", justifyContent: "center" }}>
-                <i className="fa-brands fa-whatsapp"></i>
-                Express Interest
-              </a>
+              <div style={{ display: "flex", gap: "10px", width: "100%" }}>
+                <a href={callLink} className="btn" style={{ padding: "16px", borderRadius: "12px", justifyContent: "center", backgroundColor: "var(--color-accent)", color: "#fff", flexShrink: 0 }}>
+                  <i className="fa-solid fa-phone"></i>
+                </a>
+                <a href={waLink} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp" style={{ flex: 1, padding: "16px", borderRadius: "12px", justifyContent: "center" }}>
+                  <i className="fa-brands fa-whatsapp"></i>
+                  Express Interest
+                </a>
+              </div>
               <p className={styles.actionNote}>
                 <i className="fa-solid fa-lock"></i>
                 No upfront payments required.
@@ -228,9 +237,14 @@ export default async function PropertyDetailPage({ params }) {
           <span className={styles.mobilePriceLabel}>Asking Price</span>
           <span className={styles.mobilePriceNgn}>{formatPrice(listing.priceNgn)}</span>
         </div>
-        <a href={waLink} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp" style={{ borderRadius: "10px", padding: "12px 20px" }}>
-          Express Interest
-        </a>
+        <div style={{ display: "flex", gap: "8px" }}>
+          <a href={callLink} className="btn" style={{ borderRadius: "10px", padding: "12px", backgroundColor: "var(--color-accent)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <i className="fa-solid fa-phone"></i>
+          </a>
+          <a href={waLink} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp" style={{ borderRadius: "10px", padding: "12px 20px" }}>
+            Express Interest
+          </a>
+        </div>
       </div>
       
       {/* Spacer for bottom nav */}
