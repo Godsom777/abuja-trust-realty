@@ -12,10 +12,10 @@ export default function TrapHouseMenu() {
       items: [
         { name: "Asconi Agor",    price: "₦30,000",  image: "/menu/asconi_agor.png",  note: "No sides" },
         { name: "Four Cousins",   price: "₦30,000",  image: "/menu/four_cousins.png", note: "No sides" },
-        { name: "Pastoral",       price: "₦60,000",  image: "/menu/pastoral.png",     note: "Comes with chicken wings" },
-        { name: "Thomas Barton",  price: "₦60,000",  image: "/menu/thomas_barton.png",note: "Comes with chicken wings" },
-        { name: "Cooper & Thief", price: "₦130,000", image: "/menu/cooper_thief.png", note: "Comes with chicken wings" },
-        { name: "Baileys",        price: "₦160,000", image: "/menu/baileys.png",      note: "Comes with chicken wings" },
+        { name: "Pastoral",       price: "₦60,000",  image: "/menu/pastoral.png",     note: "Comes with Chicken and chips" },
+        { name: "Thomas Barton",  price: "₦60,000",  image: "/menu/thomas_barton.png",note: "Comes with Chicken and chips" },
+        { name: "Cooper & Thief", price: "₦130,000", image: "/menu/cooper_thief.png", note: "Comes with Chicken and chips" },
+        { name: "Baileys",        price: "₦160,000", image: "/menu/baileys.png",      note: "Comes with Chicken and chips" },
       ]
     },
     {
@@ -23,15 +23,15 @@ export default function TrapHouseMenu() {
       title: "Whiskey, Cognac & Tequila",
       icon: "🥃",
       items: [
-        { name: "Buen Amigo Tequila",   price: "₦60,000",  image: "/menu/buen_amigo.jpg",    note: "Comes with chicken wings" },
-        { name: "Teeling Whiskey",      price: "₦60,000",  image: "/menu/teeling.jpg",       note: "Comes with chicken wings" },
-        { name: "Jameson Green",        price: "₦70,000",  image: "/menu/jameson.jpg",       note: "Comes with chicken wings" },
-        { name: "Belaire",              price: "₦120,000", image: "/menu/belaire.jpg",       note: "Comes with chicken wings" },
-        { name: "Martel VS",            price: "₦160,000", image: "/menu/martell.jpg",       note: "Comes with chicken wings" },
-        { name: "Hennessy VS",          price: "₦160,000", image: "/menu/hennessy_vs.jpg",   note: "Comes with chicken wings" },
-        { name: "Bisquit & Dubouché",   price: "₦170,000", image: "/menu/bisquit.jpg",       note: "Comes with chicken wings" },
-        { name: "Hennessy VSOP",        price: "₦190,000", image: "/menu/hennessy_vsop.jpg", note: "Comes with chicken wings" },
-        { name: "Casamigo Tequila",     price: "₦300,000", image: "/menu/casamigos.jpg",     note: "Comes with chicken wings" },
+        { name: "Buen Amigo Tequila",   price: "₦60,000",  image: "/menu/buen_amigo.jpg",    note: "Comes with Chicken and chips" },
+        { name: "Teeling Whiskey",      price: "₦60,000",  image: "/menu/teeling.jpg",       note: "Comes with Chicken and chips" },
+        { name: "Jameson Green",        price: "₦70,000",  image: "/menu/jameson.jpg",       note: "Comes with Chicken and chips" },
+        { name: "Belaire",              price: "₦120,000", image: "/menu/belaire.jpg",       note: "Comes with Chicken and chips" },
+        { name: "Martel VS",            price: "₦160,000", image: "/menu/martell.jpg",       note: "Comes with Chicken and chips" },
+        { name: "Hennessy VS",          price: "₦160,000", image: "/menu/hennessy_vs.jpg",   note: "Comes with Chicken and chips" },
+        { name: "Bisquit & Dubouché",   price: "₦170,000", image: "/menu/bisquit.jpg",       note: "Comes with Chicken and chips" },
+        { name: "Hennessy VSOP",        price: "₦190,000", image: "/menu/hennessy_vsop.jpg", note: "Comes with Chicken and chips" },
+        { name: "Casamigo Tequila",     price: "₦300,000", image: "/menu/casamigos.jpg",     note: "Comes with Chicken and chips" },
       ]
     },
     {
@@ -79,7 +79,7 @@ export default function TrapHouseMenu() {
 
         <div className={styles.noticeBox}>
           <span>🍗</span>
-          <p style={{ margin: 0 }}>All drinks (except cocktails) come with complimentary chicken wings!</p>
+          <p style={{ margin: 0 }}>All drinks (except cocktails) come with complimentary Chicken and chips!</p>
         </div>
 
         {MENU_CATEGORIES.map((category) => (
