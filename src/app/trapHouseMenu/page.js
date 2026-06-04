@@ -10,12 +10,12 @@ export default function TrapHouseMenu() {
       title: "Wine & Liqueur",
       icon: "🍷",
       items: [
-        { name: "Asconi Agor", price: "₦30,000", image: "/menu/asconi_agor.png", note: "No sides" },
-        { name: "Four Cousins", price: "₦30,000", image: "/menu/four_cousins.png", note: "No sides" },
-        { name: "Pastoral", price: "₦60,000", image: "/menu/pastoral.png", note: "Comes with chicken wings" },
-        { name: "Thomas Barton", price: "₦60,000", image: "/menu/thomas_barton.png", note: "Comes with chicken wings" },
+        { name: "Asconi Agor",    price: "₦30,000",  image: "/menu/asconi_agor.png",  note: "No sides" },
+        { name: "Four Cousins",   price: "₦30,000",  image: "/menu/four_cousins.png", note: "No sides" },
+        { name: "Pastoral",       price: "₦60,000",  image: "/menu/pastoral.png",     note: "Comes with chicken wings" },
+        { name: "Thomas Barton",  price: "₦60,000",  image: "/menu/thomas_barton.png",note: "Comes with chicken wings" },
         { name: "Cooper & Thief", price: "₦130,000", image: "/menu/cooper_thief.png", note: "Comes with chicken wings" },
-        { name: "Baileys", price: "₦160,000", image: "/menu/baileys.png", note: "Comes with chicken wings" },
+        { name: "Baileys",        price: "₦160,000", image: "/menu/baileys.png",      note: "Comes with chicken wings" },
       ]
     },
     {
@@ -23,32 +23,42 @@ export default function TrapHouseMenu() {
       title: "Whiskey, Cognac & Tequila",
       icon: "🥃",
       items: [
-        { name: "Buen Amigo Tequila", price: "₦60,000", image: "https://images.pexels.com/photos/602750/pexels-photo-602750.jpeg?w=600&auto=compress", note: "Comes with chicken wings" },
-        { name: "Teeling Whiskey", price: "₦60,000", image: "https://images.pexels.com/photos/338713/pexels-photo-338713.jpeg?w=600&auto=compress", note: "Comes with chicken wings" },
-        { name: "Jameson Green", price: "₦70,000", image: "https://images.pexels.com/photos/1283219/pexels-photo-1283219.jpeg?w=600&auto=compress", note: "Comes with chicken wings" },
-        { name: "Belaire", price: "₦120,000", image: "https://images.pexels.com/photos/2789328/pexels-photo-2789328.jpeg?w=600&auto=compress", note: "Comes with chicken wings" },
-        { name: "Martel VS", price: "₦160,000", image: "https://images.pexels.com/photos/1170599/pexels-photo-1170599.jpeg?w=600&auto=compress", note: "Comes with chicken wings" },
-        { name: "Hennessy VS", price: "₦160,000", image: "https://images.pexels.com/photos/4553027/pexels-photo-4553027.jpeg?w=600&auto=compress", note: "Comes with chicken wings" },
-        { name: "Bisquit & Dubouché", price: "₦170,000", image: "https://images.pexels.com/photos/1170599/pexels-photo-1170599.jpeg?w=600&auto=compress", note: "Comes with chicken wings" },
-        { name: "Hennessy VSOP", price: "₦190,000", image: "https://images.pexels.com/photos/4553027/pexels-photo-4553027.jpeg?w=600&auto=compress", note: "Comes with chicken wings" },
-        { name: "Casamigo Tequila", price: "₦300,000", image: "https://images.pexels.com/photos/5946627/pexels-photo-5946627.jpeg?w=600&auto=compress", note: "Comes with chicken wings" },
+        { name: "Buen Amigo Tequila",   price: "₦60,000",  image: "/menu/buen_amigo.jpg",    note: "Comes with chicken wings" },
+        { name: "Teeling Whiskey",      price: "₦60,000",  image: "/menu/teeling.jpg",       note: "Comes with chicken wings" },
+        { name: "Jameson Green",        price: "₦70,000",  image: "/menu/jameson.jpg",       note: "Comes with chicken wings" },
+        { name: "Belaire",              price: "₦120,000", image: "/menu/belaire.jpg",       note: "Comes with chicken wings" },
+        { name: "Martel VS",            price: "₦160,000", image: "/menu/martell.jpg",       note: "Comes with chicken wings" },
+        { name: "Hennessy VS",          price: "₦160,000", image: "/menu/hennessy_vs.jpg",   note: "Comes with chicken wings" },
+        { name: "Bisquit & Dubouché",   price: "₦170,000", image: "/menu/bisquit.jpg",       note: "Comes with chicken wings" },
+        { name: "Hennessy VSOP",        price: "₦190,000", image: "/menu/hennessy_vsop.jpg", note: "Comes with chicken wings" },
+        { name: "Casamigo Tequila",     price: "₦300,000", image: "/menu/casamigos.jpg",     note: "Comes with chicken wings" },
       ]
     },
     {
-      id: "specials",
-      title: "Specials & Extras",
+      id: "cocktails",
+      title: "Cocktails",
       icon: "🍹",
       items: [
-        { name: "Cocktails", price: "₦7,000", image: "https://images.pexels.com/photos/3019019/pexels-photo-3019019.jpeg?w=600&auto=compress", note: "No sides" },
-        { name: "Shisha", price: "₦10,000", image: "https://images.pexels.com/photos/5947019/pexels-photo-5947019.jpeg?w=600&auto=compress", note: "Available in multiple flavors" },
-        { name: "Juice", price: "On Demand", image: "https://images.pexels.com/photos/1536304/pexels-photo-1536304.jpeg?w=600&auto=compress", note: "Available on demand 🥤" },
+        { name: "Cocktails", price: "₦7,000", image: "/menu/cocktail.jpg", note: "No sides" },
+        { name: "Juice",     price: "On Demand", image: "/menu/juice.jpg", note: "Available on request 🥤" },
       ]
+    }
+  ];
+
+  const EXTRAS = [
+    {
+      name: "Shisha",
+      price: "₦10,000",
+      image: "/menu/shisha.jpg",
+      description: "Flavored hookah, available all night. Ask your host for available flavors.",
+      icon: "💨"
     }
   ];
 
   return (
     <div className={styles.container}>
       <div className={styles.content}>
+
         <header className={styles.header}>
           <span className={styles.kicker}>Exclusive Menu</span>
           <h1 className={styles.title}>Trap House Party</h1>
@@ -79,6 +89,26 @@ export default function TrapHouseMenu() {
             </div>
           </section>
         ))}
+
+        {/* Shisha – styled separately as an experience, not a drink */}
+        <section className={styles.category}>
+          <h2 className={styles.categoryTitle}>💨 Vibe & Extras</h2>
+          <div className={styles.shishaGrid}>
+            {EXTRAS.map((item, idx) => (
+              <div key={idx} className={styles.shishaCard}>
+                <div className={styles.shishaImageWrap}>
+                  <img src={item.image} alt={item.name} className={styles.shishaImage} loading="lazy" />
+                  <div className={styles.shishaOverlay}>
+                    <span className={styles.shishaIcon}>{item.icon}</span>
+                    <h3 className={styles.shishaName}>{item.name}</h3>
+                    <p className={styles.shishaPrice}>{item.price}</p>
+                  </div>
+                </div>
+                <p className={styles.shishaDesc}>{item.description}</p>
+              </div>
+            ))}
+          </div>
+        </section>
 
         <footer className={styles.footer}>
           <p>Please drink responsibly.</p>
