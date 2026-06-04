@@ -63,6 +63,18 @@ export default function TrapHouseMenu() {
           <span className={styles.kicker}>Exclusive Menu</span>
           <h1 className={styles.title}>Trap House Party</h1>
           <p className={styles.subtitle}>Premium drinks & good vibes. Let the night begin.</p>
+
+          {/* Venue badge */}
+          <div className={styles.venueBadge}>
+            <span className={styles.venueLabel}>Hosted at</span>
+            <div className={styles.venueLogoWrap}>
+              <img
+                src="/menu/old_english_logo.jpg"
+                alt="Old English Bar & Grills"
+                className={styles.venueLogo}
+              />
+            </div>
+          </div>
         </header>
 
         <div className={styles.noticeBox}>

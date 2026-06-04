@@ -75,6 +75,48 @@
   margin: 0 auto;
 }
 
+/* ── Venue badge ───────────────────────────────── */
+.venueBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.venueLabel {
+  color: #666;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.venueLogoWrap {
+  background: #fff;
+  border-radius: 12px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.venueLogoWrap:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 32px rgba(0, 0, 0, 0.5);
+}
+
+.venueLogo {
+  height: 52px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+
 .noticeBox {
   background: rgba(255, 107, 71, 0.05);
   border: 1px solid rgba(255, 107, 71, 0.2);
