@@ -38,9 +38,7 @@ export default function Footer() {
           <div className={styles.ctaInner}>
             <div className={styles.ctaText}>
               <h3>Own property in Abuja?</h3>
-              <p>
-                List with us and reach verified diaspora buyers who are ready to invest.
-              </p>
+              <p>List with us and reach verified buyers everywhere who are ready to invest.</p>
             </div>
             <Link href="/owner/listings/new" className="btn btn-gold btn-lg" id="footer-cta-list">
               <i className="fa-solid fa-list-ul"></i>

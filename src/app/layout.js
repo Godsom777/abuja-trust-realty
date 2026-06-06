@@ -4,15 +4,14 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import LayoutWrapper from "@/components/layout/LayoutWrapper";
 
 export const metadata = {
-  title: "Abuja Trust Realty — Verified Property Discoveries in Abuja",
-  description: "A premium, direct property showcase targeting diaspora buyers. Fully verified property listings in Maitama, Asokoro, Wuse, and across Abuja directly from vetted owners.",
+  title: "Abuja Realty. | Vetted Properties Direct from Owners",
+  description: "A premium, direct property showcase for buyers everywhere. Fully verified property listings in Maitama, Asokoro, Wuse, and across Abuja directly from vetted owners.",
   keywords: [
     "Abuja real estate",
-    "diaspora property investment Nigeria",
-    "verified listings Abuja",
-    "Abuja Trust Realty",
-    "Maitama houses for sale",
-    "luxury apartment Abuja"
+    "buy property Abuja",
+    "vetted property listings Abuja",
+    "global property investment Nigeria",
+    "direct owner properties Abuja"
   ],
   manifest: "/manifest.json",
   openGraph: {

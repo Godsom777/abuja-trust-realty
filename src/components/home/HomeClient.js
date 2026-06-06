@@ -167,7 +167,7 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
             style={{ '--delay': '220ms' }}
           >
             Vetted individual owners. Zero agent friction. Secure WhatsApp handoffs.
-            Trusted by Nigerians in the diaspora.
+            Trusted by buyers locally and across the globe.
           </p>
         </div>
 

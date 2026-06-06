@@ -89,16 +89,14 @@ export default async function HowItWorksPage() {
       <section className={`section ${styles.ctaSection}`}>
         <div className="container">
           <div className={styles.ctaBlock}>
-            <h2>Ready to Find Your Property?</h2>
-            <p>Browse our verified listings or learn about investing from the diaspora.</p>
+            <h2>Ready to Find Your Place?</h2>
+            <p>Browse our verified listings or learn about investing safely from anywhere.</p>
             <div className={styles.ctaActions}>
-              <Link href="/abuja" className="btn btn-primary btn-lg" id="hiw-browse">
-                <i className="fa-solid fa-magnifying-glass"></i>
+              <Link href="/abuja" className="btn btn-primary btn-lg" id="hiw-browse-listings">
                 Browse Listings
               </Link>
-              <Link href="/buy-property-in-abuja-from-abroad" className="btn btn-secondary btn-lg" id="hiw-diaspora">
-                <i className="fa-solid fa-book-open"></i>
-                Diaspora Guide
+              <Link href="/abuja" className="btn btn-secondary btn-lg" id="hiw-diaspora">
+                Investment Guide
               </Link>
             </div>
           </div>

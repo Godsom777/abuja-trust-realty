@@ -31,8 +31,8 @@ export default function AboutPage() {
 
   const FAQS = [
     {
-      q: "Who is Abuja Trust Realty for?",
-      a: "We serve two groups: property/land owners looking for a secure platform to list directly to real clients, and buyers (especially in the diaspora) looking for a verified, stress-free path to buy real estate in Abuja without agent friction."
+      q: "Who is this platform for?",
+      a: "We serve two groups: property/land owners looking for a secure platform to list directly to real clients, and buyers locally and globally looking for a verified, stress-free path to buy real estate in Abuja without agent friction."
     },
     {
       q: "How are properties verified?",
@@ -78,7 +78,7 @@ export default function AboutPage() {
             </div>
             <h3 className={styles.audienceTitle}>For Property & Land Owners</h3>
             <p className={styles.audienceText}>
-              Avoid bloated agent listings that inflate your pricing. List on a secure registry designed to build confidence with premium buyers, including the diaspora.
+              Avoid bloated agent listings that inflate your pricing. List on a secure registry designed to build confidence with premium buyers across the globe.
             </p>
             <ul className={styles.audiencePoints}>
               <li>
@@ -199,7 +199,7 @@ export default function AboutPage() {
 
       <footer className={styles.footer}>
         <p>© {new Date().getFullYear()} Abuja Trust Realty. All rights reserved.</p>
-        <p className={styles.footerSubtitle}>Direct, vetted real estate for the diaspora.</p>
+        <p className={styles.footerSubtitle}>Direct, vetted real estate for buyers everywhere.</p>
       </footer>
     </div>
   );
