@@ -1,308 +1,661 @@
 .container {
   min-height: 100vh;
-  background-color: #050505;
-  color: #f5f0e8;
-  padding: 40px 20px;
+  background:
+    linear-gradient(135deg, rgba(255, 107, 71, 0.12) 0%, transparent 28%),
+    linear-gradient(225deg, rgba(109, 215, 255, 0.08) 0%, transparent 22%),
+    linear-gradient(180deg, #09060b 0%, #050505 42%, #09060b 100%);
+  color: #f5efe7;
+  padding: 48px 24px 64px;
   position: relative;
   overflow: hidden;
+  isolation: isolate;
 }
 
-/* Neon glow background effect */
-.container::before {
-  content: '';
+.container::before,
+.container::after {
+  content: "";
   position: absolute;
-  top: -20%;
-  left: -10%;
-  width: 50vw;
-  height: 50vw;
-  background: radial-gradient(circle, rgba(255, 107, 71, 0.1) 0%, transparent 60%);
-  z-index: 0;
-  border-radius: 50%;
+  inset: 0;
   pointer-events: none;
+}
+
+.container::before {
+  background:
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 44px),
+    linear-gradient(90deg, rgba(255, 107, 71, 0.06), transparent 28%, transparent 72%, rgba(109, 215, 255, 0.05));
+  opacity: 0.22;
+  animation: driftLines 24s linear infinite;
 }
 
 .container::after {
-  content: '';
-  position: absolute;
-  bottom: -10%;
-  right: -10%;
-  width: 60vw;
-  height: 60vw;
-  background: radial-gradient(circle, rgba(138, 43, 226, 0.1) 0%, transparent 60%);
-  z-index: 0;
-  border-radius: 50%;
-  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 16%, transparent 82%, rgba(255, 255, 255, 0.04)),
+    linear-gradient(110deg, transparent 0%, rgba(255, 255, 255, 0.05) 50%, transparent 100%);
+  mix-blend-mode: screen;
+  opacity: 0.18;
+  animation: sweep 14s ease-in-out infinite;
 }
 
 .content {
   position: relative;
   z-index: 1;
-  max-width: 800px;
+  width: min(1120px, 100%);
   margin: 0 auto;
 }
 
 .header {
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
+  padding-bottom: 26px;
+  animation: heroRise 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .kicker {
-  color: #ff6b47;
-  font-size: 0.9rem;
+  color: #ff8b54;
+  font-size: 0.85rem;
   text-transform: uppercase;
-  letter-spacing: 3px;
-  font-weight: 700;
+  letter-spacing: 4px;
+  font-weight: 800;
   display: block;
-  margin-bottom: 15px;
+  margin-bottom: 14px;
 }
 
 .title {
-  font-size: 3.5rem;
+  font-size: clamp(3rem, 7vw, 5.6rem);
   font-weight: 900;
-  line-height: 1.1;
-  margin-bottom: 10px;
-  background: linear-gradient(90deg, #ff6b47, #ff9f43, #8a2be2);
+  line-height: 0.95;
+  margin-bottom: 14px;
+  background: linear-gradient(90deg, #ff6b47, #ffb347 30%, #f5efe7 48%, #6dd7ff 72%, #ff6b47);
+  background-size: 240% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-transform: uppercase;
-  letter-spacing: -1px;
+  letter-spacing: 0;
+  animation: titleSweep 6s ease-in-out infinite;
 }
 
 .subtitle {
-  color: #a0a0a0;
-  font-size: 1.1rem;
-  max-width: 400px;
+  color: #b7aeb6;
+  font-size: 1.04rem;
+  max-width: 44ch;
   margin: 0 auto;
+  line-height: 1.6;
+  overflow-wrap: break-word;
 }
 
-/* ── Venue badge ───────────────────────────────── */
 .venueBadge {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 14px;
   margin-top: 28px;
+  animation: riseSoft 0.8s 0.18s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .venueLabel {
-  color: #666;
-  font-size: 0.75rem;
+  color: #706873;
+  font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 3px;
-  font-weight: 600;
+  font-weight: 700;
   white-space: nowrap;
 }
 
 .venueLogoWrap {
   background: #fff;
-  border-radius: 12px;
-  padding: 8px 16px;
+  border-radius: 14px;
+  padding: 10px 18px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.38);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .venueLogoWrap:hover {
-  transform: scale(1.03);
-  box-shadow: 0 6px 32px rgba(0, 0, 0, 0.5);
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.46);
 }
 
 .venueLogo {
-  height: 52px;
-  width: auto;
   display: block;
   object-fit: contain;
+  width: auto;
+  height: 46px;
 }
 
-
 .noticeBox {
-  background: rgba(255, 107, 71, 0.05);
-  border: 1px solid rgba(255, 107, 71, 0.2);
-  border-radius: 16px;
-  padding: 15px 20px;
-  text-align: center;
-  margin-bottom: 40px;
-  color: #ff9f43;
-  font-weight: 600;
+  background: linear-gradient(90deg, rgba(255, 107, 71, 0.16), rgba(109, 215, 255, 0.1));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 4px solid #ff8b54;
+  border-radius: 18px;
+  padding: 16px 20px;
+  margin-bottom: 42px;
+  color: #ffb347;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  gap: 12px;
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.22);
+  animation: riseSoft 0.75s 0.24s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.noticeBox p {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: break-word;
 }
 
 .category {
-  margin-bottom: 60px;
-}
-
-.categoryTitle {
-  font-size: 2rem;
-  font-weight: 800;
-  margin-bottom: 25px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: 10px;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 20px;
-}
-
-.card {
-  background: rgba(25, 25, 30, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 20px;
+  position: relative;
+  margin: 0 0 30px;
+  padding: 24px 20px 22px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 26%),
+    rgba(12, 10, 16, 0.92);
+  box-shadow:
+    0 24px 56px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
   overflow: hidden;
+  animation: sectionRise 0.72s calc(0.15s + (var(--section-index, 0) * 0.14s)) cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.category::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04), transparent 28%, transparent 72%, rgba(255, 255, 255, 0.03)),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent 40%);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.category::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--section-accent), rgba(255, 255, 255, 0.12), transparent);
+  opacity: 0.9;
+}
+
+.categoryHeader {
+  position: relative;
   display: flex;
-  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-  backdrop-filter: blur(10px);
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 18px;
+  animation: headerFloat 0.72s calc(0.18s + (var(--section-index, 0) * 0.14s)) cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.card:hover {
-  transform: translateY(-5px);
-  border-color: rgba(255, 107, 71, 0.4);
-  box-shadow: 0 10px 30px rgba(255, 107, 71, 0.1);
-}
-
-.cardImage {
-  width: 110px;
-  height: 110px;
-  object-fit: cover;
-  flex-shrink: 0;
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.cardBody {
-  padding: 15px 20px;
+.categoryCopy {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  align-items: flex-start;
+  gap: 14px;
+  min-width: 0;
   flex: 1;
 }
 
-.itemName {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin: 0 0 8px 0;
+.sectionIndex {
+  color: var(--section-accent);
+  font-size: 0.88rem;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  padding-top: 8px;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.08);
+}
+
+.headingBlock {
+  min-width: 0;
+}
+
+.categoryTitle {
+  font-size: clamp(1.5rem, 2.2vw, 2.45rem);
+  font-weight: 900;
+  margin: 0;
   color: #fff;
-  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  line-height: 1.05;
+  text-transform: none;
+}
+
+.categoryTitle::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 2px;
+  margin-left: 4px;
+  background: linear-gradient(90deg, var(--section-accent), transparent);
+  transform-origin: left;
+  animation: underlineGrow 0.75s calc(0.42s + (var(--section-index, 0) * 0.14s)) ease both;
+}
+
+.categoryIcon {
+  font-size: 1.05em;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.4));
+}
+
+.categoryBlurb {
+  margin: 10px 0 0;
+  max-width: 60ch;
+  color: #bdb4bf;
+  font-size: 0.96rem;
+  line-height: 1.6;
+}
+
+.carouselControls {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.controlButton {
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.controlButton:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: color-mix(in srgb, var(--section-accent) 58%, white 42%);
+}
+
+.controlButton:active {
+  transform: translateY(0);
+}
+
+.carouselViewport {
+  position: relative;
+}
+
+.carouselTrack {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 6px 4px 12px;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+
+.carouselTrack::-webkit-scrollbar {
+  display: none;
+}
+
+.carouselCard {
+  position: relative;
+  flex: 0 0 clamp(250px, 30vw, 340px);
+  scroll-snap-align: start;
+  border-radius: 26px;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 28%),
+    rgba(14, 11, 18, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 22px 44px rgba(0, 0, 0, 0.34);
+  transform: translateY(18px) scale(0.98);
+  animation: cardReveal 0.7s calc(0.24s + (var(--item-index, 0) * 0.08s)) cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition: transform 0.34s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.34s ease, border-color 0.34s ease;
+}
+
+.carouselCard:hover {
+  transform: translateY(-10px) scale(1.01);
+  border-color: color-mix(in srgb, var(--section-accent) 60%, white 40%);
+  box-shadow: 0 32px 62px rgba(0, 0, 0, 0.42);
+}
+
+.cardMedia {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: #120e14;
+  overflow: hidden;
+}
+
+.cardMedia::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.12) 52%, rgba(0, 0, 0, 0.8) 100%);
+  pointer-events: none;
+}
+
+.cardGlow {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 42%;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.55));
+  pointer-events: none;
+}
+
+.cardImage {
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1.03);
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), filter 0.65s ease;
+}
+
+.carouselCard:hover .cardImage {
+  transform: scale(1.1);
+  filter: saturate(1.08) contrast(1.05);
+}
+
+.cardOrdinal {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  min-width: 42px;
+  height: 42px;
+  padding: 0 12px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(5, 5, 5, 0.62);
+  color: #fff;
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.22em;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+}
+
+.cardBody {
+  position: relative;
+  z-index: 1;
+  padding: 18px 18px 20px;
+}
+
+.cardTopRow {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.itemName {
+  font-size: 1.18rem;
+  font-weight: 800;
+  margin: 0;
+  color: #fff;
+  line-height: 1.15;
 }
 
 .itemPrice {
-  font-size: 1.15rem;
-  color: #ff9f43;
-  font-weight: 700;
+  font-size: 1.05rem;
+  color: #ffbb67;
+  font-weight: 900;
   margin: 0;
+  white-space: nowrap;
 }
 
 .itemNote {
-  font-size: 0.8rem;
-  color: #888;
-  margin-top: 5px;
-  font-style: italic;
+  font-size: 0.87rem;
+  color: #b3abb5;
+  margin: 10px 0 0;
+  line-height: 1.5;
 }
 
 .footer {
   text-align: center;
-  margin-top: 80px;
-  padding-top: 30px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  color: #555;
+  margin-top: 34px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: #6e6873;
   font-size: 0.85rem;
 }
 
+.footer p {
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .container {
+    padding: 36px 18px 54px;
+  }
+
+  .category {
+    padding: 22px 16px 18px;
+  }
+
+  .categoryHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .carouselControls {
+    margin-left: 56px;
+  }
+
+  .carouselCard {
+    flex-basis: clamp(250px, 74vw, 340px);
+  }
+}
+
 @media (max-width: 600px) {
+  .container {
+    padding: 32px 14px 48px;
+  }
+
+  .header {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+  }
+
   .title {
-    font-size: 2.5rem;
+    font-size: 2.55rem;
+    max-width: 8.9ch;
+    margin-left: auto;
+    margin-right: auto;
   }
+
+  .subtitle {
+    max-width: 32ch;
+    padding: 0 2px;
+  }
+
+  .venueBadge {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .noticeBox {
+    justify-content: flex-start;
+    align-items: flex-start;
+    text-align: left;
+    padding: 15px 16px;
+    line-height: 1.45;
+  }
+
+  .category {
+    margin-bottom: 22px;
+    border-radius: 26px;
+    padding: 20px 14px 16px;
+  }
+
+  .categoryTitle {
+    font-size: 1.12rem;
+    display: block;
+    max-width: 100%;
+  }
+
+  .categoryTitle::after {
+    width: 64px;
+    margin-left: 0;
+    margin-top: 10px;
+  }
+
+  .categoryIcon {
+    display: inline-block;
+    margin-right: 8px;
+  }
+
+  .categoryBlurb {
+    font-size: 0.92rem;
+  }
+
+  .carouselControls {
+    margin-left: 0;
+  }
+
+  .controlButton {
+    width: 42px;
+    height: 42px;
+  }
+
+  .carouselTrack {
+    gap: 14px;
+    padding-inline: 2px;
+  }
+
+  .carouselCard {
+    flex-basis: clamp(260px, 84vw, 330px);
+  }
+
+  .cardOrdinal {
+    min-width: 38px;
+    height: 38px;
+    font-size: 0.7rem;
+  }
+}
+
+@keyframes heroRise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes riseSoft {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes sectionRise {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes headerFloat {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes underlineGrow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes cardReveal {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes titleSweep {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes driftLines {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-48px);
+  }
+}
+
+@keyframes sweep {
+  0%, 100% {
+    transform: translateX(-3%);
+  }
+  50% {
+    transform: translateX(3%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .container::before,
+  .container::after,
+  .header,
+  .venueBadge,
+  .noticeBox,
+  .category,
+  .categoryHeader,
+  .categoryTitle::after,
+  .carouselCard,
+  .title {
+    animation: none;
+  }
+
+  .venueLogoWrap,
+  .controlButton,
+  .carouselCard,
   .cardImage {
-    width: 90px;
-    height: 90px;
+    transition: none;
   }
-  .grid {
-    grid-template-columns: 1fr;
+
+  .carouselCard:hover,
+  .carouselCard:hover .cardImage,
+  .venueLogoWrap:hover,
+  .controlButton:hover {
+    transform: none;
   }
 }
-
-/* ── Shisha / Extras ──────────────────────────── */
-.shishaGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
-}
-
-.shishaCard {
-  border-radius: 20px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  background: rgba(25, 25, 30, 0.7);
-  backdrop-filter: blur(10px);
-  transition: transform 0.3s ease, border-color 0.3s ease;
-}
-
-.shishaCard:hover {
-  transform: translateY(-4px);
-  border-color: rgba(138, 43, 226, 0.4);
-}
-
-.shishaImageWrap {
-  position: relative;
-  width: 100%;
-  height: 220px;
-  overflow: hidden;
-}
-
-.shishaImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  filter: brightness(0.55);
-}
-
-.shishaOverlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
-}
-
-.shishaIcon {
-  font-size: 2.5rem;
-}
-
-.shishaName {
-  font-size: 2rem;
-  font-weight: 900;
-  color: #fff;
-  margin: 0;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-.shishaPrice {
-  font-size: 1.3rem;
-  color: #ff9f43;
-  font-weight: 700;
-  margin: 0;
-}
-
-.shishaDesc {
-  padding: 16px 20px;
-  color: #a0a0a0;
-  font-size: 0.9rem;
-  margin: 0;
-  line-height: 1.6;
-}
-
