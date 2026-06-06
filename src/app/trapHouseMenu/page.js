@@ -8,7 +8,6 @@ const MENU_SECTIONS = [
   {
     id: "wine",
     title: "Wine & Liqueur",
-    icon: "🍷",
     accent: "#ff8b54",
     blurb: "Soft pours, sharp bottles, and a warm start to the night.",
     items: [
@@ -23,7 +22,6 @@ const MENU_SECTIONS = [
   {
     id: "whiskey",
     title: "Whiskey, Cognac & Tequila",
-    icon: "🥃",
     accent: "#f6b565",
     blurb: "Deeper pours for people who want the room to notice them.",
     items: [
@@ -41,7 +39,6 @@ const MENU_SECTIONS = [
   {
     id: "cocktails",
     title: "Cocktails",
-    icon: "🍹",
     accent: "#6dd7ff",
     blurb: "Fast, bright, and built to keep the pace up.",
     items: [
@@ -52,7 +49,6 @@ const MENU_SECTIONS = [
   {
     id: "extras",
     title: "Vibe & Extras",
-    icon: "💨",
     accent: "#c78aff",
     blurb: "Slow smoke, bright flame, and the room breathing easier.",
     items: [
@@ -78,10 +74,7 @@ function MenuSection({ section, index, trackRef, onScroll }) {
         <div className={styles.categoryCopy}>
           <span className={styles.sectionIndex}>{String(index + 1).padStart(2, "0")}</span>
           <div className={styles.headingBlock}>
-            <h2 className={styles.categoryTitle}>
-              <span className={styles.categoryIcon}>{section.icon}</span>
-              {section.title}
-            </h2>
+            <h2 className={styles.categoryTitle}>{section.title}</h2>
             <p className={styles.categoryBlurb}>{section.blurb}</p>
           </div>
         </div>
@@ -93,7 +86,7 @@ function MenuSection({ section, index, trackRef, onScroll }) {
             aria-label={`Scroll ${section.title} left`}
             onClick={() => onScroll(section.id, -CAROUSEL_STEP)}
           >
-            <i className="fa-solid fa-arrow-left" aria-hidden="true" />
+            <span className={styles.controlArrow} aria-hidden="true" data-direction="left" />
           </button>
           <button
             type="button"
@@ -101,7 +94,7 @@ function MenuSection({ section, index, trackRef, onScroll }) {
             aria-label={`Scroll ${section.title} right`}
             onClick={() => onScroll(section.id, CAROUSEL_STEP)}
           >
-            <i className="fa-solid fa-arrow-right" aria-hidden="true" />
+            <span className={styles.controlArrow} aria-hidden="true" data-direction="right" />
           </button>
         </div>
       </div>
@@ -181,7 +174,6 @@ export default function TrapHouseMenu() {
         </header>
 
         <div className={styles.noticeBox}>
-          <span>🍗</span>
           <p>All drinks except cocktails come with complimentary Chicken and chips.</p>
         </div>
 

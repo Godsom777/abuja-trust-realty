@@ -223,9 +223,6 @@
   font-weight: 900;
   margin: 0;
   color: #fff;
-  display: flex;
-  align-items: center;
-  gap: 12px;
   line-height: 1.05;
   text-transform: none;
 }
@@ -239,11 +236,6 @@
   background: linear-gradient(90deg, var(--section-accent), transparent);
   transform-origin: left;
   animation: underlineGrow 0.75s calc(0.42s + (var(--section-index, 0) * 0.14s)) ease both;
-}
-
-.categoryIcon {
-  font-size: 1.05em;
-  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.4));
 }
 
 .categoryBlurb {
@@ -282,6 +274,38 @@
 
 .controlButton:active {
   transform: translateY(0);
+}
+
+.controlArrow {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+
+.controlArrow::before,
+.controlArrow::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 9px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  transform-origin: center;
+}
+
+.controlArrow::before {
+  transform: translateY(-2px) rotate(45deg);
+}
+
+.controlArrow::after {
+  transform: translateY(2px) rotate(-45deg);
+}
+
+.controlArrow[data-direction="left"] {
+  transform: rotate(180deg);
 }
 
 .carouselViewport {
@@ -496,7 +520,6 @@
 
   .categoryTitle {
     font-size: 1.12rem;
-    display: block;
     max-width: 100%;
   }
 
@@ -504,11 +527,6 @@
     width: 64px;
     margin-left: 0;
     margin-top: 10px;
-  }
-
-  .categoryIcon {
-    display: inline-block;
-    margin-right: 8px;
   }
 
   .categoryBlurb {
