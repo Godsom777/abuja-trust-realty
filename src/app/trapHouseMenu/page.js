@@ -162,7 +162,7 @@ export default function TrapHouseMenu() {
             <span className={styles.venueLabel}>Hosted at</span>
             <div className={styles.venueLogoWrap}>
               <Image
-                src="/menu/old_english_logo.jpg"
+                src="/menu/old_english_logo_transparent.png"
                 alt="Old English Bar & Grills"
                 className={styles.venueLogo}
                 width={180}
