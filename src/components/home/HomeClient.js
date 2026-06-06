@@ -9,9 +9,13 @@ import styles from './HomeClient.module.css';
 
 // Districts to scroll in the marquee strip
 const MARQUEE_DISTRICTS = [
-  'Maitama', 'Asokoro', 'Wuse 2', 'Gwarinpa', 'Jabi',
-  'Life Camp', 'Katampe', 'Apo', 'Garki', 'Utako',
-  'Wuye', 'Mabushi', 'Guzape', 'Lugbe', 'Kaura',
+  'Maitama', 'Asokoro', 'Wuse 2', 'Wuse', 'Gwarinpa', 'Jabi',
+  'Life Camp', 'Katampe', 'Apo', 'Garki', 'Garki 2', 'Utako',
+  'Wuye', 'Mabushi', 'Guzape', 'Lugbe', 'Kaura', 'Gudu',
+  'Jahi', 'Durumi', 'Dakibiyu', 'Jikwoyi', 'Karu', 'Nyanya',
+  'Kubwa', 'Bwari', 'Kuje', 'Gwagwalada', 'Lokogoma', 'Mpape',
+  'Dawaki', 'Kado', 'Galadimawa', 'Dakwo', 'Gaduwa', 'Kugbo',
+  'Karmo', 'Kurudu', 'Kyami', 'Galadima'
 ];
 
 // Animated counter hook — counts up when the ref enters the viewport

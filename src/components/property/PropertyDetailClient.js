@@ -183,10 +183,17 @@ export default function PropertyDetailClient({ property, media = [] }) {
         <div className={styles.section}>
           <h3 className={styles.sectionTitle}>Location</h3>
           <div className={styles.mapContainer}>
-            <div className={styles.mapPlaceholder}>
-              <i className="fa-solid fa-map-location-dot"></i>
-              <span className={styles.mapAreaLabel}>{location_area}, Abuja</span>
-              <span className={styles.mapSecurityText}>Approximate listing area shown for privacy & security.</span>
+            <iframe 
+              width="100%" 
+              height="250" 
+              style={{ border: 0, display: "block" }}
+              src={`https://maps.google.com/maps?q=${encodeURIComponent((location_area || 'Abuja') + ', Abuja, Nigeria')}&t=&z=13&ie=UTF8&iwloc=&output=embed`}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            ></iframe>
+            <div style={{ padding: "10px", backgroundColor: "#ECE6DB", textAlign: "center", fontSize: "11px", color: "var(--color-muted)", fontStyle: "italic" }}>
+              Approximate listing area shown for privacy & security.
             </div>
           </div>
         </div>
