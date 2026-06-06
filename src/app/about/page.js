@@ -44,7 +44,7 @@ export default function AboutPage() {
     },
     {
       q: "What fees are involved?",
-      a: "Searching and listing is free. We charge buyers a flat, transparent 5% commission fee upon successful deal closure and title transfer."
+      a: "Searching and listing is free. We charge a flat, transparent 5% commission from the buyer and 5% from the property owner upon successful deal closure and title transfer."
     }
   ];
 

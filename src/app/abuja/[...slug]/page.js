@@ -197,7 +197,7 @@ export default async function PropertyDetailPage({ params }) {
               <h3>Trust-First Transaction</h3>
               <p>
                 The owner's identity and title documents have been verified. 
-                When you express interest, we create a secure WhatsApp group with you, the owner, and our admin team to facilitate a safe transaction. <strong>The buyer pays a 5% commission upon successful deal closure.</strong>
+                When you express interest, we create a secure WhatsApp group with you, the owner, and our admin team to facilitate a safe transaction. <strong>We charge 5% from the buyer and 5% from the property owner upon successful deal closure.</strong>
               </p>
             </div>
           </div>
