@@ -208,7 +208,7 @@ export default function PropertyDetailClient({ property, media = [] }) {
           </div>
           
           <div className={styles.actionGroup}>
-            <a href={`tel:+${getWhatsAppNumber()}`} className={styles.callBtnIcon} title="Call Owner">
+            <a href={`tel:+2348032590591`} className={styles.callBtnIcon} title="Call Owner">
               <i className="fa-solid fa-phone"></i>
             </a>
             <button

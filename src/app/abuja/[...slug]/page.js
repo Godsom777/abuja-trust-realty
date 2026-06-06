@@ -91,7 +91,7 @@ export default async function PropertyDetailPage({ params }) {
   
   const phone = getWhatsAppNumber();
   const waLink = `https://wa.me/${phone}?text=${waMessage}`;
-  const callLink = `tel:+${phone}`;
+  const callLink = `tel:+2348032590591`;
 
   return (
     <div className={styles.page}>

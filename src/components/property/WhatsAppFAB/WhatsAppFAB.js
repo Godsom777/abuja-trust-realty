@@ -6,8 +6,7 @@ import styles from './WhatsAppFAB.module.css';
 
 export default function WhatsAppFAB() {
   const waLink = getGeneralEnquiryLink();
-  const phone = getWhatsAppNumber();
-  const callLink = `tel:+${phone}`;
+  const callLink = `tel:+2348032590591`;
 
   return (
     <div className={styles.fabContainer}>
