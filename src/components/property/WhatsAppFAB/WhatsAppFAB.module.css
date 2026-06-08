@@ -67,9 +67,16 @@
   letter-spacing: 0.5px;
 }
 
-@media (min-width: 600px) {
-  /* Anchor to the right edge of our max-width phone layout frame on desktop viewports */
+@media (min-width: 768px) {
   .fabContainer {
-    right: calc(50vw - 300px + 16px);
+    bottom: 24px; /* Sits closer to bottom since BottomNav is hidden */
+    right: 24px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .fabContainer {
+    /* Align with the right edge of the 1280px bounded main layout */
+    right: calc(50vw - 640px + 24px);
   }
 }
