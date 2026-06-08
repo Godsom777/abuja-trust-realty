@@ -402,3 +402,32 @@
     font-size: 18px;
   }
 }
+
+@media (min-width: 768px) {
+  .detailsBody {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 40px;
+    align-items: start;
+    padding-top: 32px;
+  }
+
+  .primaryInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .secondaryInfo {
+    position: sticky;
+    top: 84px; /* sticky under the header */
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .bottomBar {
+    bottom: 24px; /* sits close to the bottom on desktop since bottom nav is hidden */
+    max-width: 600px;
+  }
+}

@@ -4,7 +4,6 @@
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  max-width: 600px; /* Aligns perfectly with our phone frame container */
   z-index: 100;
   background-color: rgba(255, 255, 255, 0.90);
   backdrop-filter: blur(15px);
@@ -55,5 +54,11 @@
 @media (hover: hover) {
   .navItem:hover:not(.active) {
     color: var(--color-text);
+  }
+}
+
+@media (min-width: 768px) {
+  .nav {
+    display: none;
   }
 }

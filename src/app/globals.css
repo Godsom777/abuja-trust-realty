@@ -28,25 +28,14 @@ body {
 main {
   flex: 1;
   width: 100%;
-  max-width: 600px; /* Limit to phone size frame for a crisp, gorgeous mobile-first visual */
+  max-width: 1280px;
   margin: 0 auto;
   background-color: var(--color-bg);
   position: relative;
   min-height: 100vh;
-  box-shadow: 0 0 100px rgba(0, 0, 0, 0.03); /* subtle frame separation for desktop view */
 }
 
-@media (min-width: 600px) {
-  body {
-    background-color: #EBE6DC; /* elegant beige desktop background to highlight the phone frame */
-  }
-  
-  main {
-    background-color: var(--color-bg);
-    border-left: 1px solid var(--color-border);
-    border-right: 1px solid var(--color-border);
-  }
-}
+
 
 /* Typography Scale */
 h1, h2, h3, h4, h5, h6 {
@@ -170,4 +159,17 @@ button {
 .skeleton {
   animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   background-color: var(--color-border);
+}
+
+.main-content-area {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding-bottom: 90px;
+}
+
+@media (min-width: 768px) {
+  .main-content-area {
+    padding-bottom: 40px;
+  }
 }

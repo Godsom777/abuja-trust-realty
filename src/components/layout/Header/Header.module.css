@@ -41,6 +41,47 @@
   }
 }
 
+.desktopNav {
+  display: none;
+  gap: 24px;
+  align-items: center;
+}
+
+.navLink {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-body);
+  transition: var(--transition-smooth);
+  position: relative;
+  padding: 4px 0;
+}
+
+.navLink:hover {
+  color: var(--color-accent);
+}
+
+.navLinkActive {
+  color: var(--color-accent);
+}
+
+.navLinkActive::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--color-accent);
+  border-radius: 2px;
+}
+
+@media (min-width: 768px) {
+  .desktopNav {
+    display: flex;
+  }
+}
+
 .actions {
   display: flex;
   align-items: center;

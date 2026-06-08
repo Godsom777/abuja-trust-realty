@@ -1,6 +1,6 @@
 .grid {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: var(--card-gap);
   width: 100%;
 }
@@ -9,6 +9,28 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  .grid.isGridView {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .grid.isGridView {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
 }
 
 /* Skeleton loader — full-bleed to match new card shape */

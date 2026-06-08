@@ -24,8 +24,10 @@ export default function LayoutWrapper({ children }) {
   // Public pages render in the elegant 600px mobile container
   return (
     <main>
-      <Header />
-      <div style={{ flex: 1, paddingBottom: "90px" }}>
+      <Suspense fallback={<div style={{ height: '60px' }} />}>
+        <Header />
+      </Suspense>
+      <div className="main-content-area">
         {children}
       </div>
       <Suspense fallback={null}>

@@ -501,3 +501,90 @@
   text-align: center;
   letter-spacing: 0.2px;
 }
+
+/* ─────────────────────────────────────
+   RESPONSIVE OVERRIDES
+   ───────────────────────────────────── */
+@media (min-width: 768px) {
+  .container {
+    padding-bottom: 60px; /* less bottom padding since bottom nav is hidden */
+  }
+
+  .hero {
+    align-items: center;
+    text-align: center;
+    padding: 60px var(--page-horizontal) 20px;
+  }
+
+  .headline {
+    font-size: 52px;
+  }
+
+  .description {
+    max-width: 520px;
+    font-size: 15px;
+    margin: 0 auto;
+  }
+
+  .searchWrap {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .filtersSection {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .chipsRow {
+    flex: 1 1 100%;
+    margin-bottom: 4px;
+  }
+
+  .selectWrap {
+    flex: 1;
+    min-width: 180px;
+  }
+
+  .trustSection {
+    flex-direction: row;
+  }
+
+  .trustIconStrip {
+    flex: 1.2;
+    border-bottom: none;
+    border-right: 1px solid var(--color-border);
+    padding: 24px;
+  }
+
+  .trustCounterRow {
+    flex: 1;
+    padding: 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    padding: 80px var(--page-horizontal) 30px;
+  }
+
+  .headline {
+    font-size: 60px;
+  }
+
+  .filtersSection {
+    flex-wrap: nowrap;
+  }
+
+  .chipsRow {
+    flex: 1;
+    margin-bottom: 0;
+  }
+
+  .selectWrap {
+    flex: 0 0 auto;
+    width: 220px;
+  }
+}

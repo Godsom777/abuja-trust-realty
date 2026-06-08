@@ -114,86 +114,90 @@ export default function PropertyDetailClient({ property, media = [] }) {
 
       {/* Descriptive Specifications Block */}
       <div className={styles.detailsBody}>
-        <div className={styles.metaRow}>
-          <Badge status={status} />
-          <span className={`${styles.typeBadge} ${transaction_type === 'rent' ? styles.typeRent : styles.typeSale}`}>
-            {typeLabel}
-          </span>
-        </div>
-
-        <h1 className={styles.title}>{title}</h1>
-
-        <div className={styles.location}>
-          <i className="fa-solid fa-location-dot"></i>
-          {location_area}, {location_city}
-        </div>
-
-        {/* Pricing Segment */}
-        <div className={styles.priceContainer}>
-          <span className={styles.mainPrice}>{mainPrice}</span>
-          {sideBySideText && (
-            <span className={styles.comparison}>{sideBySideText}</span>
-          )}
-        </div>
-
-        {/* Spec Chips Matrix */}
-        <div className={styles.specs}>
-          {bedrooms !== undefined && bedrooms !== null && (
-            <SpecChip iconClass="fa-bed" value={bedrooms} label="Beds" />
-          )}
-          {size_sqm !== undefined && size_sqm !== null && size_sqm > 0 && (
-            <SpecChip 
-              iconClass="fa-ruler-combined" 
-              value={`${size_sqm.toLocaleString()} sqm (${(size_sqm / 10000).toLocaleString(undefined, { maximumFractionDigits: 4 })} ha)`} 
-              label="Size" 
-            />
-          )}
-          {structure_type && (
-            <SpecChip iconClass="fa-house" value={structure_type} label="Design" />
-          )}
-          {title_document && (
-            <SpecChip iconClass="fa-file-contract" value={title_document} label="Title" />
-          )}
-        </div>
-
-        <div className={styles.divider}></div>
-
-        {/* Detailed Narrative */}
-        <div className={styles.section}>
-          <h3 className={styles.sectionTitle}>Overview</h3>
-          <p className={styles.descriptionText}>{description || 'No description available for this listing.'}</p>
-        </div>
-
-        {/* Vetted Features Checkboxes */}
-        {features.length > 0 && (
-          <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>Vetted Amenities</h3>
-            <div className={styles.featuresGrid}>
-              {features.map((feature, idx) => (
-                <div key={idx} className={styles.featureItem}>
-                  <i className="fa-solid fa-circle-check"></i>
-                  <span>{feature}</span>
-                </div>
-              ))}
-            </div>
+        <div className={styles.primaryInfo}>
+          <div className={styles.metaRow}>
+            <Badge status={status} />
+            <span className={`${styles.typeBadge} ${transaction_type === 'rent' ? styles.typeRent : styles.typeSale}`}>
+              {typeLabel}
+            </span>
           </div>
-        )}
 
-        {/* Privacy-First Location Map Embed */}
-        <div className={styles.section}>
-          <h3 className={styles.sectionTitle}>Location</h3>
-          <div className={styles.mapContainer}>
-            <iframe 
-              width="100%" 
-              height="250" 
-              style={{ border: 0, display: "block" }}
-              src={`https://maps.google.com/maps?q=${encodeURIComponent((location_area || 'Abuja') + ', Abuja, Nigeria')}&t=&z=13&ie=UTF8&iwloc=&output=embed`}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            ></iframe>
-            <div style={{ padding: "10px", backgroundColor: "#ECE6DB", textAlign: "center", fontSize: "11px", color: "var(--color-muted)", fontStyle: "italic" }}>
-              Approximate listing area shown for privacy & security.
+          <h1 className={styles.title}>{title}</h1>
+
+          <div className={styles.location}>
+            <i className="fa-solid fa-location-dot"></i>
+            {location_area}, {location_city}
+          </div>
+
+          <div className={styles.divider}></div>
+
+          {/* Detailed Narrative */}
+          <div className={styles.section}>
+            <h3 className={styles.sectionTitle}>Overview</h3>
+            <p className={styles.descriptionText}>{description || 'No description available for this listing.'}</p>
+          </div>
+
+          {/* Vetted Features Checkboxes */}
+          {features.length > 0 && (
+            <div className={styles.section}>
+              <h3 className={styles.sectionTitle}>Vetted Amenities</h3>
+              <div className={styles.featuresGrid}>
+                {features.map((feature, idx) => (
+                  <div key={idx} className={styles.featureItem}>
+                    <i className="fa-solid fa-circle-check"></i>
+                    <span>{feature}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className={styles.secondaryInfo}>
+          {/* Pricing Segment */}
+          <div className={styles.priceContainer}>
+            <span className={styles.mainPrice}>{mainPrice}</span>
+            {sideBySideText && (
+              <span className={styles.comparison}>{sideBySideText}</span>
+            )}
+          </div>
+
+          {/* Spec Chips Matrix */}
+          <div className={styles.specs}>
+            {bedrooms !== undefined && bedrooms !== null && (
+              <SpecChip iconClass="fa-bed" value={bedrooms} label="Beds" />
+            )}
+            {size_sqm !== undefined && size_sqm !== null && size_sqm > 0 && (
+              <SpecChip 
+                iconClass="fa-ruler-combined" 
+                value={`${size_sqm.toLocaleString()} sqm (${(size_sqm / 10000).toLocaleString(undefined, { maximumFractionDigits: 4 })} ha)`} 
+                label="Size" 
+              />
+            )}
+            {structure_type && (
+              <SpecChip iconClass="fa-house" value={structure_type} label="Design" />
+            )}
+            {title_document && (
+              <SpecChip iconClass="fa-file-contract" value={title_document} label="Title" />
+            )}
+          </div>
+
+          {/* Privacy-First Location Map Embed */}
+          <div className={styles.section}>
+            <h3 className={styles.sectionTitle}>Location</h3>
+            <div className={styles.mapContainer}>
+              <iframe 
+                width="100%" 
+                height="250" 
+                style={{ border: 0, display: "block" }}
+                src={`https://maps.google.com/maps?q=${encodeURIComponent((location_area || 'Abuja') + ', Abuja, Nigeria')}&t=&z=13&ie=UTF8&iwloc=&output=embed`}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
+              <div style={{ padding: "10px", backgroundColor: "#ECE6DB", textAlign: "center", fontSize: "11px", color: "var(--color-muted)", fontStyle: "italic" }}>
+                Approximate listing area shown for privacy & security.
+              </div>
             </div>
           </div>
         </div>
