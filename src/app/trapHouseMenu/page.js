@@ -12,11 +12,11 @@ const MENU_SECTIONS = [
     blurb: "Soft pours, sharp bottles, and a warm start to the night.",
     items: [
       { name: "Asconi Agor", price: "₦30,000", image: "/menu/asconi_agor.png", note: "No sides" },
-      { name: "Four Cousins", price: "₦60,000", image: "/menu/four_cousins.png", note: "No sides" },
+      { name: "Four Cousins", price: "₦30,000", image: "/menu/four_cousins.png", note: "No sides" },
       { name: "Pastoral", price: "₦60,000", image: "/menu/pastoral.png", note: "Comes with Chicken and chips" },
       { name: "Thomas Barton", price: "₦60,000", image: "/menu/thomas_barton.png", note: "Comes with Chicken and chips" },
       { name: "Cooper & Thief", price: "₦130,000", image: "/menu/cooper_thief.png", note: "Comes with Chicken and chips" },
-      { name: "Baileys", price: "₦160,000", image: "/menu/baileys.png", note: "Comes with Chicken and chips" },
+      { name: "Baileys", price: "₦30,000", image: "/menu/baileys.png", note: "No sides" },
     ],
   },
   {
