@@ -37,9 +37,7 @@ export default function UploadVideoPage() {
     title_document: '',
   });
 
-  const [coverFile, setCoverFile] = useState(null);
   const [videoFile, setVideoFile] = useState(null);
-  const [coverPreview, setCoverPreview] = useState('');
   const [videoPreview, setVideoPreview] = useState('');
 
   const [loading, setLoading] = useState(false);
@@ -50,13 +48,6 @@ export default function UploadVideoPage() {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleCoverSelect = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setCoverFile(file);
-    setCoverPreview(URL.createObjectURL(file));
   };
 
   const handleVideoSelect = (e) => {
@@ -76,10 +67,6 @@ export default function UploadVideoPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!coverFile) {
-      setErrorMsg("Please upload a cover image.");
-      return;
-    }
     if (!videoFile) {
       setErrorMsg("Please upload a walkthrough video.");
       return;
@@ -87,28 +74,10 @@ export default function UploadVideoPage() {
 
     setLoading(true);
     setErrorMsg('');
-    setProgressMsg('Uploading cover image to secure storage...');
+    setProgressMsg('Uploading walkthrough video (this may take a moment)...');
 
     try {
-      // 1. Upload Cover Image to Supabase Storage
-      const coverExt = coverFile.name.split('.').pop();
-      const coverFileName = `${Math.random().toString(36).substring(2, 15)}.${coverExt}`;
-      const coverFilePath = `covers/${coverFileName}`;
-
-      const { error: coverUploadErr } = await supabase.storage
-        .from('property-media')
-        .upload(coverFilePath, coverFile, { cacheControl: '3600', upsert: false });
-
-      if (coverUploadErr) throw new Error("Cover image upload failed: " + coverUploadErr.message);
-
-      const { data: coverUrlData } = supabase.storage
-        .from('property-media')
-        .getPublicUrl(coverFilePath);
-
-      const finalCoverUrl = coverUrlData.publicUrl;
-
-      // 2. Upload Video to Supabase Storage
-      setProgressMsg('Uploading walkthrough video (this may take a moment)...');
+      // 1. Upload Video to Supabase Storage
       const videoExt = videoFile.name.split('.').pop();
       const videoFileName = `${Math.random().toString(36).substring(2, 15)}.${videoExt}`;
       const videoFilePath = `gallery/${videoFileName}`;
@@ -125,7 +94,7 @@ export default function UploadVideoPage() {
 
       const finalVideoUrl = videoUrlData.publicUrl;
 
-      // 3. Build Properties Payload
+      // 2. Build Properties Payload (use a default stunning mansion placeholder cover image)
       setProgressMsg('Submitting listing details...');
       const cleanTitle = formData.title.trim();
       const rawPrice = formData.price_ngn.replace(/[^0-9]/g, '');
@@ -139,6 +108,9 @@ export default function UploadVideoPage() {
       if (!baseSlug) baseSlug = slugify(cleanTitle.toLowerCase());
       const suffix = Math.random().toString(36).substring(2, 6).toUpperCase();
       const finalSlug = `${baseSlug}-${suffix}`;
+
+      // Set default cover photo preset (Modern Mansion preset)
+      const finalCoverUrl = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=1200';
 
       // Append Submitter Contact Information to description narrative for Admin review
       const contactBlock = `\n\n--- SUBMITTER CONTACT DETAILS ---\nName: ${formData.submitter_name}\nWhatsApp: ${formData.submitter_whatsapp}`;
@@ -163,7 +135,7 @@ export default function UploadVideoPage() {
         created_at: new Date().toISOString()
       };
 
-      // 4. Insert Property into properties table
+      // 3. Insert Property into properties table
       const { data: propertyInsert, error: propertyError } = await supabase
         .from('properties')
         .insert([propertyPayload])
@@ -171,7 +143,7 @@ export default function UploadVideoPage() {
 
       if (propertyError) throw new Error("Property insert failed: " + propertyError.message);
 
-      // 5. Insert Video URL into property_media table
+      // 4. Insert Video URL into property_media table
       if (propertyInsert && propertyInsert[0]) {
         const mediaPayload = [
           {
@@ -413,35 +385,10 @@ export default function UploadVideoPage() {
           {/* Media uploads */}
           <div className={styles.section}>
             <h3 className={styles.sectionTitle}>
-              <i className="fa-solid fa-photo-film"></i> Upload Visual Assets
+              <i className="fa-solid fa-photo-film"></i> Upload Walkthrough Video
             </h3>
             
             <div className={styles.formRow}>
-              {/* Cover Image Upload */}
-              <div className={styles.formGroup}>
-                <label className={styles.label}>Cover Image</label>
-                <div className={styles.uploadBox}>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleCoverSelect}
-                    id="cover-file-input"
-                    className={styles.fileInput}
-                    disabled={loading}
-                  />
-                  <label htmlFor="cover-file-input" className={styles.uploadBoxLabel}>
-                    {coverPreview ? (
-                      <img src={coverPreview} alt="Cover preview" className={styles.uploadPreview} />
-                    ) : (
-                      <>
-                        <i className="fa-solid fa-image"></i>
-                        <span>Select Cover Photo</span>
-                      </>
-                    )}
-                  </label>
-                </div>
-              </div>
-
               {/* Video Walkthrough Upload */}
               <div className={styles.formGroup}>
                 <label className={styles.label}>Video Walkthrough (Max 60MB)</label>
