@@ -282,7 +282,8 @@ export default function AdminPortal() {
     const statusMap = {
       'available': 'reserved',
       'reserved': 'sold',
-      'sold': 'available'
+      'sold': 'available',
+      'pending': 'available'
     };
     const nextStatus = statusMap[currentStatus] || 'available';
 
@@ -685,6 +686,16 @@ export default function AdminPortal() {
             </div>
 
             <div className={styles.statCard}>
+              <div className={styles.statIcon} style={{ background: '#E0F2FE', color: '#0284C7' }}>
+                <i className="fa-solid fa-clock-rotate-left"></i>
+              </div>
+              <div className={styles.statInfo}>
+                <span className={styles.statLabel}>Pending</span>
+                <span className={styles.statValue}>{listings.filter(item => item.status === 'pending').length}</span>
+              </div>
+            </div>
+
+            <div className={styles.statCard}>
               <div className={styles.statIcon} style={{ background: '#FEF3EC', color: '#C07D4A' }}>
                 <i className="fa-solid fa-hourglass-half"></i>
               </div>
@@ -762,6 +773,17 @@ export default function AdminPortal() {
                         >
                           <Badge status={item.status} />
                         </button>
+
+                        {/* Quick Approve Action */}
+                        {item.status === 'pending' && (
+                          <button
+                            onClick={() => toggleStatus(item.id, 'pending')}
+                            className={styles.approveRowBtn}
+                            title="Approve and Publish Listing"
+                          >
+                            <i className="fa-solid fa-circle-check"></i> Approve
+                          </button>
+                        )}
 
                         {/* Edit Action Button */}
                         <button

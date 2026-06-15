@@ -1064,6 +1064,28 @@
   border-color: var(--color-accent);
 }
 
+.approveRowBtn {
+  color: var(--color-available);
+  background-color: var(--color-available-bg);
+  border: 1px solid rgba(45, 125, 82, 0.15);
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 0 10px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.approveRowBtn:hover {
+  background-color: var(--color-available);
+  color: #FFFFFF;
+}
+
 .formActionsRow {
   display: flex;
   gap: 16px;

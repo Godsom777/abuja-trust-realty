@@ -36,6 +36,12 @@ export default function BottomNav() {
       href: '/?filter=saved'
     },
     {
+      id: 'upload',
+      label: 'Upload Video',
+      iconClass: 'fa-video',
+      href: '/upload-video'
+    },
+    {
       id: 'about',
       label: 'About',
       iconClass: 'fa-circle-info',

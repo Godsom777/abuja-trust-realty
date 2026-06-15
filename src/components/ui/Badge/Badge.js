@@ -17,6 +17,9 @@ export default function Badge({ status = 'available' }) {
   } else if (normalizedStatus === 'sold' || normalizedStatus === 'let') {
     label = 'Sold / Let';
     statusClass = styles.sold;
+  } else if (normalizedStatus === 'pending') {
+    label = 'Pending';
+    statusClass = styles.pending;
   }
 
   return (

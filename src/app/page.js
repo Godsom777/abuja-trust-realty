@@ -17,6 +17,7 @@ export default async function HomePage() {
     const { data, error } = await supabase
       .from('properties')
       .select('*')
+      .neq('status', 'pending')
       .order('created_at', { ascending: false });
       
     if (data && !error) {

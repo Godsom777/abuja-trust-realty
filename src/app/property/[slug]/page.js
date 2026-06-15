@@ -16,7 +16,7 @@ export async function generateMetadata({ params }) {
       .eq('slug', slug)
       .single();
 
-    if (property) {
+    if (property && property.status !== 'pending') {
       const title = `${property.title} — Verified Property in ${property.location_area}, Abuja`;
       const priceStr = property.price_ngn 
         ? formatConvertedPrice(property.price_ngn, 'ngn', false) 
@@ -59,17 +59,21 @@ export default async function PropertyDetailPage({ params }) {
       .single();
 
     if (data && !error) {
-      property = {
-        ...data,
-        price_ngn: data.price_ngn || data.priceNgn || 0,
-        transaction_type: data.transaction_type || data.transactionType || 'sale',
-        property_type: data.property_type || data.propertyType || 'residential',
-        size_sqm: data.size_sqm || data.sizeSqm || 0,
-        cover_image_url: data.cover_image_url || data.photo || null,
-        location_area: data.district || data.location_area || 'Abuja',
-        location_city: data.location_city || 'Abuja',
-        structure_type: data.structure_type || null
-      };
+      if (data.status === 'pending') {
+        property = null;
+      } else {
+        property = {
+          ...data,
+          price_ngn: data.price_ngn || data.priceNgn || 0,
+          transaction_type: data.transaction_type || data.transactionType || 'sale',
+          property_type: data.property_type || data.propertyType || 'residential',
+          size_sqm: data.size_sqm || data.sizeSqm || 0,
+          cover_image_url: data.cover_image_url || data.photo || null,
+          location_area: data.district || data.location_area || 'Abuja',
+          location_city: data.location_city || 'Abuja',
+          structure_type: data.structure_type || null
+        };
+      }
     }
   } catch (err) {
     console.error("Error loading property detail:", err);

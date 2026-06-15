@@ -51,3 +51,14 @@
 .sold .dot {
   background-color: var(--color-sold);
 }
+
+/* Pending Status */
+.pending {
+  background-color: #E0F2FE;
+  color: #0284C7;
+}
+
+.pending .dot {
+  background-color: #0284C7;
+  box-shadow: 0 0 8px rgba(2, 132, 199, 0.4);
+}

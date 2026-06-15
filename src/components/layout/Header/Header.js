@@ -35,6 +35,9 @@ export default function Header() {
           <Link href="/?filter=saved" className={`${styles.navLink} ${isActive('/', 'saved') ? styles.navLinkActive : ''}`}>
             Saved
           </Link>
+          <Link href="/upload-video" className={`${styles.navLink} ${isActive('/upload-video') ? styles.navLinkActive : ''}`}>
+            Upload Video
+          </Link>
           <Link href="/about" className={`${styles.navLink} ${isActive('/about') ? styles.navLinkActive : ''}`}>
             About
           </Link>

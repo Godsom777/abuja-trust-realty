@@ -8,14 +8,13 @@ import BottomNav from "@/components/layout/BottomNav/BottomNav";
 export default function LayoutWrapper({ children }) {
   const pathname = usePathname();
   
-  // Check if we are inside the administrative panel or menu
+  // Check if we are inside the administrative panel
   const isAdmin = pathname?.startsWith("/admin");
-  const isMenu = pathname?.startsWith("/trapHouseMenu");
 
-  if (isAdmin || isMenu) {
+  if (isAdmin) {
     // Admin and isolated routes render fully unconstrained without public layout elements
     return (
-      <div className={isAdmin ? "admin-root-container" : ""}>
+      <div className="admin-root-container">
         {children}
       </div>
     );
