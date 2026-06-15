@@ -146,6 +146,7 @@ export default function UploadVideoPage() {
 
       const propertyPayload = {
         title: cleanTitle,
+        slug: finalSlug,
         description: fullDescription,
         district: formData.location_area,
         price_ngn: price,
