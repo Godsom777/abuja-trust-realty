@@ -66,25 +66,16 @@
   line-height: 1;
 }
 
-/* "Abuja " in Cormorant italic — editorial serif feel */
-.logoAbuja {
+/* "emanon" in Cormorant italic — editorial serif feel */
+.logoEmanon {
   font-family: var(--font-display);
-  font-size: 19px;
-  font-weight: 600;
-  font-style: italic;
-  color: var(--color-text);
-  letter-spacing: -0.2px;
-}
-
-/* "Realty" in Instrument Sans — grounded sans-serif pair */
-.logoRealty {
-  font-family: var(--font-ui);
-  font-size: 15px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--color-text);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+  letter-spacing: -0.4px;
 }
+
+
 
 /* Copper period accent */
 .logoAccent {

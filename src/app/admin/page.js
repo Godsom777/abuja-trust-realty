@@ -145,14 +145,14 @@ export default function AdminPortal() {
   const handleLogin = (e) => {
     e.preventDefault();
     const inputPass = (passcode || '').trim();
-    console.log("Passcode attempt in Abuja Trust Realty Admin:", inputPass);
+    console.log("Passcode attempt in emanon Admin:", inputPass);
     
     if (inputPass === '1238' || inputPass === 'admin1238') {
       setIsAuthenticated(true);
       setAuthError('');
       if (typeof window !== 'undefined') {
         try {
-          localStorage.setItem('abujatrust_admin_session', 'active');
+          localStorage.setItem('emanon_admin_session', 'active');
         } catch (err) {
           console.warn("Local storage write blocked by browser settings/sandbox:", err);
         }
@@ -167,7 +167,7 @@ export default function AdminPortal() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       try {
-        const session = localStorage.getItem('abujatrust_admin_session');
+        const session = localStorage.getItem('emanon_admin_session') || localStorage.getItem('abujatrust_admin_session');
         if (session === 'active') {
           setIsAuthenticated(true);
         }
@@ -181,6 +181,7 @@ export default function AdminPortal() {
     setIsAuthenticated(false);
     if (typeof window !== 'undefined') {
       try {
+        localStorage.removeItem('emanon_admin_session');
         localStorage.removeItem('abujatrust_admin_session');
       } catch (err) {
         console.warn("Local storage clear blocked by browser settings/sandbox:", err);
@@ -579,7 +580,7 @@ export default function AdminPortal() {
         <div className={styles.sidebarTop}>
           <div className={styles.logoGroup}>
             <span className={styles.logoText}>
-              ABJ-Realty<span className={styles.logoDot}>.</span>
+              emanon<span className={styles.logoDot}>.</span>
             </span>
           </div>
           <span className={styles.adminBadge}>ADMIN PORTAL</span>
@@ -629,7 +630,7 @@ export default function AdminPortal() {
         {/* Mobile Header (only visible on mobile screens) */}
         <header className={styles.mobileHeader}>
           <div className={styles.mobileHeaderLeft}>
-            <span className={styles.logoText}>ABJ-Realty<span className={styles.logoDot}>.</span></span>
+            <span className={styles.logoText}>emanon<span className={styles.logoDot}>.</span></span>
             <span className={styles.adminBadge}>ADMIN</span>
           </div>
           <button onClick={handleSignOut} className={styles.mobileSignOutBtn} title="Sign Out">

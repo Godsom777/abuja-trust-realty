@@ -1,4 +1,4 @@
-// Abuja Trust Realty Currency formatting and conversion utilities
+// emanon Currency formatting and conversion utilities
 // Conversion constants:
 // $1 USD = ₦1,500 NGN
 // £1 GBP = ₦1,900 NGN

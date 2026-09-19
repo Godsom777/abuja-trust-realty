@@ -22,7 +22,7 @@ export default function SignInPage() {
           <Link href="/" className={styles.logo}>
             <span className={styles.logoIcon}>◆</span>
             <span className={styles.logoText}>
-              ABJ-Realty<span className={styles.logoAccent}>.</span>
+              emanon<span className={styles.logoAccent}>.</span>
             </span>
           </Link>
           <h2 className={styles.brandTitle}>

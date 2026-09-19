@@ -34,7 +34,7 @@ export const useAppStore = create(
       }
     }),
     {
-      name: 'abujatrust-app-storage', // name of the item in localStorage
+      name: 'emanon-app-storage', // name of the item in localStorage
       // Avoid Next.js hydration issues by using a custom partialize or custom storage wait
       skipHydration: true,
     }

@@ -24,7 +24,7 @@ export default function Header() {
       <div className={styles.headerInner}>
         {/* Wordmark Logo */}
         <Link href="/" className={styles.logo}>
-          ABJ-Realty<span className={styles.logoDot}>.</span>
+          emanon<span className={styles.logoDot}>.</span>
         </Link>
         
         {/* Desktop Navigation Links */}

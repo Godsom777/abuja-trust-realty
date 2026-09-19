@@ -3,9 +3,9 @@ import styles from "./page.module.css";
 import { supabase } from "@/lib/supabase";
 
 export const metadata = {
-  title: "How It Works — Abuja Trust Realty",
+  title: "How It Works — emanon",
   description:
-    "Learn how Abuja Trust Realty verifies every property owner, reviews every listing, and facilitates every deal to keep you safe.",
+    "Learn how emanon verifies every property owner, reviews every listing, and facilitates every deal to keep you safe.",
 };
 
 export const revalidate = 0;

@@ -19,7 +19,7 @@ export async function generateMetadata({ params }) {
   if (!listing) return { title: "Property Not Found" };
 
   return {
-    title: `${listing.title} in ${listing.district} — Abuja Trust Realty`,
+    title: `${listing.title} in ${listing.district} — emanon`,
     description: listing.description || `Verified ${listing.property_type || listing.propertyType} for ${listing.transaction_type || listing.transactionType} in ${listing.district}, Abuja.`,
   };
 }
@@ -84,9 +84,9 @@ export default async function PropertyDetailPage({ params }) {
   const mediaUrls = media.length > 0 ? media : [listing.photo].filter(Boolean);
 
   const transLabel = TRANSACTION_LABELS[listing.transactionType] || listing.transactionType;
-  const dealRef = `ABJ-2026-${listing.id.toString().padStart(4, "0")}`;
+  const dealRef = `EMN-2026-${listing.id.toString().padStart(4, "0")}`;
   const waMessage = encodeURIComponent(
-    `Hello Abuja Trust Realty,\n\I am interested in this property:\n*${listing.title}*\nRef: ${dealRef}\nLink: https://abujatrust.com${listing.slug}`
+    `Hello emanon,\nI am interested in this property:\n*${listing.title}*\nRef: ${dealRef}\nLink: https://emanon.com${listing.slug}`
   );
   
   const phone = getWhatsAppNumber();

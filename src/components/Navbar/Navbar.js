@@ -32,14 +32,13 @@ export default function Navbar() {
         id="main-navigation"
       >
         <div className={styles.inner}>
-          {/* Brand Mark — "Abuja Realty." with building icon */}
+          {/* Brand Mark — "emanon." with building icon */}
           <Link href="/" className={styles.logo} id="nav-logo">
             <div className={styles.logoIconWrap}>
               <i className={`fa-solid fa-building ${styles.logoIcon}`}></i>
             </div>
             <span className={styles.logoText}>
-              <span className={styles.logoAbuja}>Abuja </span>
-              <span className={styles.logoRealty}>Realty</span>
+              <span className={styles.logoEmanon}>emanon</span>
               <span className={styles.logoAccent}>.</span>
             </span>
           </Link>
@@ -100,8 +99,7 @@ export default function Navbar() {
                   <i className={`fa-solid fa-building ${styles.logoIcon}`}></i>
                 </div>
                 <span className={styles.logoText}>
-                  <span className={styles.logoAbuja}>Abuja </span>
-                  <span className={styles.logoRealty}>Realty</span>
+                  <span className={styles.logoEmanon}>emanon</span>
                   <span className={styles.logoAccent}>.</span>
                 </span>
               </Link>

@@ -7,9 +7,9 @@ import styles from './about.module.css';
 export default function AboutPage() {
   const waLink = getGeneralEnquiryLink();
   const waNumber = getWhatsAppNumber();
-  const ownerMessage = encodeURIComponent("Hi, I am a property/land owner and I would like to verify and list my property on Abuja Trust Realty.");
+  const ownerMessage = encodeURIComponent("Hi, I am a property/land owner and I would like to verify and list my property on emanon.");
   const waOwnerLink = `https://wa.me/${waNumber}?text=${ownerMessage}`;
-  const emailLink = "mailto:hello@abujatrust.com?subject=Property/Land Listing Enquiry - Abuja Trust Realty";
+  const emailLink = "mailto:hello@emanon.com?subject=Property/Land Listing Enquiry - emanon";
 
   const STEPS = [
     {
@@ -60,7 +60,7 @@ export default function AboutPage() {
       {/* Narrative Section */}
       <section className={styles.narrative}>
         <p className={styles.lead}>
-          Abuja Trust Realty was built to solve the primary friction point of Abuja real estate: <strong>the trust deficit.</strong>
+          emanon was built to solve the primary friction point of Abuja real estate: <strong>the trust deficit.</strong>
         </p>
         <p className={styles.bodyText}>
           By removing speculative middlemen and anonymous agent layers, we create a transparent, stress-free channel where buyers and owners connect directly.
@@ -148,7 +148,7 @@ export default function AboutPage() {
 
       {/* Steps Flow (How it Works) */}
       <section className={styles.stepsSection}>
-        <h2 className={styles.sectionHeading}>The Abuja Trust Realty Standard</h2>
+        <h2 className={styles.sectionHeading}>The emanon Standard</h2>
         <div className={styles.stepsGrid}>
           {STEPS.map((step, idx) => (
             <div key={idx} className={styles.stepCard}>
@@ -198,7 +198,7 @@ export default function AboutPage() {
       </section>
 
       <footer className={styles.footer}>
-        <p>© {new Date().getFullYear()} Abuja Trust Realty. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} emanon. All rights reserved.</p>
         <p className={styles.footerSubtitle}>Direct, vetted real estate for buyers everywhere.</p>
       </footer>
     </div>

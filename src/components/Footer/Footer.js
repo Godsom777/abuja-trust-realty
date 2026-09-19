@@ -57,7 +57,7 @@ export default function Footer() {
               <Link href="/" className={styles.logo}>
                 <i className={`fa-solid fa-diamond ${styles.logoIcon}`}></i>
                 <span className={styles.logoName}>
-                  ABJ-Realty<span className={styles.logoAccent}>.</span>
+                  emanon<span className={styles.logoAccent}>.</span>
                 </span>
               </Link>
               <p className={styles.tagline}>
@@ -104,7 +104,7 @@ export default function Footer() {
         <div className="container">
           <div className={styles.bottomInner}>
             <p className={styles.copyright}>
-              © {new Date().getFullYear()} ABJ-Realty. All rights reserved.
+              © {new Date().getFullYear()} emanon. All rights reserved.
             </p>
             <div className={styles.bottomRight}>
               <span className={styles.currency}>

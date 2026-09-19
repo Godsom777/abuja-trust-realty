@@ -1,5 +1,5 @@
 -- ==========================================
--- ABUJA TRUST REALTY — DATABASE & STORAGE SETUP
+-- EMANON — DATABASE & STORAGE SETUP
 -- Run this script in the Supabase SQL Editor
 -- ==========================================
 
