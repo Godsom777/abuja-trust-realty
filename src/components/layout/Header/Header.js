@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import CurrencyToggle from '../../ui/CurrencyToggle/CurrencyToggle';
@@ -22,9 +23,19 @@ export default function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.headerInner}>
-        {/* Wordmark Logo */}
-        <Link href="/" className={styles.logo}>
-          emanon<span className={styles.logoDot}>.</span>
+        {/* Brand Logo */}
+        <Link href="/" className={styles.logo} id="header-logo">
+          <Image
+            src="/images/emanon.png"
+            alt="emanon. logo"
+            width={38}
+            height={38}
+            className={styles.logoImage}
+            priority
+          />
+          <span className={styles.logoText}>
+            emanon<span className={styles.logoDot}>.</span>
+          </span>
         </Link>
         
         {/* Desktop Navigation Links */}

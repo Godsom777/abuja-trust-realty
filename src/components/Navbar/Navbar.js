@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import styles from "./Navbar.module.css";
 
 const NAV_LINKS = [
@@ -32,11 +33,16 @@ export default function Navbar() {
         id="main-navigation"
       >
         <div className={styles.inner}>
-          {/* Brand Mark — "emanon." with building icon */}
+          {/* Brand Mark — "emanon." with logo */}
           <Link href="/" className={styles.logo} id="nav-logo">
-            <div className={styles.logoIconWrap}>
-              <i className={`fa-solid fa-building ${styles.logoIcon}`}></i>
-            </div>
+            <Image
+              src="/images/emanon.png"
+              alt="emanon. logo"
+              width={38}
+              height={38}
+              className={styles.logoImg}
+              priority
+            />
             <span className={styles.logoText}>
               <span className={styles.logoEmanon}>emanon</span>
               <span className={styles.logoAccent}>.</span>
@@ -95,9 +101,13 @@ export default function Navbar() {
           >
             <div className={styles.mobileHeader}>
               <Link href="/" className={styles.logo} onClick={() => setMobileOpen(false)}>
-                <div className={styles.logoIconWrap}>
-                  <i className={`fa-solid fa-building ${styles.logoIcon}`}></i>
-                </div>
+                <Image
+                  src="/images/emanon.png"
+                  alt="emanon. logo"
+                  width={38}
+                  height={38}
+                  className={styles.logoImg}
+                />
                 <span className={styles.logoText}>
                   <span className={styles.logoEmanon}>emanon</span>
                   <span className={styles.logoAccent}>.</span>

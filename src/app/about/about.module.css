@@ -185,6 +185,32 @@
   padding-top: 24px;
 }
 
+.footerBrand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.footerLogo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(179, 106, 53, 0.25));
+}
+
+.footerBrandName {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: -0.4px;
+}
+
+.footerBrandDot {
+  color: var(--color-accent);
+}
+
 .footer p {
   font-family: var(--font-ui);
   font-size: 11px;

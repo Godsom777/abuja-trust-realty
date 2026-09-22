@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
 import { formatConvertedPrice } from '@/lib/currency';
 import Badge from '@/components/ui/Badge/Badge';
@@ -545,8 +546,15 @@ export default function AdminPortal() {
     return (
       <div className={styles.authGate}>
         <div className={styles.authCard}>
-          <div className={styles.authIcon}>
-            <i className="fa-solid fa-lock"></i>
+          <div className={styles.authLogoWrap}>
+            <Image
+              src="/images/emanon.png"
+              alt="emanon. logo"
+              width={70}
+              height={70}
+              className={styles.authLogoImg}
+              priority
+            />
           </div>
           <h1 className={styles.authTitle}>Administrative Panel</h1>
           <p className={styles.authSubtitle}>Enter the administrator security code to access control metrics.</p>
@@ -579,6 +587,14 @@ export default function AdminPortal() {
       <aside className={styles.sidebar}>
         <div className={styles.sidebarTop}>
           <div className={styles.logoGroup}>
+            <Image
+              src="/images/emanon.png"
+              alt="emanon. logo"
+              width={36}
+              height={36}
+              className={styles.sidebarLogoImg}
+              priority
+            />
             <span className={styles.logoText}>
               emanon<span className={styles.logoDot}>.</span>
             </span>
@@ -630,6 +646,13 @@ export default function AdminPortal() {
         {/* Mobile Header (only visible on mobile screens) */}
         <header className={styles.mobileHeader}>
           <div className={styles.mobileHeaderLeft}>
+            <Image
+              src="/images/emanon.png"
+              alt="emanon. logo"
+              width={30}
+              height={30}
+              className={styles.mobileLogoImg}
+            />
             <span className={styles.logoText}>emanon<span className={styles.logoDot}>.</span></span>
             <span className={styles.adminBadge}>ADMIN</span>
           </div>

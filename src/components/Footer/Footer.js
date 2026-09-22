@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import styles from "./Footer.module.css";
 
 const FOOTER_LINKS = {
@@ -55,7 +56,13 @@ export default function Footer() {
             {/* Brand Column */}
             <div className={styles.brandCol}>
               <Link href="/" className={styles.logo}>
-                <i className={`fa-solid fa-diamond ${styles.logoIcon}`}></i>
+                <Image
+                  src="/images/emanon.png"
+                  alt="emanon. logo"
+                  width={40}
+                  height={40}
+                  className={styles.logoImg}
+                />
                 <span className={styles.logoName}>
                   emanon<span className={styles.logoAccent}>.</span>
                 </span>

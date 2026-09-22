@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import styles from "./page.module.css";
 
 export default function SignInPage() {
@@ -20,7 +21,14 @@ export default function SignInPage() {
       <div className={styles.authLeft}>
         <div className={styles.authBrand}>
           <Link href="/" className={styles.logo}>
-            <span className={styles.logoIcon}>◆</span>
+            <Image
+              src="/images/emanon.png"
+              alt="emanon. logo"
+              width={48}
+              height={48}
+              className={styles.logoImg}
+              priority
+            />
             <span className={styles.logoText}>
               emanon<span className={styles.logoAccent}>.</span>
             </span>

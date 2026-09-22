@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import Image from 'next/image';
 import { getGeneralEnquiryLink, getWhatsAppNumber } from '@/lib/whatsapp';
 import styles from './about.module.css';
 
@@ -198,6 +199,18 @@ export default function AboutPage() {
       </section>
 
       <footer className={styles.footer}>
+        <div className={styles.footerBrand}>
+          <Image
+            src="/images/emanon.png"
+            alt="emanon. logo"
+            width={36}
+            height={36}
+            className={styles.footerLogo}
+          />
+          <span className={styles.footerBrandName}>
+            emanon<span className={styles.footerBrandDot}>.</span>
+          </span>
+        </div>
         <p>© {new Date().getFullYear()} emanon. All rights reserved.</p>
         <p className={styles.footerSubtitle}>Direct, vetted real estate for buyers everywhere.</p>
       </footer>

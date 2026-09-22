@@ -63,13 +63,21 @@
 .logo {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  margin-bottom: var(--space-4);
+  gap: var(--space-3, 12px);
+  margin-bottom: var(--space-4, 16px);
+  text-decoration: none;
 }
 
-.logoIcon {
-  color: var(--color-emerald);
-  font-size: var(--text-lg);
+.logoImg {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(179, 106, 53, 0.35));
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.logo:hover .logoImg {
+  transform: scale(1.08) rotate(-2deg);
 }
 
 .logoName {
@@ -80,7 +88,7 @@
 }
 
 .logoAccent {
-  color: var(--color-emerald);
+  color: var(--color-accent, #B36A35);
 }
 
 .tagline {

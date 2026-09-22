@@ -21,6 +21,20 @@
   box-shadow: var(--shadow-popover);
 }
 
+.authLogoWrap {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.authLogoImg {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 16px rgba(179, 106, 53, 0.3));
+}
+
 .authIcon {
   width: 60px;
   height: 60px;
@@ -136,6 +150,23 @@
 .logoGroup {
   display: flex;
   align-items: center;
+  gap: 10px;
+}
+
+.sidebarLogoImg {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(179, 106, 53, 0.25));
+  flex-shrink: 0;
+}
+
+.mobileLogoImg {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(179, 106, 53, 0.25));
+  flex-shrink: 0;
 }
 
 .logoText {
