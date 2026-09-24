@@ -2,7 +2,7 @@ import { supabase } from "@/lib/supabase";
 import PropertyDetailClient from "@/components/property/PropertyDetailClient";
 import { formatConvertedPrice } from "@/lib/currency";
 
-export const revalidate = 0; // Disable static caching so it always fetches fresh data from Supabase
+export const revalidate = 120; // 2-minute ISR caching for detail pages to minimize Supabase egress
 
 // Dynamic SEO Metadata Generation
 export async function generateMetadata({ params }) {
@@ -12,7 +12,7 @@ export async function generateMetadata({ params }) {
   try {
     const { data: property } = await supabase
       .from('properties')
-      .select('*')
+      .select('id, title, slug, location_area, price_ngn, description, cover_image_url, status')
       .eq('slug', slug)
       .single();
 

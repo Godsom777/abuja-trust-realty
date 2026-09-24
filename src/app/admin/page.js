@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
 import { formatConvertedPrice } from '@/lib/currency';
+import { compressImage } from '@/lib/imageCompression';
 import Badge from '@/components/ui/Badge/Badge';
 import slugify from 'slugify';
 import styles from './page.module.css';
@@ -67,21 +68,24 @@ export default function AdminPortal() {
   const [formSuccessMessage, setFormSuccessMessage] = useState('');
   const [formErrorMessage, setFormErrorMessage] = useState('');
 
-  // Handle Cover Image Upload from Device
+  // Handle Cover Image Upload from Device (with client-side compression & long cache header)
   const handleCoverUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     setCoverLoading(true);
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
-    const filePath = `cover-${fileName}`;
 
     try {
+      // Compress image client-side before sending to Supabase to save 90% bandwidth/storage
+      const processedFile = await compressImage(file);
+      const fileExt = processedFile.name.split('.').pop() || 'webp';
+      const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+      const filePath = `cover-${fileName}`;
+
       const { data, error } = await supabase.storage
         .from('property-media')
-        .upload(filePath, file, {
-          cacheControl: '3600',
+        .upload(filePath, processedFile, {
+          cacheControl: '31536000, public', // 1 year browser/CDN caching for immutable hashed filenames
           upsert: false
         });
 
@@ -113,14 +117,16 @@ export default function AdminPortal() {
 
     try {
       for (const file of files) {
-        const fileExt = file.name.split('.').pop();
+        // Compress photos before upload; videos pass through safely
+        const processedFile = await compressImage(file);
+        const fileExt = processedFile.name.split('.').pop();
         const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
         const filePath = `gallery-${fileName}`;
 
         const { data, error } = await supabase.storage
           .from('property-media')
-          .upload(filePath, file, {
-            cacheControl: '3600',
+          .upload(filePath, processedFile, {
+            cacheControl: '31536000, public', // 1 year browser/CDN caching
             upsert: false
           });
 

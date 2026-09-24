@@ -15,7 +15,6 @@ export default function PropertyDetailClient({ property, media = [] }) {
   const router = useRouter();
   const { currency, toggleSaveProperty, savedProperties } = useAppStore();
   const [mounted, setMounted] = useState(false);
-  const [enquiring, setEnquiring] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -71,28 +70,24 @@ export default function PropertyDetailClient({ property, media = [] }) {
     toggleSaveProperty(id);
   };
 
-  // WhatsApp Enquiry click logging + redirection
-  const handleEnquiry = async () => {
-    setEnquiring(true);
-    const link = getPropertyEnquiryLink(property, currency);
-    
+  const waLink = getPropertyEnquiryLink(property, currency);
+
+  // WhatsApp Enquiry click logging (non-blocking in background)
+  const handleEnquiryClick = () => {
     try {
       // Fire-and-forget lightweight event log to Supabase for admin metrics
-      // enquiry_log columns: property_id, property_title, property_location, enquiry_type, currency_shown
-      await supabase.from('enquiry_log').insert({
+      supabase.from('enquiry_log').insert({
         property_id: id,
         property_title: title,
         property_location: `${location_area}, ${location_city}`,
         enquiry_type: 'property',
         currency_shown: currency.toUpperCase()
+      }).then(() => {}).catch(err => {
+        console.warn("Could not write metrics log to Supabase:", err);
       });
     } catch (err) {
       console.warn("Could not write metrics log to Supabase:", err);
     }
-
-    // Direct redirection to pre-filled WhatsApp deep link
-    window.open(link, '_blank', 'noopener,noreferrer');
-    setEnquiring(false);
   };
 
   const typeLabel = transaction_type === 'rent' ? 'For Rent' : transaction_type === 'off-plan' ? 'Off-Plan' : 'For Sale';
@@ -215,25 +210,22 @@ export default function PropertyDetailClient({ property, media = [] }) {
             <a href={`tel:+2348032590591`} className={styles.callBtnIcon} title="Call Owner">
               <i className="fa-solid fa-phone"></i>
             </a>
-            <button
-              onClick={handleEnquiry}
-              disabled={enquiring || status === 'sold'}
-              className={`${styles.enquireBtn} hover-lift`}
-            >
-              {enquiring ? (
-                <>
-                  <i className="fa-solid fa-spinner fa-spin"></i>
-                  Connecting...
-                </>
-              ) : status === 'sold' ? (
-                'Sold / Unavailable'
-              ) : (
-                <>
-                  <i className="fa-brands fa-whatsapp"></i>
-                  WhatsApp Inquiry
-                </>
-              )}
-            </button>
+            {status === 'sold' ? (
+              <button disabled className={styles.enquireBtn}>
+                Sold / Unavailable
+              </button>
+            ) : (
+              <a
+                href={waLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={handleEnquiryClick}
+                className={`${styles.enquireBtn} hover-lift`}
+              >
+                <i className="fa-brands fa-whatsapp"></i>
+                WhatsApp Inquiry
+              </a>
+            )}
           </div>
         </div>
       </div>

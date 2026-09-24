@@ -25,8 +25,8 @@ export function getPropertyEnquiryLink(property, currency = 'ngn') {
   const phone = getWhatsAppNumber();
   const title = property.title || 'Property';
   const area = property.location_area || property.district || 'Abuja';
-  const city = property.location_city || 'Abuja';
-  const idShort = property.id ? property.id.substring(0, 6).toUpperCase() : 'UNKNOWN';
+  const idStr = property.id != null ? String(property.id) : '';
+  const idShort = idStr ? (idStr.length > 8 ? idStr.substring(0, 6).toUpperCase() : idStr.padStart(4, '0')) : 'UNKNOWN';
 
   // Format the price in the active user currency preference
   const priceFormatted = property.price_ngn 

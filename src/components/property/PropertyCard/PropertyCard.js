@@ -39,19 +39,31 @@ export default function PropertyCard({ property, viewMode = 'list' }) {
     size_sqm,
     status = 'available',
     transaction_type = 'sale',
-    cover_image_url
+    cover_image_url,
+    photo,
+    features = []
   } = property;
 
   const isSaved = mounted && savedProperties.includes(id);
 
-  const imageUrl = cover_image_url ||
-    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=800';
-  const isVideo = imageUrl && (
-    imageUrl.endsWith('.mp4') ||
-    imageUrl.endsWith('.webm') ||
-    imageUrl.endsWith('.mov') ||
-    imageUrl.includes('video')
+  // Detect video walkthrough listings
+  const isVideoCover = Boolean(
+    cover_image_url && (
+      cover_image_url.endsWith('.mp4') ||
+      cover_image_url.endsWith('.webm') ||
+      cover_image_url.endsWith('.mov') ||
+      cover_image_url.includes('video')
+    )
   );
+  const hasVideo = isVideoCover || (
+    Array.isArray(features) && features.some(f => typeof f === 'string' && f.toLowerCase().includes('video'))
+  );
+
+  // Egress Saver: Never stream video files in listing cards. Use photo cover with video badge.
+  const fallbackCover = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=800';
+  const displayImage = isVideoCover 
+    ? (photo && !photo.endsWith('.mp4') ? photo : fallbackCover) 
+    : (cover_image_url || photo || fallbackCover);
 
   const formattedPrice = price_ngn
     ? formatConvertedPrice(price_ngn, currency, true)
@@ -81,23 +93,12 @@ export default function PropertyCard({ property, viewMode = 'list' }) {
     >
       {/* ── Full-bleed Media ── */}
       <div className={styles.mediaWrap}>
-        {isVideo ? (
-          <video
-            src={imageUrl}
-            className={styles.media}
-            muted
-            loop
-            autoPlay
-            playsInline
-          />
-        ) : (
-          <img
-            src={imageUrl}
-            alt={title}
-            className={styles.media}
-            loading="lazy"
-          />
-        )}
+        <img
+          src={displayImage}
+          alt={title}
+          className={styles.media}
+          loading="lazy"
+        />
 
         {/* Rich gradient overlay */}
         <div className={styles.overlay} />
@@ -107,6 +108,12 @@ export default function PropertyCard({ property, viewMode = 'list' }) {
           <span className={`${styles.typeBadge} ${styles[`type_${transaction_type?.replace('-', '_')}`]}`}>
             {typeLabel}
           </span>
+          {hasVideo && (
+            <span className={styles.videoBadge}>
+              <i className="fa-solid fa-play"></i>
+              Video Tour
+            </span>
+          )}
           {status === 'available' && (
             <span className={styles.statusPill}>
               <span className={styles.statusDot} />

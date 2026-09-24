@@ -94,7 +94,7 @@ export default function PhotoGallery({ images = [] }) {
               >
                 {isVideoUrl(img) ? (
                   <div className={styles.thumbVideoWrapper}>
-                    <video src={img} className={styles.thumbVideo} muted preload="metadata" />
+                    <video src={img} className={styles.thumbVideo} muted preload="none" />
                     <div className={styles.playOverlay}>
                       <i className="fa-solid fa-circle-play"></i>
                     </div>

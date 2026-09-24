@@ -24,7 +24,7 @@ export default function WhatsAppFAB() {
         className={`${styles.fab} hover-lift`}
         title="Enquire on WhatsApp"
       >
-        <i className="fa-brands fa-whatsapp styles.waIcon"></i>
+        <i className={`fa-brands fa-whatsapp ${styles.waIcon}`}></i>
         <span className={styles.label}>Enquire</span>
       </a>
     </div>

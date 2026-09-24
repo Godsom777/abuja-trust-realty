@@ -50,28 +50,18 @@ export default function PropertyCard({
     if (id) toggleSaveProperty(id);
   };
 
+  const fallbackImage = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600';
+  const displayImage = isVideo ? fallbackImage : (photo || fallbackImage);
+
   return (
     <Link href={detailUrl} className={styles.card}>
-      {/* Full-bleed Media */}
-      {isVideo ? (
-        <video
-          src={photo}
-          className={styles.media}
-          muted
-          loop
-          autoPlay
-          playsInline
-        />
-      ) : (
-        <div
-          className={styles.media}
-          style={{
-            backgroundImage: photo
-              ? `url(${photo})`
-              : `url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600')`,
-          }}
-        />
-      )}
+      {/* Full-bleed Media — Egress optimized: Never autoplay video files on feed cards */}
+      <div
+        className={styles.media}
+        style={{
+          backgroundImage: `url('${displayImage}')`,
+        }}
+      />
 
       {/* Gradient overlay — darkens from transparent to rich bottom */}
       <div className={styles.overlay} />
@@ -89,6 +79,12 @@ export default function PropertyCard({
         >
           {transLabel}
         </span>
+        {isVideo && (
+          <span className={styles.badgeVideo}>
+            <i className="fa-solid fa-play"></i>
+            Video Tour
+          </span>
+        )}
         {verified && (
           <span className={styles.badgeVerified}>
             <i className="fa-solid fa-circle-check"></i>

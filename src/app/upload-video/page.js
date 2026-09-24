@@ -84,7 +84,7 @@ export default function UploadVideoPage() {
 
       const { error: videoUploadErr } = await supabase.storage
         .from('property-media')
-        .upload(videoFilePath, videoFile, { cacheControl: '3600', upsert: false });
+        .upload(videoFilePath, videoFile, { cacheControl: '31536000, public', upsert: false });
 
       if (videoUploadErr) throw new Error("Video upload failed: " + videoUploadErr.message);
 

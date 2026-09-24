@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import HomeClient from "@/components/home/HomeClient";
 
-export const revalidate = 0; // Disable static caching so it always fetches fresh data from Supabase
+export const revalidate = 120; // 2-minute ISR caching to drastically cut Supabase egress
 
 const FALLBACK_DISTRICTS = [
   "Maitama", "Asokoro", "Wuse", "Wuse 2", "Garki", "Garki 2", "Jabi", "Gwarinpa", "Apo", 
@@ -11,12 +11,12 @@ const FALLBACK_DISTRICTS = [
 ].sort();
 
 export default async function HomePage() {
-  // 1. Fetch properties from Supabase
+  // 1. Fetch properties from Supabase (lean column selection)
   let listings = [];
   try {
     const { data, error } = await supabase
       .from('properties')
-      .select('*')
+      .select('id, title, slug, price_ngn, transaction_type, property_type, size_sqm, bedrooms, status, cover_image_url, photo, district, location_area, location_city, description, features, created_at')
       .neq('status', 'pending')
       .order('created_at', { ascending: false });
       

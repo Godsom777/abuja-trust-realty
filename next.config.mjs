@@ -1,8 +1,4 @@
-/** @type {import('next').NextConfig} */
 const nextConfig = {
-  turbopack: {
-    root: '.',
-  },
   images: {
     remotePatterns: [
       {
@@ -12,6 +8,10 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.supabase.co',
       },
     ],
   },

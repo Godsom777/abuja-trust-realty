@@ -92,6 +92,29 @@
   border: 1px solid rgba(255, 255, 255, 0.35);
 }
 
+.badgeVideo {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(20, 16, 14, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 20px;
+  padding: 4px 9px;
+  font-family: var(--font-ui);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.badgeVideo i {
+  color: #25D366;
+  font-size: 9px;
+}
+
 .badgeVerified {
   width: 26px;
   height: 26px;
