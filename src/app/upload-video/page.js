@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import { uploadMediaFile } from '@/lib/mediaUpload';
 import styles from './upload-video.module.css';
 
 const DEFAULT_DISTRICTS = [
@@ -74,25 +75,18 @@ export default function UploadVideoPage() {
 
     setLoading(true);
     setErrorMsg('');
-    setProgressMsg('Uploading walkthrough video (this may take a moment)...');
+    setProgressMsg('Uploading walkthrough video (connecting to media CDN)...');
 
     try {
-      // 1. Upload Video to Supabase Storage
-      const videoExt = videoFile.name.split('.').pop();
-      const videoFileName = `${Math.random().toString(36).substring(2, 15)}.${videoExt}`;
-      const videoFilePath = `gallery/${videoFileName}`;
+      // 1. Upload Video via unified media uploader (Cloudinary with direct progress & Supabase fallback)
+      const uploadResult = await uploadMediaFile(videoFile, {
+        folder: 'emanon/walkthroughs',
+        onProgress: ({ percent }) => {
+          setProgressMsg(`Uploading walkthrough video: ${percent}%...`);
+        }
+      });
 
-      const { error: videoUploadErr } = await supabase.storage
-        .from('property-media')
-        .upload(videoFilePath, videoFile, { cacheControl: '31536000, public', upsert: false });
-
-      if (videoUploadErr) throw new Error("Video upload failed: " + videoUploadErr.message);
-
-      const { data: videoUrlData } = supabase.storage
-        .from('property-media')
-        .getPublicUrl(videoFilePath);
-
-      const finalVideoUrl = videoUrlData.publicUrl;
+      const finalVideoUrl = uploadResult.url;
 
       // 2. Build Properties Payload (use a default stunning mansion placeholder cover image)
       setProgressMsg('Submitting listing details...');
@@ -110,7 +104,7 @@ export default function UploadVideoPage() {
       const finalSlug = `${baseSlug}-${suffix}`;
 
       // Set default cover photo preset (Modern Mansion preset)
-      const finalCoverUrl = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=1200';
+      const finalCoverUrl = uploadResult.posterUrl || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=1200';
 
       // Append Submitter Contact Information to description narrative for Admin review
       const contactBlock = `\n\n--- SUBMITTER CONTACT DETAILS ---\nName: ${formData.submitter_name}\nWhatsApp: ${formData.submitter_whatsapp}`;
@@ -132,10 +126,12 @@ export default function UploadVideoPage() {
         features: ['Video Walkthrough Vetted'],
         structure_type: null,
         title_document: formData.title_document || null,
+        gallery_urls: [finalCoverUrl, finalVideoUrl],
+        video_url: finalVideoUrl,
         created_at: new Date().toISOString()
       };
 
-      // 3. Insert Property into properties table
+      // 3. Insert Property into properties table (single source of truth)
       const { data: propertyInsert, error: propertyError } = await supabase
         .from('properties')
         .insert([propertyPayload])
@@ -143,29 +139,29 @@ export default function UploadVideoPage() {
 
       if (propertyError) throw new Error("Property insert failed: " + propertyError.message);
 
-      // 4. Insert Video URL into property_media table
+      // 4. Sync legacy property_media table quietly in background for full backwards compatibility
       if (propertyInsert && propertyInsert[0]) {
-        const mediaPayload = [
-          {
-            property_id: propertyInsert[0].id,
-            url: finalCoverUrl,
-            is_video: false,
-            display_order: 0
-          },
-          {
-            property_id: propertyInsert[0].id,
-            url: finalVideoUrl,
-            is_video: true,
-            display_order: 1
-          }
-        ];
+        try {
+          const mediaPayload = [
+            {
+              property_id: propertyInsert[0].id,
+              url: finalCoverUrl,
+              is_video: false,
+              display_order: 0
+            },
+            {
+              property_id: propertyInsert[0].id,
+              url: finalVideoUrl,
+              is_video: true,
+              display_order: 1
+            }
+          ];
 
-        const { error: mediaError } = await supabase
-          .from('property_media')
-          .insert(mediaPayload);
-
-        if (mediaError) {
-          console.error("Failed to link video walkthrough to property media registry:", mediaError);
+          await supabase
+            .from('property_media')
+            .insert(mediaPayload);
+        } catch (mediaError) {
+          console.warn("Legacy property_media sync skipped:", mediaError);
         }
       }
 

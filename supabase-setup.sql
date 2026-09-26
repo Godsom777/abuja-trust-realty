@@ -12,6 +12,8 @@ ALTER TABLE properties ADD COLUMN IF NOT EXISTS verified boolean DEFAULT true;
 ALTER TABLE properties ADD COLUMN IF NOT EXISTS featured boolean DEFAULT false;
 ALTER TABLE properties ADD COLUMN IF NOT EXISTS structure_type text;
 ALTER TABLE properties ADD COLUMN IF NOT EXISTS title_document text;
+ALTER TABLE properties ADD COLUMN IF NOT EXISTS gallery_urls text[] DEFAULT '{}';
+ALTER TABLE properties ADD COLUMN IF NOT EXISTS video_url text;
 
 -- 2. Create the 'property_media' table for multiple images/videos
 CREATE TABLE IF NOT EXISTS property_media (
@@ -102,3 +104,23 @@ USING (bucket_id = 'property-media');
 
 -- Ensure bucket is completely public
 UPDATE storage.buckets SET public = true WHERE id = 'property-media';
+
+-- ==========================================
+-- 7. Consolidate & backfill legacy property_media into properties table
+-- ==========================================
+UPDATE properties p
+SET 
+  gallery_urls = COALESCE((
+    SELECT array_agg(pm.url ORDER BY pm.display_order ASC)
+    FROM property_media pm
+    WHERE pm.property_id = p.id AND (pm.is_video IS FALSE OR pm.is_video IS NULL)
+  ), '{}'),
+  video_url = (
+    SELECT pm.url
+    FROM property_media pm
+    WHERE pm.property_id = p.id AND pm.is_video IS TRUE
+    ORDER BY pm.display_order ASC
+    LIMIT 1
+  )
+WHERE p.gallery_urls IS NULL OR cardinality(p.gallery_urls) = 0;
+

@@ -66,18 +66,26 @@ export default async function PropertyDetailPage({ params }) {
 
   // Fetch associated media for slideshow (photos & videos)
   let media = [];
-  try {
-    const { data: mediaData, error: mediaError } = await supabase
-      .from('property_media')
-      .select('*')
-      .eq('property_id', listing.id)
-      .order('display_order', { ascending: true });
-
-    if (mediaData && !mediaError) {
-      media = mediaData.map(m => m.url);
+  if (rawListing.gallery_urls && Array.isArray(rawListing.gallery_urls) && rawListing.gallery_urls.length > 0) {
+    media = [...rawListing.gallery_urls];
+    if (rawListing.video_url && !media.includes(rawListing.video_url)) {
+      media.push(rawListing.video_url);
     }
-  } catch (err) {
-    console.warn("Could not load property media, falling back to cover image.", err);
+  } else {
+    // Fallback for legacy rows still in property_media table
+    try {
+      const { data: mediaData, error: mediaError } = await supabase
+        .from('property_media')
+        .select('*')
+        .eq('property_id', listing.id)
+        .order('display_order', { ascending: true });
+
+      if (mediaData && !mediaError) {
+        media = mediaData.map(m => m.url);
+      }
+    } catch (err) {
+      console.warn("Could not load property media fallback, falling back to cover image.", err);
+    }
   }
 
   // Fallback to cover photo if no gallery media exists

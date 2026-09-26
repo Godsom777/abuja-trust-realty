@@ -84,19 +84,35 @@ export default async function PropertyDetailPage({ params }) {
 
   // 2. Fetch associated media for slideshow
   let media = [];
-  if (property && property.id) {
-    try {
-      const { data, error } = await supabase
-        .from('property_media')
-        .select('*')
-        .eq('property_id', property.id)
-        .order('display_order', { ascending: true });
-
-      if (data && !error) {
-        media = data;
+  if (property) {
+    if (property.gallery_urls && Array.isArray(property.gallery_urls) && property.gallery_urls.length > 0) {
+      // Use consolidated media directly from properties table (0 additional DB queries)
+      const urls = [...property.gallery_urls];
+      if (property.video_url && !urls.includes(property.video_url)) {
+        urls.push(property.video_url);
       }
-    } catch (err) {
-      console.warn("Could not load property media, falling back to cover image.", err);
+      media = urls.map((url, idx) => ({
+        id: `media-${idx}`,
+        property_id: property.id,
+        url: url,
+        is_video: url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.includes('/video/') || url.includes('video'),
+        display_order: idx
+      }));
+    } else if (property.id) {
+      // Fallback for legacy rows that only exist in property_media table
+      try {
+        const { data, error } = await supabase
+          .from('property_media')
+          .select('*')
+          .eq('property_id', property.id)
+          .order('display_order', { ascending: true });
+
+        if (data && !error) {
+          media = data;
+        }
+      } catch (err) {
+        console.warn("Could not load property media fallback, falling back to cover image.", err);
+      }
     }
   }
 

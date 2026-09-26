@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
 import { formatConvertedPrice } from '@/lib/currency';
 import { compressImage } from '@/lib/imageCompression';
+import { uploadMediaFile, isVideoMedia } from '@/lib/mediaUpload';
 import Badge from '@/components/ui/Badge/Badge';
 import slugify from 'slugify';
 import styles from './page.module.css';
@@ -43,6 +44,7 @@ export default function AdminPortal() {
   const [coverLoading, setCoverLoading] = useState(false);
   const [galleryUrls, setGalleryUrls] = useState([]);
   const [galleryLoading, setGalleryLoading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(null);
 
   // Form State for creating a property
   const [formData, setFormData] = useState({
@@ -68,42 +70,32 @@ export default function AdminPortal() {
   const [formSuccessMessage, setFormSuccessMessage] = useState('');
   const [formErrorMessage, setFormErrorMessage] = useState('');
 
-  // Handle Cover Image Upload from Device (with client-side compression & long cache header)
+  // Handle Cover Image Upload from Device (Cloudinary Direct with auto-optimization & Supabase fallback)
   const handleCoverUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     setCoverLoading(true);
+    setUploadProgress({ percent: 0, text: 'Uploading cover image...' });
 
     try {
-      // Compress image client-side before sending to Supabase to save 90% bandwidth/storage
-      const processedFile = await compressImage(file);
-      const fileExt = processedFile.name.split('.').pop() || 'webp';
-      const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
-      const filePath = `cover-${fileName}`;
-
-      const { data, error } = await supabase.storage
-        .from('property-media')
-        .upload(filePath, processedFile, {
-          cacheControl: '31536000, public', // 1 year browser/CDN caching for immutable hashed filenames
-          upsert: false
-        });
-
-      if (error) throw error;
-
-      const { data: publicUrlData } = supabase.storage
-        .from('property-media')
-        .getPublicUrl(filePath);
+      const result = await uploadMediaFile(file, {
+        folder: 'emanon/covers',
+        onProgress: ({ percent }) => {
+          setUploadProgress({ percent, text: `Uploading cover image: ${percent}%` });
+        }
+      });
 
       setFormData(prev => ({
         ...prev,
-        cover_image_url: publicUrlData.publicUrl
+        cover_image_url: result.url
       }));
     } catch (err) {
       console.error("Cover upload error:", err);
       alert("Failed to upload cover image: " + err.message);
     } finally {
       setCoverLoading(false);
+      setUploadProgress(null);
     }
   };
 
@@ -116,27 +108,24 @@ export default function AdminPortal() {
     const uploadedUrls = [];
 
     try {
-      for (const file of files) {
-        // Compress photos before upload; videos pass through safely
-        const processedFile = await compressImage(file);
-        const fileExt = processedFile.name.split('.').pop();
-        const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
-        const filePath = `gallery-${fileName}`;
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        setUploadProgress({
+          percent: 0,
+          text: `Uploading file ${i + 1} of ${files.length}...`
+        });
 
-        const { data, error } = await supabase.storage
-          .from('property-media')
-          .upload(filePath, processedFile, {
-            cacheControl: '31536000, public', // 1 year browser/CDN caching
-            upsert: false
-          });
+        const result = await uploadMediaFile(file, {
+          folder: 'emanon/gallery',
+          onProgress: ({ percent }) => {
+            setUploadProgress({
+              percent,
+              text: `Uploading file ${i + 1} of ${files.length}: ${percent}%`
+            });
+          }
+        });
 
-        if (error) throw error;
-
-        const { data: publicUrlData } = supabase.storage
-          .from('property-media')
-          .getPublicUrl(filePath);
-
-        uploadedUrls.push(publicUrlData.publicUrl);
+        uploadedUrls.push(result.url);
       }
 
       setGalleryUrls(prev => [...prev, ...uploadedUrls]);
@@ -145,6 +134,7 @@ export default function AdminPortal() {
       alert("Failed to upload media files: " + err.message);
     } finally {
       setGalleryLoading(false);
+      setUploadProgress(null);
     }
   };
 
@@ -361,25 +351,34 @@ export default function AdminPortal() {
       title_document: item.title_document || ''
     });
 
-    // Fetch existing gallery media
-    setGalleryLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from('property_media')
-        .select('url')
-        .eq('property_id', item.id)
-        .order('display_order', { ascending: true });
-
-      if (data && !error) {
-        setGalleryUrls(data.map(m => m.url));
-      } else {
-        setGalleryUrls([]);
+    // Load existing gallery media: prefer consolidated gallery_urls column, fallback to property_media table
+    if (item.gallery_urls && Array.isArray(item.gallery_urls) && item.gallery_urls.length > 0) {
+      const urls = [...item.gallery_urls];
+      if (item.video_url && !urls.includes(item.video_url)) {
+        urls.push(item.video_url);
       }
-    } catch (err) {
-      console.error("Failed to load gallery for edit:", err);
-      setGalleryUrls([]);
-    } finally {
+      setGalleryUrls(urls);
       setGalleryLoading(false);
+    } else {
+      setGalleryLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('property_media')
+          .select('url')
+          .eq('property_id', item.id)
+          .order('display_order', { ascending: true });
+
+        if (data && !error && data.length > 0) {
+          setGalleryUrls(data.map(m => m.url));
+        } else {
+          setGalleryUrls([]);
+        }
+      } catch (err) {
+        console.error("Failed to load gallery for edit:", err);
+        setGalleryUrls([]);
+      } finally {
+        setGalleryLoading(false);
+      }
     }
   };
 
@@ -441,6 +440,9 @@ export default function AdminPortal() {
       structureTypeVal = formData.custom_structure_type.trim();
     }
 
+    // Separate primary video from image gallery if present
+    const detectedVideoUrl = galleryUrls.find(url => isVideoMedia(url)) || null;
+
     const dbPayload = {
       title: cleanTitle,
       description: formData.description.trim(),
@@ -455,12 +457,14 @@ export default function AdminPortal() {
       photo: finalCoverUrl,
       features: featuresArray,
       structure_type: structureTypeVal || null,
-      title_document: formData.title_document || null
+      title_document: formData.title_document || null,
+      gallery_urls: galleryUrls,
+      video_url: detectedVideoUrl
     };
 
     try {
       if (editingId) {
-        // UPDATE existing listing
+        // UPDATE existing listing in properties table (single source of truth)
         const { error } = await supabase
           .from('properties')
           .update(dbPayload)
@@ -468,27 +472,27 @@ export default function AdminPortal() {
 
         if (error) throw error;
 
-        // Clear and rebuild associated gallery media to sync changes
-        await supabase
-          .from('property_media')
-          .delete()
-          .eq('property_id', editingId);
-
-        if (galleryUrls.length > 0) {
-          const mediaPayload = galleryUrls.map((url, idx) => ({
-            property_id: editingId,
-            url: url,
-            is_video: url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.includes('/video/') || url.includes('video'),
-            display_order: idx
-          }));
-
-          const { error: mediaError } = await supabase
+        // Sync legacy property_media table quietly in background for full backwards compatibility
+        try {
+          await supabase
             .from('property_media')
-            .insert(mediaPayload);
+            .delete()
+            .eq('property_id', editingId);
 
-          if (mediaError) {
-            console.error("Failed to save property media files to database:", mediaError);
+          if (galleryUrls.length > 0) {
+            const mediaPayload = galleryUrls.map((url, idx) => ({
+              property_id: editingId,
+              url: url,
+              is_video: isVideoMedia(url),
+              display_order: idx
+            }));
+
+            await supabase
+              .from('property_media')
+              .insert(mediaPayload);
           }
+        } catch (syncErr) {
+          console.warn("Legacy property_media sync skipped:", syncErr);
         }
 
         setFormSuccessMessage(`Property Listing successfully updated!`);
@@ -520,21 +524,21 @@ export default function AdminPortal() {
 
         if (error) throw error;
 
-        // If additional media files were uploaded, insert them into property_media table
+        // Sync legacy property_media table quietly in background
         if (data && data[0] && galleryUrls.length > 0) {
-          const mediaPayload = galleryUrls.map((url, idx) => ({
-            property_id: data[0].id,
-            url: url,
-            is_video: url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.mov') || url.includes('/video/') || url.includes('video'),
-            display_order: idx
-          }));
+          try {
+            const mediaPayload = galleryUrls.map((url, idx) => ({
+              property_id: data[0].id,
+              url: url,
+              is_video: isVideoMedia(url),
+              display_order: idx
+            }));
 
-          const { error: mediaError } = await supabase
-            .from('property_media')
-            .insert(mediaPayload);
-
-          if (mediaError) {
-            console.error("Failed to save property media files to database:", mediaError);
+            await supabase
+              .from('property_media')
+              .insert(mediaPayload);
+          } catch (syncErr) {
+            console.warn("Legacy property_media sync skipped:", syncErr);
           }
         }
 
@@ -1062,7 +1066,7 @@ export default function AdminPortal() {
                         />
                         <label htmlFor="cover-upload" className={styles.uploadLabel}>
                           <i className="fa-solid fa-cloud-arrow-up"></i>
-                          {coverLoading ? 'Uploading image...' : 'Choose Cover Image from Device'}
+                          {coverLoading ? (uploadProgress?.text || 'Uploading image...') : 'Choose Cover Image from Device'}
                         </label>
                       </div>
                       
@@ -1109,13 +1113,13 @@ export default function AdminPortal() {
                         />
                         <label htmlFor="gallery-upload" className={styles.uploadLabel}>
                           <i className="fa-solid fa-photo-film"></i>
-                          {galleryLoading ? 'Uploading media...' : 'Upload Photos & Videos from Device'}
+                          {galleryLoading ? (uploadProgress?.text || 'Uploading media...') : 'Upload Photos & Videos from Device'}
                         </label>
                       </div>
                       {galleryUrls.length > 0 && (
                         <div className={styles.mediaPreviewList}>
                           {galleryUrls.map((mediaItem, idx) => {
-                            const isVideo = mediaItem.endsWith('.mp4') || mediaItem.endsWith('.webm') || mediaItem.endsWith('.mov') || mediaItem.includes('video');
+                            const isVideo = isVideoMedia(mediaItem);
                             return (
                               <div key={idx} className={styles.mediaPreviewItem}>
                                 {isVideo ? (
