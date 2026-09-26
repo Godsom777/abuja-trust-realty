@@ -154,7 +154,7 @@ export default function AdminPortal() {
     const inputPass = (passcode || '').trim();
     console.log("Passcode attempt in emanon Admin:", inputPass);
     
-    if (inputPass === '1238' || inputPass === 'admin1238') {
+    if (inputPass === '7890' || inputPass === 'admin7890') {
       setIsAuthenticated(true);
       setAuthError('');
       if (typeof window !== 'undefined') {
