@@ -34,6 +34,7 @@ export default function AdminPortal() {
   // Listings data
   const [listings, setListings] = useState([]);
   const [loadingListings, setLoadingListings] = useState(false);
+  const [listingsError, setListingsError] = useState('');
   const [deleteId, setDeleteId] = useState(null);
 
   // Enquiries data
@@ -189,13 +190,17 @@ export default function AdminPortal() {
   // Fetch Listings
   const fetchListings = async () => {
     setLoadingListings(true);
+    setListingsError('');
     try {
       const { data, error } = await supabase
         .from('properties')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (data && !error) {
+      if (error) {
+        console.error("fetchListings error:", error);
+        setListingsError(error.message || 'Failed to fetch properties from database.');
+      } else if (data) {
         // Map database fields to ensure safe client rendering
         const mapped = data.map(item => ({
           ...item,
@@ -206,6 +211,7 @@ export default function AdminPortal() {
       }
     } catch (err) {
       console.error(err);
+      setListingsError(err.message || 'An unexpected error occurred while fetching properties.');
     }
     setLoadingListings(false);
   };
@@ -761,6 +767,30 @@ export default function AdminPortal() {
                 <h2 className={styles.sectionTitle}>Property Registry</h2>
                 <span className={styles.counter}>{listings.length} Listings Total</span>
               </div>
+
+              {listingsError && (
+                <div style={{
+                  background: '#FEF2F2',
+                  border: '1px solid #FCA5A5',
+                  color: '#991B1B',
+                  padding: '16px 20px',
+                  borderRadius: '10px',
+                  marginBottom: '20px',
+                  fontSize: '0.92rem',
+                  lineHeight: '1.5'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '700', marginBottom: '6px' }}>
+                    <i className="fa-solid fa-triangle-exclamation"></i>
+                    <span>Database Connection Alert:</span>
+                  </div>
+                  <p style={{ margin: '0 0 8px 0' }}>{listingsError}</p>
+                  {listingsError.includes('egress') && (
+                    <div style={{ background: '#fff', padding: '10px 14px', borderRadius: '6px', border: '1px solid #FECACA' }}>
+                      <strong>How to restore:</strong> Go to your <a href="https://supabase.com/dashboard/project/zhhzyomdckpqnlzdqvmq/settings/billing/usage" target="_blank" rel="noopener noreferrer" style={{ color: '#DC2626', textDecoration: 'underline', fontWeight: 'bold' }}>Supabase Billing & Usage Dashboard</a> to lift the spend cap restriction.
+                    </div>
+                  )}
+                </div>
+              )}
 
               {loadingListings ? (
                 <div className={styles.loader}>
