@@ -1,7 +1,9 @@
+import { Suspense } from "react";
 import { supabase } from "@/lib/supabase";
 import HomeClient from "@/components/home/HomeClient";
 
-export const revalidate = 120; // 2-minute ISR caching to drastically cut Supabase egress
+export const revalidate = 0; // Disable static caching so it always fetches fresh data from Supabase
+export const dynamic = 'force-dynamic';
 
 const FALLBACK_DISTRICTS = [
   "Maitama", "Asokoro", "Wuse", "Wuse 2", "Garki", "Garki 2", "Jabi", "Gwarinpa", "Apo", 
@@ -11,16 +13,18 @@ const FALLBACK_DISTRICTS = [
 ].sort();
 
 export default async function HomePage() {
-  // 1. Fetch properties from Supabase (lean column selection)
+  // 1. Fetch properties from Supabase
   let listings = [];
   try {
     const { data, error } = await supabase
       .from('properties')
-      .select('id, title, slug, price_ngn, transaction_type, property_type, size_sqm, bedrooms, status, cover_image_url, photo, district, location_area, location_city, description, features, created_at')
+      .select('*')
       .neq('status', 'pending')
       .order('created_at', { ascending: false });
       
-    if (data && !error) {
+    if (error) {
+      console.error("Supabase properties query error:", error);
+    } else if (data) {
       // Map both case systems to ensure maximum runtime safety
       listings = data.map(item => ({
         ...item,
@@ -28,7 +32,7 @@ export default async function HomePage() {
         transaction_type: item.transaction_type || item.transactionType || 'sale',
         property_type: item.property_type || item.propertyType || 'residential',
         size_sqm: item.size_sqm || item.sizeSqm || 0,
-        cover_image_url: item.cover_image_url || item.photo || null,
+        cover_image_url: item.photo || item.cover_image_url || null,
         location_area: item.district || item.location_area || 'Abuja',
         location_city: item.location_city || 'Abuja'
       }));
@@ -63,9 +67,11 @@ export default async function HomePage() {
 
   // 3. Render client wrapper
   return (
-    <HomeClient
-      initialListings={listings}
-      initialDistricts={districts}
-    />
+    <Suspense fallback={null}>
+      <HomeClient
+        initialListings={listings}
+        initialDistricts={districts}
+      />
+    </Suspense>
   );
 }

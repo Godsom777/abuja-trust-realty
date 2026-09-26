@@ -1,7 +1,8 @@
 import { supabase } from "@/lib/supabase";
 import AbujaBrowseClient from "./AbujaBrowseClient";
 
-export const revalidate = 120; // 2-minute ISR caching to drastically reduce Supabase DB egress
+export const revalidate = 0; // Disable static caching so it always fetches fresh data from Supabase
+export const dynamic = 'force-dynamic';
 
 const FALLBACK_DISTRICTS = [
   "Maitama", "Asokoro", "Wuse", "Wuse 2", "Garki", "Garki 2", "Jabi", "Gwarinpa", "Apo", 
@@ -20,11 +21,13 @@ export default async function BrowseListingsPage() {
   try {
     const { data: properties, error } = await supabase
       .from('properties')
-      .select('id, title, slug, price_ngn, transaction_type, property_type, size_sqm, bedrooms, status, photo, cover_image_url, district, location_area, location_city, verified, created_at')
+      .select('*')
       .neq('status', 'pending')
       .order('created_at', { ascending: false });
 
-    if (properties && !error) {
+    if (error) {
+      console.error("Error fetching properties for /abuja from Supabase:", error);
+    } else if (properties) {
       listings = properties.map((item) => ({
         ...item,
         priceNgn: item.price_ngn || item.priceNgn,

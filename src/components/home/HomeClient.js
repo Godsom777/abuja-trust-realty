@@ -1,11 +1,22 @@
 "use client";
 
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useMemo, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAppStore } from '@/store/useAppStore';
 import PropertyGrid from '../property/PropertyGrid/PropertyGrid';
 import WhatsAppFAB from '../property/WhatsAppFAB/WhatsAppFAB';
 import styles from './HomeClient.module.css';
+
+function SearchParamsHandler({ onFilterChange }) {
+  const searchParams = useSearchParams();
+  const filter = searchParams ? searchParams.get('filter') : null;
+
+  useEffect(() => {
+    onFilterChange(filter);
+  }, [filter, onFilterChange]);
+
+  return null;
+}
 
 // Districts to scroll in the marquee strip
 const MARQUEE_DISTRICTS = [
@@ -63,8 +74,7 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
   const [selectedDistrict, setSelectedDistrict] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
 
-  const searchParams = useSearchParams();
-  const filter = searchParams ? searchParams.get('filter') : null;
+  const [filter, setFilter] = useState(null);
 
   // Animated counters
   const { count: propCount, ref: propRef } = useCountUp(120);
@@ -146,6 +156,9 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
 
   return (
     <div className={styles.container}>
+      <Suspense fallback={null}>
+        <SearchParamsHandler onFilterChange={setFilter} />
+      </Suspense>
 
       {/* ── Editorial Hero Block with staggered entry animations ── */}
       <section className={styles.hero}>

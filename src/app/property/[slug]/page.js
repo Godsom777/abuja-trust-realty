@@ -2,7 +2,8 @@ import { supabase } from "@/lib/supabase";
 import PropertyDetailClient from "@/components/property/PropertyDetailClient";
 import { formatConvertedPrice } from "@/lib/currency";
 
-export const revalidate = 120; // 2-minute ISR caching for detail pages to minimize Supabase egress
+export const revalidate = 0; // Disable static caching so it always fetches fresh data from Supabase
+export const dynamic = 'force-dynamic';
 
 // Dynamic SEO Metadata Generation
 export async function generateMetadata({ params }) {
@@ -12,18 +13,20 @@ export async function generateMetadata({ params }) {
   try {
     const { data: property } = await supabase
       .from('properties')
-      .select('id, title, slug, location_area, price_ngn, description, cover_image_url, status')
+      .select('*')
       .eq('slug', slug)
       .single();
 
     if (property && property.status !== 'pending') {
-      const title = `${property.title} — Verified Property in ${property.location_area}, Abuja`;
+      const area = property.district || property.location_area || 'Abuja';
+      const title = `${property.title} — Verified Property in ${area}, Abuja`;
       const priceStr = property.price_ngn 
         ? formatConvertedPrice(property.price_ngn, 'ngn', false) 
         : 'Price on Enquiry';
       const desc = property.description 
         ? property.description.substring(0, 150) + "..." 
         : `Verified property in Abuja. Price: ${priceStr}. Direct owner contact verified.`;
+      const coverUrl = property.photo || property.cover_image_url || null;
 
       return {
         title: title,
@@ -31,7 +34,7 @@ export async function generateMetadata({ params }) {
         openGraph: {
           title: title,
           description: desc,
-          images: property.cover_image_url ? [{ url: property.cover_image_url }] : [],
+          images: coverUrl ? [{ url: coverUrl }] : [],
         }
       };
     }
@@ -68,7 +71,7 @@ export default async function PropertyDetailPage({ params }) {
           transaction_type: data.transaction_type || data.transactionType || 'sale',
           property_type: data.property_type || data.propertyType || 'residential',
           size_sqm: data.size_sqm || data.sizeSqm || 0,
-          cover_image_url: data.cover_image_url || data.photo || null,
+          cover_image_url: data.photo || data.cover_image_url || null,
           location_area: data.district || data.location_area || 'Abuja',
           location_city: data.location_city || 'Abuja',
           structure_type: data.structure_type || null
