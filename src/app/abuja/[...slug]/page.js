@@ -94,7 +94,7 @@ export default async function PropertyDetailPage({ params }) {
   const transLabel = TRANSACTION_LABELS[listing.transactionType] || listing.transactionType;
   const dealRef = `EMN-2026-${listing.id.toString().padStart(4, "0")}`;
   const waMessage = encodeURIComponent(
-    `Hello emanon,\nI am interested in this property:\n*${listing.title}*\nRef: ${dealRef}\nLink: https://emanon.com${listing.slug}`
+    `Hello emanon,\nI am interested in this property:\n*${listing.title}*\nRef: ${dealRef}\nLink: https://emanon.com/property/${listing.slug}`
   );
   
   const phone = getWhatsAppNumber();
