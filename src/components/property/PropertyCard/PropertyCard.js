@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { formatConvertedPrice } from '@/lib/currency';
 import { useAppStore } from '@/store/useAppStore';
+import { getStateShortName } from '@/lib/locations';
 import styles from './PropertyCard.module.css';
 
 const TRANSACTION_LABELS = {
@@ -85,6 +86,7 @@ export default function PropertyCard({ property, viewMode = 'list' }) {
   };
 
   const area = location_area || property.district || 'Abuja';
+  const stateLabel = property.location_state ? getStateShortName(property.location_state) : getStateShortName(area);
 
   return (
     <Link
@@ -147,7 +149,7 @@ export default function PropertyCard({ property, viewMode = 'list' }) {
           <div className={styles.metaRow}>
             <span className={styles.location}>
               <i className="fa-solid fa-location-dot"></i>
-              {area}
+              {area ? `${area}, ${stateLabel}` : stateLabel}
             </span>
             <div className={styles.specs}>
               {bedrooms != null && (

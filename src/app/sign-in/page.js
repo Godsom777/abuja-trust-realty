@@ -36,7 +36,7 @@ export default function SignInPage() {
           <h2 className={styles.brandTitle}>
             Your trusted gateway to
             <br />
-            Abuja real estate
+            prime Nigerian real estate
           </h2>
           <div className={styles.brandFeatures}>
             <div className={styles.brandFeature}>

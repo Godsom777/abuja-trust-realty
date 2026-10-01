@@ -2,6 +2,12 @@
 
 import { useState, useMemo } from "react";
 import PropertyCard from "@/components/PropertyCard/PropertyCard";
+import { 
+  SUPPORTED_STATES, 
+  ALL_LOCALITIES, 
+  getStateForLocality, 
+  getLocalitiesForState 
+} from "@/lib/locations";
 import styles from "./page.module.css";
 
 const TRANSACTION_TYPES = [
@@ -21,32 +27,49 @@ const PROPERTY_TYPES = [
 
 export default function AbujaBrowseClient({ initialListings = [], initialDistricts = [] }) {
   const [allListings] = useState(initialListings);
-  const [districts] = useState(initialDistricts);
 
-  const [district, setDistrict] = useState("All Districts");
+  const [selectedState, setSelectedState] = useState("all");
+  const [district, setDistrict] = useState("All Localities");
   const [transactionType, setTransactionType] = useState("all");
   const [propertyType, setPropertyType] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   const activeFilterCount = [
-    district !== "All Districts",
+    selectedState !== "all",
+    district !== "All Localities" && district !== "All Districts",
     transactionType !== "all",
     propertyType !== "all",
   ].filter(Boolean).length;
 
+  const availableLocalities = useMemo(() => {
+    if (selectedState === 'all') {
+      return ["All Localities", ...ALL_LOCALITIES];
+    }
+    return ["All Localities", ...getLocalitiesForState(selectedState)];
+  }, [selectedState]);
+
   const filtered = useMemo(() => {
     let results = [...allListings];
-    if (district !== "All Districts") results = results.filter((l) => l.district === district);
+    if (selectedState !== "all") {
+      results = results.filter((l) => {
+        const itemState = l.location_state || getStateForLocality(l.district || l.location_area);
+        return itemState.toLowerCase() === selectedState.toLowerCase();
+      });
+    }
+    if (district !== "All Localities" && district !== "All Districts") {
+      results = results.filter((l) => (l.district || l.location_area) === district);
+    }
     if (transactionType !== "all") results = results.filter((l) => l.transactionType === transactionType);
     if (propertyType !== "all") results = results.filter((l) => l.propertyType === propertyType);
     if (sortBy === "price-low") results.sort((a, b) => (a.priceNgn || 0) - (b.priceNgn || 0));
     else if (sortBy === "price-high") results.sort((a, b) => (b.priceNgn || 0) - (a.priceNgn || 0));
     return results;
-  }, [allListings, district, transactionType, propertyType, sortBy]);
+  }, [allListings, selectedState, district, transactionType, propertyType, sortBy]);
 
   const resetFilters = () => {
-    setDistrict("All Districts");
+    setSelectedState("all");
+    setDistrict("All Localities");
     setTransactionType("all");
     setPropertyType("all");
   };
@@ -54,10 +77,31 @@ export default function AbujaBrowseClient({ initialListings = [], initialDistric
   const FilterControls = () => (
     <div className={styles.filters}>
       <div className={styles.filterGroup}>
-        <label className={styles.filterLabel}>District</label>
-        <select value={district} onChange={(e) => setDistrict(e.target.value)}
-          className={styles.filterSelect}>
-          {districts.map((d) => <option key={d} value={d}>{d}</option>)}
+        <label className={styles.filterLabel}>State</label>
+        <select
+          value={selectedState}
+          onChange={(e) => {
+            setSelectedState(e.target.value);
+            setDistrict("All Localities");
+          }}
+          className={styles.filterSelect}
+        >
+          <option value="all">All States</option>
+          {SUPPORTED_STATES.map((st) => (
+            <option key={st.id} value={st.name}>{st.name}</option>
+          ))}
+        </select>
+      </div>
+      <div className={styles.filterGroup}>
+        <label className={styles.filterLabel}>Locality / District</label>
+        <select
+          value={district}
+          onChange={(e) => setDistrict(e.target.value)}
+          className={styles.filterSelect}
+        >
+          {availableLocalities.map((d) => (
+            <option key={d} value={d}>{d}</option>
+          ))}
         </select>
       </div>
       <div className={styles.filterGroup}>

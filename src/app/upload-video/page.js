@@ -4,14 +4,17 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { uploadMediaFile } from '@/lib/mediaUpload';
+import { 
+  SUPPORTED_STATES, 
+  DEFAULT_STATE, 
+  getStateForLocality, 
+  getLocalitiesForState, 
+  getStateShortName, 
+  ALL_LOCALITIES 
+} from '@/lib/locations';
 import styles from './upload-video.module.css';
 
-const DEFAULT_DISTRICTS = [
-  "Maitama", "Asokoro", "Wuse", "Wuse 2", "Garki", "Garki 2", "Jabi", "Gwarinpa", "Apo", 
-  "Life Camp", "Lugbe", "Guzape", "Katampe", "Katampe Extension", "Mabushi", "Utako", 
-  "Wuye", "Central Business District", "Lokogoma", "Galadimawa", "Kaura", "Durumi", 
-  "Kubwa", "Kuje", "Gwagwalada", "Bwari", "Karsana", "Karmo", "Idu", "Karu", "Nyanya", "Jikwoyi"
-].sort();
+const DEFAULT_DISTRICTS = ALL_LOCALITIES;
 
 const slugify = (text) => {
   return text
@@ -28,7 +31,8 @@ export default function UploadVideoPage() {
     submitter_name: '',
     submitter_whatsapp: '',
     title: '',
-    location_area: DEFAULT_DISTRICTS[0],
+    location_state: 'Abuja (FCT)',
+    location_area: 'Maitama',
     price_ngn: '',
     bedrooms: '',
     size_sqm: '',
@@ -48,7 +52,23 @@ export default function UploadVideoPage() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    if (name === 'location_state') {
+      const locs = getLocalitiesForState(value);
+      setFormData(prev => ({
+        ...prev,
+        location_state: value,
+        location_area: locs[0] || ''
+      }));
+    } else if (name === 'location_area') {
+      const detectedState = getStateForLocality(value);
+      setFormData(prev => ({
+        ...prev,
+        location_area: value,
+        location_state: detectedState
+      }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleVideoSelect = (e) => {
@@ -273,7 +293,20 @@ export default function UploadVideoPage() {
 
             <div className={styles.formRow}>
               <div className={styles.formGroup}>
-                <label className={styles.label}>District Location</label>
+                <label className={styles.label}>State</label>
+                <select
+                  name="location_state"
+                  value={formData.location_state}
+                  onChange={handleInputChange}
+                  className={styles.select}
+                  disabled={loading}
+                >
+                  {SUPPORTED_STATES.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
+                </select>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Locality / District</label>
                 <select
                   name="location_area"
                   value={formData.location_area}
@@ -281,23 +314,23 @@ export default function UploadVideoPage() {
                   className={styles.select}
                   disabled={loading}
                 >
-                  {DEFAULT_DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
+                  {getLocalitiesForState(formData.location_state).map(d => <option key={d} value={d}>{d}</option>)}
                 </select>
               </div>
+            </div>
 
-              <div className={styles.formGroup}>
-                <label className={styles.label}>Price (NGN ₦)</label>
-                <input
-                  type="text"
-                  name="price_ngn"
-                  required
-                  placeholder="e.g. 150,000,000"
-                  value={formData.price_ngn}
-                  onChange={handleInputChange}
-                  className={styles.input}
-                  disabled={loading}
-                />
-              </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Price (NGN ₦)</label>
+              <input
+                type="text"
+                name="price_ngn"
+                required
+                placeholder="e.g. 150,000,000"
+                value={formData.price_ngn}
+                onChange={handleInputChange}
+                className={styles.input}
+                disabled={loading}
+              />
             </div>
 
             <div className={styles.formRow}>

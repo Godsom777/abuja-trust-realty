@@ -9,13 +9,16 @@ import { uploadMediaFile, isVideoMedia } from '@/lib/mediaUpload';
 import Badge from '@/components/ui/Badge/Badge';
 import slugify from 'slugify';
 import styles from './page.module.css';
+import { 
+  SUPPORTED_STATES, 
+  DEFAULT_STATE, 
+  getStateForLocality, 
+  getLocalitiesForState, 
+  getStateShortName, 
+  ALL_LOCALITIES 
+} from '@/lib/locations';
 
-const DEFAULT_DISTRICTS = [
-  "Maitama", "Asokoro", "Wuse", "Wuse 2", "Garki", "Garki 2", "Jabi", "Gwarinpa", "Apo", 
-  "Life Camp", "Lugbe", "Guzape", "Katampe", "Katampe Extension", "Mabushi", "Utako", 
-  "Wuye", "Central Business District", "Lokogoma", "Galadimawa", "Kaura", "Durumi", 
-  "Kubwa", "Kuje", "Gwagwalada", "Bwari", "Karsana", "Karmo", "Idu", "Karu", "Nyanya", "Jikwoyi"
-].sort();
+const DEFAULT_DISTRICTS = ALL_LOCALITIES;
 
 // Presets of stunning architectural houses to seed testing easily!
 const COVER_IMAGE_PRESETS = [
@@ -51,6 +54,7 @@ export default function AdminPortal() {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
+    location_state: 'Abuja (FCT)',
     location_area: 'Maitama',
     location_city: 'Abuja',
     price_ngn: '',
@@ -202,11 +206,17 @@ export default function AdminPortal() {
         setListingsError(error.message || 'Failed to fetch properties from database.');
       } else if (data) {
         // Map database fields to ensure safe client rendering
-        const mapped = data.map(item => ({
-          ...item,
-          cover_image_url: item.photo || item.cover_image_url || null,
-          location_area: item.district || item.location_area || 'Abuja'
-        }));
+        const mapped = data.map(item => {
+          const area = item.district || item.location_area || 'Abuja';
+          const state = item.state || getStateForLocality(area);
+          return {
+            ...item,
+            cover_image_url: item.photo || item.cover_image_url || null,
+            location_area: area,
+            location_state: state,
+            location_city: item.location_city || getStateShortName(state)
+          };
+        });
         setListings(mapped);
       }
     } catch (err) {
@@ -257,7 +267,23 @@ export default function AdminPortal() {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     
-    if (name === 'size_sqm') {
+    if (name === 'location_state') {
+      const locs = getLocalitiesForState(value);
+      setFormData(prev => ({
+        ...prev,
+        location_state: value,
+        location_area: locs[0] || '',
+        location_city: getStateShortName(value)
+      }));
+    } else if (name === 'location_area') {
+      const detectedState = getStateForLocality(value);
+      setFormData(prev => ({
+        ...prev,
+        location_area: value,
+        location_state: detectedState,
+        location_city: getStateShortName(detectedState)
+      }));
+    } else if (name === 'size_sqm') {
       const parsed = parseFloat(value);
       const hectaresVal = !isNaN(parsed) && parsed > 0 ? (parsed / 10000).toString() : '';
       setFormData(prev => ({
@@ -337,12 +363,17 @@ export default function AdminPortal() {
     
     const isStandard = !item.structure_type || standardTypes.includes(item.structure_type);
 
+    const area = item.district || item.location_area || 'Maitama';
+    const state = item.state || item.location_state || getStateForLocality(area);
+    const city = item.location_city || getStateShortName(state);
+
     // Load listing core fields into formData
     setFormData({
       title: item.title || '',
       description: item.description || '',
-      location_area: item.district || item.location_area || 'Maitama',
-      location_city: item.location_city || 'Abuja',
+      location_state: state,
+      location_area: area,
+      location_city: city,
       price_ngn: item.price_ngn || '',
       bedrooms: item.bedrooms || '',
       size_sqm: item.size_sqm || '',
@@ -394,6 +425,7 @@ export default function AdminPortal() {
     setFormData({
       title: '',
       description: '',
+      location_state: 'Abuja (FCT)',
       location_area: 'Maitama',
       location_city: 'Abuja',
       price_ngn: '',
@@ -824,7 +856,7 @@ export default function AdminPortal() {
                       <div className={styles.rowInfo}>
                         <h4 className={styles.rowTitle}>{item.title}</h4>
                         <p className={styles.rowSpecs}>
-                          {item.location_area} · {formatConvertedPrice(item.price_ngn, 'ngn')} · {item.bedrooms || 0} Bed{item.structure_type ? ` · ${item.structure_type}` : ''}
+                          {item.location_area}, {item.location_state || getStateForLocality(item.location_area)} · {formatConvertedPrice(item.price_ngn, 'ngn')} · {item.bedrooms || 0} Bed{item.structure_type ? ` · ${item.structure_type}` : ''}
                         </p>
                       </div>
 
@@ -932,16 +964,30 @@ export default function AdminPortal() {
                         />
                         <small className={styles.inputHelper}>Calculates to: {formData.price_ngn ? formatConvertedPrice(formData.price_ngn, 'usd') : '$0'} USD / {formData.price_ngn ? formatConvertedPrice(formData.price_ngn, 'gbp') : '£0'} GBP</small>
                       </div>
+                    </div>
+
+                    <div className={styles.formRow}>
+                      <div className={styles.formGroup}>
+                        <label className={styles.label}>State</label>
+                        <select
+                          name="location_state"
+                          value={formData.location_state}
+                          onChange={handleInputChange}
+                          className={styles.select}
+                        >
+                          {SUPPORTED_STATES.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
+                        </select>
+                      </div>
 
                       <div className={styles.formGroup}>
-                        <label className={styles.label}>Abuja District</label>
+                        <label className={styles.label}>Locality / District</label>
                         <select
                           name="location_area"
                           value={formData.location_area}
                           onChange={handleInputChange}
                           className={styles.select}
                         >
-                          {DEFAULT_DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
+                          {getLocalitiesForState(formData.location_state).map(d => <option key={d} value={d}>{d}</option>)}
                         </select>
                       </div>
                     </div>

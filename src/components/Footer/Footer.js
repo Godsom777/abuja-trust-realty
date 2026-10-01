@@ -4,12 +4,11 @@ import styles from "./Footer.module.css";
 
 const FOOTER_LINKS = {
   "Browse": [
-    { href: "/abuja", label: "All Listings" },
-    { href: "/abuja/maitama", label: "Maitama" },
-    { href: "/abuja/asokoro", label: "Asokoro" },
-    { href: "/abuja/gwarinpa", label: "Gwarinpa" },
-    { href: "/abuja/wuse-2", label: "Wuse 2" },
-    { href: "/abuja/jabi", label: "Jabi" },
+    { href: "/", label: "All Listings" },
+    { href: "/?state=Abuja+(FCT)", label: "Abuja (FCT)" },
+    { href: "/?state=Lagos+State", label: "Lagos State" },
+    { href: "/?state=Imo+State", label: "Imo State" },
+    { href: "/?state=Enugu+State", label: "Enugu State" },
   ],
   "Property Types": [
     { href: "/abuja/for-sale", label: "For Sale" },
@@ -38,7 +37,7 @@ export default function Footer() {
         <div className="container">
           <div className={styles.ctaInner}>
             <div className={styles.ctaText}>
-              <h3>Own property in Abuja?</h3>
+              <h3>Own property in Abuja, Lagos, Imo, or Enugu?</h3>
               <p>List with us and reach verified buyers everywhere who are ready to invest.</p>
             </div>
             <Link href="/owner/listings/new" className="btn btn-gold btn-lg" id="footer-cta-list">

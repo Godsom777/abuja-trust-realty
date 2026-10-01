@@ -575,16 +575,18 @@
   }
 
   .filtersSection {
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
+    gap: 12px;
   }
 
   .chipsRow {
-    flex: 1;
+    flex: 1 1 auto;
     margin-bottom: 0;
   }
 
   .selectWrap {
-    flex: 0 0 auto;
-    width: 220px;
+    flex: 0 1 auto;
+    min-width: 190px;
   }
 }
+

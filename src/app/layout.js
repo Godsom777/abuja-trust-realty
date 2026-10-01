@@ -4,13 +4,18 @@ import LayoutWrapper from "@/components/layout/LayoutWrapper";
 
 export const metadata = {
   title: "emanon. | Vetted Properties Direct from Owners",
-  description: "A premium, direct property showcase for buyers everywhere. Fully verified property listings in Maitama, Asokoro, Wuse, and across Abuja directly from vetted owners.",
+  description: "A premium, direct property showcase for buyers everywhere. Fully verified property listings in Abuja, Lagos, Imo, and Enugu directly from vetted owners.",
   keywords: [
+    "Nigeria real estate",
     "Abuja real estate",
+    "Lagos properties",
+    "Imo real estate",
+    "Enugu properties",
     "buy property Abuja",
-    "vetted property listings Abuja",
+    "buy property Lagos",
+    "vetted property listings Nigeria",
     "global property investment Nigeria",
-    "direct owner properties Abuja"
+    "direct owner properties Nigeria"
   ],
   manifest: "/manifest.json",
   icons: {
@@ -26,8 +31,8 @@ export const metadata = {
     shortcut: "/favicon.ico",
   },
   openGraph: {
-    title: "emanon — Verified Abuja Real Estate",
-    description: "Discover curated real estate in Abuja, directly from vetted individual owners. Vetted by our team, trusted by Nigerians abroad.",
+    title: "emanon — Verified Real Estate in Abuja, Lagos, Imo & Enugu",
+    description: "Discover curated real estate in Abuja, Lagos, Imo, and Enugu directly from vetted individual owners. Vetted by our team, trusted by Nigerians abroad.",
     type: "website",
     locale: "en_NG",
   }

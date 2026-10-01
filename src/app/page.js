@@ -1,16 +1,10 @@
 import { Suspense } from "react";
 import { supabase } from "@/lib/supabase";
 import HomeClient from "@/components/home/HomeClient";
+import { ALL_LOCALITIES, getStateForLocality, getStateShortName } from "@/lib/locations";
 
 export const revalidate = 0; // Disable static caching so it always fetches fresh data from Supabase
 export const dynamic = 'force-dynamic';
-
-const FALLBACK_DISTRICTS = [
-  "Maitama", "Asokoro", "Wuse", "Wuse 2", "Garki", "Garki 2", "Jabi", "Gwarinpa", "Apo", 
-  "Life Camp", "Lugbe", "Guzape", "Katampe", "Katampe Extension", "Mabushi", "Utako", 
-  "Wuye", "Central Business District", "Lokogoma", "Galadimawa", "Kaura", "Durumi", 
-  "Kubwa", "Kuje", "Gwagwalada", "Bwari", "Karsana", "Karmo", "Idu", "Karu", "Nyanya", "Jikwoyi"
-].sort();
 
 export default async function HomePage() {
   // 1. Fetch properties from Supabase
@@ -26,23 +20,30 @@ export default async function HomePage() {
       console.error("Supabase properties query error:", error);
     } else if (data) {
       // Map both case systems to ensure maximum runtime safety
-      listings = data.map(item => ({
-        ...item,
-        price_ngn: item.price_ngn || item.priceNgn || 0,
-        transaction_type: item.transaction_type || item.transactionType || 'sale',
-        property_type: item.property_type || item.propertyType || 'residential',
-        size_sqm: item.size_sqm || item.sizeSqm || 0,
-        cover_image_url: item.photo || item.cover_image_url || null,
-        location_area: item.district || item.location_area || 'Abuja',
-        location_city: item.location_city || 'Abuja'
-      }));
+      listings = data.map(item => {
+        const area = item.district || item.location_area || 'Abuja';
+        const state = item.state || getStateForLocality(area);
+        const city = item.location_city || getStateShortName(state);
+
+        return {
+          ...item,
+          price_ngn: item.price_ngn || item.priceNgn || 0,
+          transaction_type: item.transaction_type || item.transactionType || 'sale',
+          property_type: item.property_type || item.propertyType || 'residential',
+          size_sqm: item.size_sqm || item.sizeSqm || 0,
+          cover_image_url: item.photo || item.cover_image_url || null,
+          location_area: area,
+          location_city: city,
+          location_state: state,
+        };
+      });
     }
   } catch (err) {
     console.error("Error fetching properties from Supabase:", err);
   }
 
-  // 2. Fetch active districts from Supabase
-  let districts = [...FALLBACK_DISTRICTS];
+  // 2. Fetch active districts from Supabase or fallback to all localities
+  let districts = [...ALL_LOCALITIES];
   try {
     const { data, error } = await supabase
       .from('districts')
@@ -52,17 +53,9 @@ export default async function HomePage() {
 
     if (data && data.length > 0 && !error) {
       districts = data.map(d => d.name);
-    } else {
-      // If districts table doesn't have is_active or is empty, try direct select
-      const { data: fallbackData } = await supabase
-        .from('districts')
-        .select('name');
-      if (fallbackData && fallbackData.length > 0) {
-        districts = fallbackData.map(d => d.name);
-      }
     }
   } catch (err) {
-    console.warn("Districts query failed. Using hardcoded districts fallback.", err);
+    console.warn("Districts query failed. Using all localities fallback.", err);
   }
 
   // 3. Render client wrapper

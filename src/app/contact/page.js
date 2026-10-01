@@ -60,7 +60,7 @@ export default function ContactPage() {
           <div className={styles.success}>
             <i className="fa-solid fa-circle-check"></i>
             <h4>Message Transmitted</h4>
-            <p>Your enquiry has been successfully logged. Our Abuja team will contact you back within 24 hours.</p>
+            <p>Your enquiry has been successfully logged. Our team will contact you back within 24 hours.</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className={styles.form}>

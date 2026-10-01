@@ -1,6 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import PropertyDetailClient from "@/components/property/PropertyDetailClient";
 import { formatConvertedPrice } from "@/lib/currency";
+import { getStateForLocality, getStateShortName } from "@/lib/locations";
 
 export const revalidate = 0; // Disable static caching so it always fetches fresh data from Supabase
 export const dynamic = 'force-dynamic';
@@ -19,13 +20,14 @@ export async function generateMetadata({ params }) {
 
     if (property && property.status !== 'pending') {
       const area = property.district || property.location_area || 'Abuja';
-      const title = `${property.title} — Verified Property in ${area}, Abuja`;
+      const state = property.state || getStateForLocality(area);
+      const title = `${property.title} — Verified Property in ${area}, ${state}`;
       const priceStr = property.price_ngn 
         ? formatConvertedPrice(property.price_ngn, 'ngn', false) 
         : 'Price on Enquiry';
       const desc = property.description 
         ? property.description.substring(0, 150) + "..." 
-        : `Verified property in Abuja. Price: ${priceStr}. Direct owner contact verified.`;
+        : `Verified property in ${area}, ${state}. Price: ${priceStr}. Direct owner contact verified.`;
       const coverUrl = property.photo || property.cover_image_url || null;
 
       return {
@@ -44,7 +46,7 @@ export async function generateMetadata({ params }) {
 
   return {
     title: "Verified Listing — emanon",
-    description: "Verified direct-to-owner property showcase in Abuja, Nigeria."
+    description: "Verified direct-to-owner property showcase in Nigeria."
   };
 }
 
@@ -65,6 +67,10 @@ export default async function PropertyDetailPage({ params }) {
       if (data.status === 'pending') {
         property = null;
       } else {
+        const area = data.district || data.location_area || 'Abuja';
+        const state = data.state || getStateForLocality(area);
+        const city = data.location_city || getStateShortName(state);
+
         property = {
           ...data,
           price_ngn: data.price_ngn || data.priceNgn || 0,
@@ -72,8 +78,9 @@ export default async function PropertyDetailPage({ params }) {
           property_type: data.property_type || data.propertyType || 'residential',
           size_sqm: data.size_sqm || data.sizeSqm || 0,
           cover_image_url: data.photo || data.cover_image_url || null,
-          location_area: data.district || data.location_area || 'Abuja',
-          location_city: data.location_city || 'Abuja',
+          location_area: area,
+          location_state: state,
+          location_city: city,
           structure_type: data.structure_type || null
         };
       }

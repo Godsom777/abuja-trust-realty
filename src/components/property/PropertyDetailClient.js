@@ -185,7 +185,7 @@ export default function PropertyDetailClient({ property, media = [] }) {
                 width="100%" 
                 height="250" 
                 style={{ border: 0, display: "block" }}
-                src={`https://maps.google.com/maps?q=${encodeURIComponent((location_area || 'Abuja') + ', Abuja, Nigeria')}&t=&z=13&ie=UTF8&iwloc=&output=embed`}
+                src={`https://maps.google.com/maps?q=${encodeURIComponent((location_area ? location_area + ', ' : '') + (location_city || 'Nigeria') + ', Nigeria')}&t=&z=13&ie=UTF8&iwloc=&output=embed`}
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"

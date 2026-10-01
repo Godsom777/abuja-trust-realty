@@ -8,6 +8,7 @@ ALTER TABLE properties ADD COLUMN IF NOT EXISTS status text DEFAULT 'available';
 ALTER TABLE properties ADD COLUMN IF NOT EXISTS features text[] DEFAULT '{}';
 ALTER TABLE properties ADD COLUMN IF NOT EXISTS photo text;
 ALTER TABLE properties ADD COLUMN IF NOT EXISTS district text;
+ALTER TABLE properties ADD COLUMN IF NOT EXISTS state text DEFAULT 'Abuja';
 ALTER TABLE properties ADD COLUMN IF NOT EXISTS verified boolean DEFAULT true;
 ALTER TABLE properties ADD COLUMN IF NOT EXISTS featured boolean DEFAULT false;
 ALTER TABLE properties ADD COLUMN IF NOT EXISTS structure_type text;

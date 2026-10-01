@@ -3,6 +3,12 @@
 import React, { useState, useMemo, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAppStore } from '@/store/useAppStore';
+import { 
+  SUPPORTED_STATES, 
+  ALL_LOCALITIES, 
+  getStateForLocality, 
+  getLocalitiesForState 
+} from '@/lib/locations';
 import PropertyGrid from '../property/PropertyGrid/PropertyGrid';
 import WhatsAppFAB from '../property/WhatsAppFAB/WhatsAppFAB';
 import styles from './HomeClient.module.css';
@@ -18,15 +24,16 @@ function SearchParamsHandler({ onFilterChange }) {
   return null;
 }
 
-// Districts to scroll in the marquee strip
+// Districts and prime localities to scroll in the marquee strip across all states
 const MARQUEE_DISTRICTS = [
-  'Maitama', 'Asokoro', 'Wuse 2', 'Wuse', 'Gwarinpa', 'Jabi',
-  'Life Camp', 'Katampe', 'Apo', 'Garki', 'Garki 2', 'Utako',
-  'Wuye', 'Mabushi', 'Guzape', 'Lugbe', 'Kaura', 'Gudu',
-  'Jahi', 'Durumi', 'Dakibiyu', 'Jikwoyi', 'Karu', 'Nyanya',
-  'Kubwa', 'Bwari', 'Kuje', 'Gwagwalada', 'Lokogoma', 'Mpape',
-  'Dawaki', 'Kado', 'Galadimawa', 'Dakwo', 'Gaduwa', 'Kugbo',
-  'Karmo', 'Kurudu', 'Kyami', 'Galadima'
+  // Abuja
+  'Maitama (Abuja)', 'Asokoro (Abuja)', 'Wuse 2 (Abuja)', 'Gwarinpa (Abuja)', 'Jabi (Abuja)', 'Guzape (Abuja)',
+  // Lagos
+  'Lekki Phase 1 (Lagos)', 'Ikoyi (Lagos)', 'Victoria Island (Lagos)', 'Ikeja GRA (Lagos)', 'Banana Island (Lagos)', 'Magodo (Lagos)', 'Ajah (Lagos)',
+  // Imo
+  'New Owerri (Imo)', 'Ikenegbu (Imo)', 'World Bank Estate (Imo)', 'Orji (Imo)', 'Works Layout (Imo)', 'Orlu (Imo)',
+  // Enugu
+  'Independence Layout (Enugu)', 'GRA (Enugu)', 'New Haven (Enugu)', 'Trans-Ekulu (Enugu)', 'Golf Estate (Enugu)', 'Nsukka (Enugu)'
 ];
 
 // Animated counter hook — counts up when the ref enters the viewport
@@ -71,6 +78,7 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState('all');
+  const [selectedState, setSelectedState] = useState('all');
   const [selectedDistrict, setSelectedDistrict] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
 
@@ -96,6 +104,13 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
     { key: 'off-plan', label: 'Off-Plan' }
   ];
 
+  const availableLocalities = useMemo(() => {
+    if (selectedState === 'all') {
+      return ALL_LOCALITIES;
+    }
+    return getLocalitiesForState(selectedState);
+  }, [selectedState]);
+
   // Client-side filtering logic
   const filteredListings = useMemo(() => {
     let list = initialListings;
@@ -109,19 +124,26 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
       if (selectedType !== 'all' && (listing.transaction_type || '').toLowerCase() !== selectedType) {
         return false;
       }
+      if (selectedState !== 'all') {
+        const itemState = listing.location_state || getStateForLocality(listing.location_area || listing.district);
+        if (itemState.toLowerCase() !== selectedState.toLowerCase()) {
+          return false;
+        }
+      }
       if (selectedDistrict !== 'all') {
-        const area = (listing.location_area || '').toLowerCase();
+        const area = (listing.location_area || listing.district || '').toLowerCase();
         const city = (listing.location_city || '').toLowerCase();
         const dist = selectedDistrict.toLowerCase();
-        if (area !== dist && city !== dist) return false;
+        if (area !== dist && city !== dist && !area.includes(dist)) return false;
       }
       if (searchQuery.trim() !== '') {
         const query = searchQuery.toLowerCase();
         const titleMatch = (listing.title || '').toLowerCase().includes(query);
-        const areaMatch = (listing.location_area || '').toLowerCase().includes(query);
+        const areaMatch = (listing.location_area || listing.district || '').toLowerCase().includes(query);
         const cityMatch = (listing.location_city || '').toLowerCase().includes(query);
+        const stateMatch = (listing.location_state || getStateForLocality(listing.location_area || listing.district) || '').toLowerCase().includes(query);
         const descMatch = (listing.description || '').toLowerCase().includes(query);
-        return titleMatch || areaMatch || cityMatch || descMatch;
+        return titleMatch || areaMatch || cityMatch || stateMatch || descMatch;
       }
       return true;
     });
@@ -152,7 +174,7 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
     }
 
     return sorted;
-  }, [initialListings, selectedType, selectedDistrict, searchQuery, filter, savedProperties, mounted, sortBy]);
+  }, [initialListings, selectedType, selectedState, selectedDistrict, searchQuery, filter, savedProperties, mounted, sortBy]);
 
   return (
     <div className={styles.container}>
@@ -179,7 +201,7 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
             className={`${styles.description} animate-fade-up`}
             style={{ '--delay': '220ms' }}
           >
-            Vetted individual owners. Zero agent friction. Secure WhatsApp handoffs.
+            Vetted individual owners across Abuja, Lagos, Imo, and Enugu. Zero agent friction. Secure WhatsApp handoffs.
             Trusted by buyers locally and across the globe.
           </p>
         </div>
@@ -209,7 +231,7 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
           <i className="fa-solid fa-magnifying-glass"></i>
           <input
             type="text"
-            placeholder="Search Maitama, Wuse, duplex, size..."
+            placeholder="Search Lagos, Abuja, Owerri, Enugu, duplex, size..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className={styles.searchInput}
@@ -240,17 +262,38 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
           })}
         </div>
 
-        {/* District Select */}
+        {/* State Select */}
         <div className={styles.selectWrap}>
-          <label htmlFor="district-select" className={styles.selectLabel}>Location</label>
+          <label htmlFor="state-select" className={styles.selectLabel}>State</label>
+          <select
+            id="state-select"
+            value={selectedState}
+            onChange={(e) => {
+              setSelectedState(e.target.value);
+              setSelectedDistrict('all');
+            }}
+            className={styles.select}
+          >
+            <option value="all">All States</option>
+            {SUPPORTED_STATES.map((st) => (
+              <option key={st.id} value={st.name}>{st.name}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Locality Select */}
+        <div className={styles.selectWrap}>
+          <label htmlFor="district-select" className={styles.selectLabel}>Locality</label>
           <select
             id="district-select"
             value={selectedDistrict}
             onChange={(e) => setSelectedDistrict(e.target.value)}
             className={styles.select}
           >
-            <option value="all">All Abuja Districts</option>
-            {initialDistricts.map((dist) => (
+            <option value="all">
+              {selectedState === "all" ? "All Localities" : `All in ${selectedState}`}
+            </option>
+            {availableLocalities.map((dist) => (
               <option key={dist} value={dist}>{dist}</option>
             ))}
           </select>

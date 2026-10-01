@@ -3,6 +3,7 @@
 import Link from "next/link";
 import slugify from "slugify";
 import { useAppStore } from "@/store/useAppStore";
+import { getStateShortName } from "@/lib/locations";
 import styles from "./PropertyCard.module.css";
 
 const formatPrice = (price) => {
@@ -35,8 +36,9 @@ export default function PropertyCard({
   const isSaved = savedProperties.includes(id);
 
   const transLabel = TRANSACTION_LABELS[transactionType] || transactionType;
+  const stateLabel = getStateShortName(district);
   const districtSlug = district ? slugify(district.toLowerCase()) : "unspecified";
-  const detailUrl = slug.startsWith("/") ? slug : `/abuja/${districtSlug}/${slug}`;
+  const detailUrl = slug.startsWith("/") ? slug : `/property/${slug}`;
   const isVideo =
     photo &&
     (photo.endsWith(".mp4") ||
@@ -111,7 +113,7 @@ export default function PropertyCard({
         <div className={styles.metaRow}>
           <span className={styles.location}>
             <i className="fa-solid fa-location-dot"></i>
-            {district}, Abuja
+            {district ? `${district}, ${stateLabel}` : stateLabel}
           </span>
 
           {/* Specs inline */}

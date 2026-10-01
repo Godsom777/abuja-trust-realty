@@ -46,7 +46,7 @@ export function getPropertyEnquiryLink(property, currency = 'ngn') {
  */
 export function getGeneralEnquiryLink() {
   const phone = getWhatsAppNumber();
-  const template = `Hi, I have an enquiry about your listed properties in Abuja.`;
+  const template = `Hi, I have an enquiry about your listed properties.`;
   const encodedText = encodeURIComponent(template);
   return `https://wa.me/${phone}?text=${encodedText}`;
 }
