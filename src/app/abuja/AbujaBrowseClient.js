@@ -8,6 +8,7 @@ import {
   getStateForLocality, 
   getLocalitiesForState 
 } from "@/lib/locations";
+import RequestPropertyCTA from "@/components/property/RequestPropertyCTA/RequestPropertyCTA";
 import styles from "./page.module.css";
 
 const TRANSACTION_TYPES = [
@@ -172,7 +173,7 @@ export default function AbujaBrowseClient({ initialListings = [], initialDistric
               <div className={styles.filterGroup}>
                 <label className={styles.filterLabel}>District</label>
                 <select value={district} onChange={(e) => setDistrict(e.target.value)} className={styles.filterSelect}>
-                  {districts.map((d) => <option key={d} value={d}>{d}</option>)}
+                  {availableLocalities.map((d) => <option key={d} value={d}>{d}</option>)}
                 </select>
               </div>
               <div className={styles.filterGroup}>
@@ -229,6 +230,15 @@ export default function AbujaBrowseClient({ initialListings = [], initialDistric
               ))}
             </div>
           )}
+          {/* At the end of search results: Request A Property */}
+          <RequestPropertyCTA
+            searchContext={{
+              state: selectedState,
+              district: district !== "All Localities" ? district : '',
+              transactionType: transactionType !== "all" ? transactionType : '',
+              propertyType: propertyType !== "all" ? propertyType : ''
+            }}
+          />
         </div>
       </section>
       

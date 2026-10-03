@@ -50,3 +50,51 @@ export function getGeneralEnquiryLink() {
   const encodedText = encodeURIComponent(template);
   return `https://wa.me/${phone}?text=${encodedText}`;
 }
+
+/**
+ * Generates a WhatsApp deep link for a bespoke property request submission
+ * @param {Object} data
+ * @returns {string}
+ */
+export function getPropertyRequestLink({
+  name = '',
+  phone = '',
+  transactionType = '',
+  propertyType = '',
+  state = '',
+  locality = '',
+  bedrooms = '',
+  budget = '',
+  notes = ''
+} = {}) {
+  const waNumber = getWhatsAppNumber();
+  
+  const lines = [
+    `*PROPERTY REQUEST — emanon.*`,
+    `━━━━━━━━━━━━━━━━━━━━`,
+  ];
+
+  if (name.trim()) lines.push(`👤 *Client:* ${name.trim()}`);
+  if (phone.trim()) lines.push(`📞 *WhatsApp / Phone:* ${phone.trim()}`);
+  if (transactionType) lines.push(`🎯 *Purpose:* ${transactionType}`);
+  if (propertyType) lines.push(`🏢 *Property Type:* ${propertyType}`);
+
+  const loc = [locality, state]
+    .filter(Boolean)
+    .filter(val => val !== 'all' && val !== 'All Localities' && val !== 'All States')
+    .join(', ');
+  if (loc) lines.push(`📍 *Preferred Location:* ${loc}`);
+
+  if (bedrooms && bedrooms !== 'any') {
+    lines.push(`🛏 *Bedrooms:* ${bedrooms}`);
+  }
+
+  if (budget.trim()) lines.push(`💰 *Target Budget:* ${budget.trim()}`);
+  if (notes.trim()) lines.push(`📝 *Additional Details:* ${notes.trim()}`);
+
+  lines.push(`━━━━━━━━━━━━━━━━━━━━`);
+  lines.push(`_Hello emanon team, I am searching for a property matching these specifications. Please let me know what verified listings or off-market options are available._`);
+
+  const encodedText = encodeURIComponent(lines.join('\n'));
+  return `https://wa.me/${waNumber}?text=${encodedText}`;
+}

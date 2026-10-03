@@ -11,6 +11,7 @@ import {
 } from '@/lib/locations';
 import PropertyGrid from '../property/PropertyGrid/PropertyGrid';
 import WhatsAppFAB from '../property/WhatsAppFAB/WhatsAppFAB';
+import RequestPropertyCTA from '../property/RequestPropertyCTA/RequestPropertyCTA';
 import styles from './HomeClient.module.css';
 
 function SearchParamsHandler({ onFilterChange }) {
@@ -368,16 +369,30 @@ export default function HomeClient({ initialListings = [], initialDistricts = []
             </button>
           </div>
         ) : (
-          <PropertyGrid
-            properties={filteredListings}
-            loading={filter === 'saved' && !mounted}
-            viewMode={currentViewMode}
-            emptyMessage={
-              searchQuery || selectedType !== 'all' || selectedDistrict !== 'all'
-                ? "No properties match your current filters. Try resetting search or type parameters."
-                : "No properties listed yet. Check back soon!"
-            }
-          />
+          <>
+            <PropertyGrid
+              properties={filteredListings}
+              loading={filter === 'saved' && !mounted}
+              viewMode={currentViewMode}
+              emptyMessage={
+                searchQuery || selectedType !== 'all' || selectedDistrict !== 'all'
+                  ? "No properties match your current filters. Try resetting search or request a property directly below."
+                  : "No properties listed yet. Check back soon!"
+              }
+            />
+
+            {/* At the end of search results: Request A Property Button & Form */}
+            {!(filter === 'saved' && !mounted) && (
+              <RequestPropertyCTA
+                searchContext={{
+                  state: selectedState,
+                  district: selectedDistrict,
+                  transactionType: selectedType !== 'all' ? selectedType : '',
+                  searchQuery: searchQuery
+                }}
+              />
+            )}
+          </>
         )}
       </section>
 
